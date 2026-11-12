@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { A, verifiedArtifactCount } from '../src/data/artifacts.js';
+import { A, verifiedArtifactCount } from '../src/data/artifacts';
 
-const escape = (value) => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
+const escape = (value: string | number) => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 const records = A.slice().sort((left, right) => left.n.localeCompare(right.n));
 const lines = [
   '# Claims audit',

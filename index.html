@@ -156,6 +156,7 @@
   <button id="bootskip">SKIP ACQUISITION</button>
 </div>
 
+<div id="webgl-shell" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="vig" aria-hidden="true"></div>
 <div id="reticle" aria-hidden="true">
@@ -212,7 +213,7 @@
   <div class="wrap heroinner">
     <div class="eyebrow" data-scramble>NASA Space Apps 2026 · Interactive Archive</div>
     <h1 class="herotitle">
-      <img class="hero-title-image" src="/assets/images/silent-fleet-hero-title.svg" width="1600" height="620" alt="The Silent Fleet, 1959 onward" fetchpriority="high" decoding="sync" />
+      <img class="hero-title-image" data-webgl-plane="hero-title" src="/assets/images/silent-fleet-hero-title.svg" width="1600" height="620" alt="The Silent Fleet, 1959 onward" fetchpriority="high" decoding="sync" />
     </h1>
 
     <dl class="herometa">
@@ -677,6 +678,6 @@
   </div>
 </aside>
 
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

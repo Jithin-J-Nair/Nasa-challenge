@@ -1,9 +1,10 @@
 /** Catalogue records and supporting archive content. */
-import { FEATURED_AUDIT, FEATURED_SOURCES } from './featured-audit.js';
-import { DOSSIER_STORIES } from './dossier-stories.js';
+import { FEATURED_AUDIT, FEATURED_SOURCES } from './featured-audit';
+import { DOSSIER_STORIES } from './dossier-stories';
+import type { Artifact, ArtifactSeed, ArtifactStatus, AuditReplacement, ImageMetadata, LedgerItem, ScienceEntry } from '../types/archive';
 
-const assetPath = (path) => `${import.meta?.env?.BASE_URL || '/'}${path.replace(/^\//, '')}`;
-export const A = [
+const assetPath = (path: string): string => `${import.meta?.env?.BASE_URL || '/'}${path.replace(/^\//, '')}`;
+const SEEDS: ArtifactSeed[] = [
 {id:'luna2',n:'Luna 2',m:'Luna programme',ag:'USSR',b:'moon',y:1959,st:'destroyed',lat:29.1,lon:0.0,site:'Palus Putredinis, near Aristides',sch:'probe',one:'The first human-made object ever to reach another world. It did not land — it hit.',spec:[['Arrived','13 Sep 1959, 21:02 UTC'],['Fate','Deliberate impact at 3.3 km/s'],['Mass','390 kg'],['Instruments','Scintillation, Cherenkov & ion detectors'],['Survived','~34 minutes of data after impact']],voice:'I was built to be destroyed. That was the entire plan — a 390-kilogram sphere stuffed with instruments, aimed at a moving target 384,000 kilometres away, with 1959 guidance. I missed my first correction burn and the whole world assumed the mission was over. Then I hit the Moon within two kilometres of aim point, and I told everyone on the way down that the Moon has no magnetic field worth speaking of and no radiation belt at all. That single negative result is the reason anyone thought landing there was survivable.',disc:['No detectable lunar magnetic field — critical for planning crewed landings.','No radiation belt around the Moon, unlike Earth.','Direct measurement of solar-wind ion density in interplanetary space.','Carried pentagonal steel pennants that scattered on impact — the first human artefacts on another world.'],last:'IMPACT CONFIRMED · 21:02:24 UTC · 13 SEP 1959\nRadio tracking stations at Jodrell Bank, UK recorded the signal cutting out.\nNo further transmission.',tags:'First object to reach another celestial body'},
 {id:'surveyor3',n:'Surveyor 3',m:'Surveyor programme',ag:'NASA',b:'moon',y:1967,st:'derelict',lat:-2.94,lon:-23.34,site:'Ocean of Storms',sch:'surveyor',one:'The first American soft landing on the Moon — and the only spacecraft in history to be visited by humans on another world.',spec:[['Landed','20 Apr 1967'],['Status','Derelict · partially dismantled'],['Mass','281 kg at landing'],['Images','6,315 television frames'],['Special','First spacecraft to dig into another world']],voice:'My surface sampler scooped a trench in the regolith and reported back that the soil behaved like damp sand — cohesive, load-bearing, safe to walk on. Two and a half years later I heard boots. Alan Bean and Pete Conrad walked 155 metres from me, the closest any human has ever come to another machine on another world. They photographed me, then took my camera, my cable samples and my soil scoop home. Back on Earth, researchers found a Streptococcus bacterium sealed inside my camera housing. Whether it hitched a ride from the assembly clean room or survived thirty-one months in vacuum and 120 °C swings is still argued. Either answer is extraordinary.',disc:['Soil mechanics: lunar regolith is cohesive and can bear a crewed lander.','Thermal behaviour of real Moon dust, measured across a full lunar night.','Proved the accuracy needed for Apollo — Surveyor 3 became the target for Apollo 12.','Biological question: terrestrial microbes may survive years exposed on the lunar surface.'],last:'LAST FRAME · 6,315\nTelevision camera powered down 1 May 1967 after the first lunar night.\nVisited by Apollo 12 crew · 20 Nov 1969',tags:'First US soft landing · visited by Apollo 12'},
 {id:'eagle',n:'Eagle — descent stage',m:'Apollo 11',ag:'NASA',b:'moon',y:1969,st:'derelict',lat:0.6741,lon:23.4730,site:'Sea of Tranquility',sch:'lm',feat:true,one:'The landing platform for the first crewed Moon landing. Its ascent stage left; its bottom half never moved again.',spec:[['Landed','20 Jul 1969, 20:17:40 UTC'],['Site','0.6741° N, 23.4730° E'],['Mass at touchdown','~2,034 kg'],['Fuel remaining','~20 seconds of hover'],['Plaque','“Here men from the planet Earth first set foot upon the Moon”']],voice:'Twenty seconds of fuel. That is what was left in my tanks when the contact light came on. Neil had flown me past a boulder field the computer did not like and set me down in a place nobody had chosen. Then the crew climbed a ladder, walked for two and a half hours, planted a seismometer and a mirror, and climbed back inside. My ascent stage burned and left. I stayed. Fifty-seven years of micrometeorite impacts, solar ultraviolet and 250 °C temperature swings have not moved me a centimetre. My mirror still answers when Earth calls.',disc:['Confirmed the lunar surface can support a crewed lander and heavy foot traffic.','Passive Seismic Experiment recorded 22 high-frequency meteoroid impacts in three weeks before failing.','First direct measurement of the Moon’s regolith strength and thermal behaviour under a landing engine.','Returned 21.5 kg of samples including 4.6-billion-year-old anorthosite — evidence of a global magma ocean.'],last:'EASEP · PSE TELEMETRY LOST · 27 AUG 1969 05:15 UTC\nSolar array degraded after the first lunar night.\nLaser Ranging Retroreflector: STILL IN SERVICE',tags:'First crewed landing site'},
@@ -55,7 +56,7 @@ const NASA_VOYAGER_STATUS = 'https://science.nasa.gov/mission/voyager/where-are-
  * Mission-specific NASA references. A link is not treated as a fact check: it
  * is the record's primary reading path and is separately audited below.
  */
-const NASA_SOURCES = {
+const NASA_SOURCES: Record<string, string> = {
   luna2: NASA_LUNAR_CATALOGUE,
   surveyor3: NASA_LUNAR_CATALOGUE,
   eagle: NASA_LUNAR_CATALOGUE,
@@ -108,7 +109,7 @@ Object.assign(NASA_SOURCES, FEATURED_SOURCES);
  * Only these small, source-bounded records may render narrative or technical
  * claims. See docs/CLAIMS-AUDIT.md for the withheld claim register.
  */
-const CLAIM_AUDIT = {
+const CLAIM_AUDIT: Record<string, AuditReplacement> = {
   surveyor3: {
     summary: 'NASA’s lunar catalogue lists Surveyor 3 at 3.015° S, 23.418° W.',
     specs: [['Catalogue location', '3.015° S, 23.418° W']],
@@ -158,7 +159,7 @@ const CLAIM_AUDIT = {
 // records. Its entries intentionally replace the smaller first-pass audit.
 Object.assign(CLAIM_AUDIT, FEATURED_AUDIT);
 
-const SPECIFIC_IMAGES = {
+const SPECIFIC_IMAGES: Record<string, ImageMetadata> = {
   ingenuity: {
     path: assetPath('/assets/dossiers/ingenuity-specific.jpg'),
     credit: 'NASA/JPL-Caltech · PIA25881 · Perseverance Mastcam-Z',
@@ -239,7 +240,7 @@ const SPECIFIC_IMAGES = {
   },
 };
 
-const MISSION_IMAGES = {
+const MISSION_IMAGES: Record<string, ImageMetadata> = {
   perseverance: { path: assetPath('/assets/dossiers/perseverance.jpg'), credit: 'NASA/JPL-Caltech/ASU/MSSS · PIA26474', source: 'https://images.nasa.gov/details/PIA26474', alt: 'NASA Perseverance Mastcam-Z panorama of Rio Chiquito.' },
   phoenix: { path: assetPath('/assets/dossiers/phoenix-site.jpg'), credit: 'NASA/JPL-Caltech/University of Arizona/Texas A&M University · PIA11734', source: 'https://science.nasa.gov/photojournal/full-circle-color-panorama-of-phoenix-landing-site-on-northern-mars-2', alt: 'NASA Phoenix Mars Lander’s arctic landing site panorama on northern Mars.' },
   spirit: { path: assetPath('/assets/dossiers/spirit-site.jpg'), credit: 'NASA/JPL/Arizona State University · PIA05336', source: 'https://science.nasa.gov/photojournal/spirit-has-landed', alt: 'NASA 2001 Mars Odyssey view of Gusev Crater, Spirit’s landing area.' },
@@ -252,7 +253,7 @@ const MISSION_IMAGES = {
 
 // Intrinsic dimensions are recorded for every locally hosted raster used in a
 // dossier. They reserve the correct layout before the image decodes.
-const IMAGE_DIMENSIONS = {
+const IMAGE_DIMENSIONS: Record<string, readonly [number, number]> = {
   eagle: [720, 720], antares: [720, 720], falcon: [720, 720], lrrr: [720, 720],
   challenger: [736, 720], viking1: [919, 720], sojourner: [640, 430],
   voyager1: [640, 360], voyager2: [640, 360], curiosity: [960, 584],
@@ -262,72 +263,72 @@ const IMAGE_DIMENSIONS = {
   messenger: [576, 720], dawn: [640, 640],
 };
 
-const PLACEHOLDER = {
+const PLACEHOLDER: ImageMetadata = {
   path: assetPath('/assets/images/dossier-context-placeholder.svg'),
   credit: 'Silent Fleet placeholder · no artefact-specific NASA image has been audited for this record',
   source: '',
+  alt: '',
 };
 
-A.forEach((artifact) => {
-  // Preserve the original material for the checked-in audit, but never use an
-  // agency label as proof. Raw narrative and specifications are hidden unless
-  // the whole visible set is backed by an opened NASA source above.
-  artifact.claimsAudit = {
-    summary: artifact.one,
-    specificationRows: artifact.spec.map(([label, value]) => `${label}: ${value}`),
-    discoveries: artifact.disc,
-    transmission: artifact.last,
+export const A: Artifact[] = SEEDS.map((seed): Artifact => {
+  const audit = CLAIM_AUDIT[seed.id];
+  const image = SPECIFIC_IMAGES[seed.id] || MISSION_IMAGES[seed.id] || PLACEHOLDER;
+  const claimsAudit = {
+    summary: seed.one,
+    specificationRows: seed.spec.map(([label, value]) => `${label}: ${value}`),
+    discoveries: seed.disc,
+    transmission: seed.last,
   };
-  const audit = CLAIM_AUDIT[artifact.id];
-  const image = SPECIFIC_IMAGES[artifact.id] || MISSION_IMAGES[artifact.id] || PLACEHOLDER;
-  Object.assign(artifact, {
-    source: NASA_SOURCES[artifact.id],
+  const base: Artifact = {
+    ...seed,
+    claimsAudit,
+    source: NASA_SOURCES[seed.id] || NASA_LUNAR_CATALOGUE,
     sourceLabel: 'NASA mission-specific source',
     verifiedByNASA: Boolean(audit),
     auditStatus: audit ? 'complete' : 'withheld',
-    story: audit ? DOSSIER_STORIES[artifact.id] : '',
+    story: audit ? (DOSSIER_STORIES[seed.id] || '') : '',
     image: image.path,
     imageCredit: image.credit,
     imageSource: image.source,
-    imageAlt: image.alt || `Placeholder for ${artifact.n}; an artefact-specific NASA image has not been audited.`,
-    imageWidth: IMAGE_DIMENSIONS[artifact.id]?.[0] || 960,
-    imageHeight: IMAGE_DIMENSIONS[artifact.id]?.[1] || 540,
-    imageSpecific: Boolean(SPECIFIC_IMAGES[artifact.id]),
-    imageMission: Boolean(MISSION_IMAGES[artifact.id]),
-    imagePlaceholder: !SPECIFIC_IMAGES[artifact.id] && !MISSION_IMAGES[artifact.id],
-  });
+    imageAlt: image.alt || `Placeholder for ${seed.n}; an artefact-specific NASA image has not been audited.`,
+    imageWidth: IMAGE_DIMENSIONS[seed.id]?.[0] || 960,
+    imageHeight: IMAGE_DIMENSIONS[seed.id]?.[1] || 540,
+    imageSpecific: Boolean(SPECIFIC_IMAGES[seed.id]),
+    imageMission: Boolean(MISSION_IMAGES[seed.id]),
+    imagePlaceholder: !SPECIFIC_IMAGES[seed.id] && !MISSION_IMAGES[seed.id],
+  };
   if (audit) {
-    artifact.one = audit.summary;
-    artifact.spec = audit.specs;
-    artifact.voice = audit.summary;
-    artifact.disc = [audit.summary];
-    artifact.last = `SOURCE REVIEW · NASA claim audit complete\n${audit.summary}`;
-    if (audit.lat !== undefined) {
-      artifact.lat = audit.lat;
-      artifact.lon = audit.lon;
-      artifact.site = audit.site;
-    }
-  } else {
-    artifact.one = 'Claims withheld pending an artefact-by-artefact NASA source audit.';
-    artifact.spec = [];
-    artifact.voice = '';
-    artifact.disc = [];
-    artifact.last = '';
-    delete artifact.lat;
-    delete artifact.lon;
-    delete artifact.site;
-    delete artifact.orbit;
+    return {
+      ...base,
+      one: audit.summary,
+      spec: audit.specs,
+      voice: audit.summary,
+      disc: [audit.summary],
+      last: `SOURCE REVIEW · NASA claim audit complete\n${audit.summary}`,
+      ...(audit.lat !== undefined && audit.lon !== undefined && audit.site
+        ? { lat: audit.lat, lon: audit.lon, site: audit.site }
+        : {}),
+    };
   }
+  const { lat: _lat, lon: _lon, site: _site, orbit: _orbit, ...withheld } = base;
+  return {
+    ...withheld,
+    one: 'Claims withheld pending an artefact-by-artefact NASA source audit.',
+    spec: [],
+    voice: '',
+    disc: [],
+    last: '',
+  };
 });
 
 export const verifiedArtifactCount = Object.keys(CLAIM_AUDIT).length;
-export const isNASARecord = (artifact) => artifact.ag.includes('NASA');
-export const order = A.slice().sort((a,b)=>a.y-b.y||a.n.localeCompare(b.n));
-export const idxOf = id => order.findIndex(o=>o.id===id);
-export const byId  = id => A.find(a=>a.id===id);
+export const isNASARecord = (artifact: Artifact): boolean => artifact.ag.includes('NASA');
+export const order: Artifact[] = A.slice().sort((a, b) => a.y - b.y || a.n.localeCompare(b.n));
+export const idxOf = (id: string | null | undefined): number => order.findIndex((artifact) => artifact.id === id);
+export const byId = (id: string | null | undefined): Artifact | undefined => A.find((artifact) => artifact.id === id);
 
 
-export const LEDGER = [
+export const LEDGER: LedgerItem[] = [
  {ic:'plaque',t:'The plaque',y:'Apollo 11 · 1969',p:'Bolted to the ladder of Eagle’s descent stage: “HERE MEN FROM THE PLANET EARTH FIRST SET FOOT UPON THE MOON JULY 1969, A.D. WE CAME IN PEACE FOR ALL MANKIND.” It is still on the ladder, facing the direction the crew walked away from.'},
  {ic:'branch',t:'A gold olive branch',y:'Apollo 11 · 1969',p:'A small casting of an olive branch, laid on the surface before the crew re-entered. The oldest symbol of peace we have, deposited on a world with no wars.'},
  {ic:'disc',t:'A silicon disc, 3.8 cm wide',y:'Apollo 11 · 1969',p:'Etched with goodwill messages from 73 heads of state and the presidents of four American scientific bodies. Left in a small aluminium case. The text is microscopic and has not eroded.'},
@@ -341,7 +342,7 @@ export const LEDGER = [
  {ic:'pennant',t:'Steel pennants',y:'Luna 2 · 1959',p:'The first human artefacts on the Moon were small pentagonal stainless-steel flags scattered by a Soviet impactor, engraved with the launch date. Nobody was there to see them land.'}
 ];
 
-export const SCI = [
+export const SCI: ScienceEntry[] = [
  ['luna2','Luna 2','1959','The Moon has no significant magnetic field and no radiation belt — a landing there is survivable.'],
  ['mariner4','Mariner 4','1965','Mars is cratered and airless, not a world of canals. Atmospheric pressure ~1% of Earth’s.'],
  ['surveyor3','Surveyor 3','1967','Lunar regolith is cohesive and load-bearing. It will hold a crewed lander and a walking human.'],
@@ -377,6 +378,6 @@ export const SCI = [
 ];
 
 
-export function statusLabel(status) {
+export function statusLabel(status: ArtifactStatus): string {
   return { derelict: 'Derelict', active: 'Active', silent: 'Silent', lost: 'Lost', destroyed: 'Destroyed' }[status] || status;
 }

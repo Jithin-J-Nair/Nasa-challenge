@@ -1,3 +1,5 @@
+import type { AuditReplacement } from '../types/archive';
+
 /*
  * Source-bounded copy restored in correction pass 3.
  * Every sentence and every specification below was checked against the paired
@@ -5,7 +7,7 @@
  * in artifacts.js. URLs are exported separately so the dossier link always
  * opens the same mission-specific record used for its visible copy.
  */
-export const FEATURED_SOURCES = {
+export const FEATURED_SOURCES: Record<string, string> = {
   eagle: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1969-059C',
   intrepid: 'https://www.nasa.gov/history/50-years-ago-return-to-the-moon/',
   antares: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1971-008C',
@@ -30,7 +32,7 @@ export const FEATURED_SOURCES = {
   cassini: 'https://science.nasa.gov/mission/cassini/',
 };
 
-export const FEATURED_AUDIT = {
+export const FEATURED_AUDIT: Record<string, AuditReplacement> = {
   eagle: {
     summary: 'Apollo 11’s lunar module Eagle landed in the Sea of Tranquility on July 20, 1969. Its descent stage was the lower landing platform and remained on the Moon after the ascent stage lifted off.',
     specs: [['Landing', 'July 20, 1969'], ['Landing site', 'Sea of Tranquility'], ['Crew surface stay', '21 hours 36 minutes'], ['Descent-stage dry mass', '2,034 kg'], ['Role', 'Landing platform for ascent stage']],

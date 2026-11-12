@@ -25,7 +25,7 @@ const browser = await chromium.launch({
   args: chromiumLambda.args,
 });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
-const failures = [];
+const failures: string[] = [];
 page.on('console', (message) => {
   if (message.type() === 'error') failures.push(`console error: ${message.text()}`);
 });

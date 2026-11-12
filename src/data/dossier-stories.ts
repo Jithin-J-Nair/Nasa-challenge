@@ -3,7 +3,7 @@
  * framing, not evidence: they introduce no dates, quantities, outcomes,
  * locations, rankings, or discoveries beyond the NASA-checked facts nearby.
  */
-export const DOSSIER_STORIES = {
+export const DOSSIER_STORIES: Record<string, string> = {
   eagle: 'A big journey can leave a small feeling behind. This page gives a quiet moment a human-sized feeling.',
   intrepid: 'This page makes a faraway idea feel a little closer. It is about care, attention, and looking closely.',
   antares: 'A bright name can make a quiet record feel full of possibility. This page carries the feeling of careful work and hope.',

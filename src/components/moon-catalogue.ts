@@ -1,20 +1,21 @@
-import { MOON_CATALOGUE_ROWS, MOON_CATALOGUE_SOURCE, MOON_CATALOGUE_STATS } from '../data/moon-catalogue.generated.js';
-import { $ } from '../lib/dom.js';
+import { MOON_CATALOGUE_ROWS, MOON_CATALOGUE_SOURCE, MOON_CATALOGUE_STATS } from '../data/moon-catalogue.generated';
+import { $ } from '../lib/dom';
 
-const escape = (value) => String(value).replace(/[&<>"']/g, (character) => ({
-  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-}[character]));
+function escapeHtml(value: string | number): string {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[character] || character));
+}
 
 /** Render the parsed NASA Moon catalogue once; filtering never changes its method count. */
-export function initMoonCatalogue() {
-  const root = $('#moonCatalogue');
-  if (!root) return;
+export function initMoonCatalogue(): void {
+  const root = $<HTMLElement>('#moonCatalogue');
   const directRows = MOON_CATALOGUE_ROWS.filter((row) => !row.seeBelow && !row.subItem);
-  const renderRows = (query = '') => {
+  const renderRows = (query = ''): void => {
     const normalized = query.toLocaleLowerCase();
     const matches = directRows.filter((row) => `${row.object} ${row.location} ${row.section}`.toLocaleLowerCase().includes(normalized));
     $('#moonCatalogueResult').textContent = `${matches.length} of ${directRows.length} direct rows parsed so far`;
-    $('#moonCatalogueRows').innerHTML = matches.map((row) => `<li><b>${escape(row.object)}</b><span>${escape(row.location || 'Location not supplied in catalogue')}</span><small>${escape(row.section)}</small></li>`).join('')
+    $('#moonCatalogueRows').innerHTML = matches.map((row) => `<li><b>${escapeHtml(row.object)}</b><span>${escapeHtml(row.location || 'Location not supplied in catalogue')}</span><small>${escapeHtml(row.section)}</small></li>`).join('')
       || '<li class="moon-catalogue-empty">No parsed catalogue rows match that search.</li>';
   };
 
@@ -34,13 +35,14 @@ export function initMoonCatalogue() {
       <ol id="moonCatalogueRows"></ol>
       <p class="mono">Partial-parse status · ${MOON_CATALOGUE_STATS.directObjectCount} direct object/location rows parsed from the NASA catalogue so far. References such as “see below” and indented sub-items are not counted; the list preserves supplied locations and never adds coordinates. <a href="${MOON_CATALOGUE_SOURCE}" target="_blank" rel="noreferrer">Open NASA PDF ↗</a></p>
     </details>`;
-  $('#moonCatalogueSearch').addEventListener('input', (event) => renderRows(event.target.value.trim()));
+  const search = $<HTMLInputElement>('#moonCatalogueSearch');
+  search.addEventListener('input', () => renderRows(search.value.trim()));
   renderRows();
 
-  const observatoryStat = $('#moonCatalogueStat');
+  const observatoryStat = document.querySelector<HTMLElement>('#moonCatalogueStat');
   if (observatoryStat) observatoryStat.textContent = `${MOON_CATALOGUE_STATS.directObjectCount} NASA catalogue rows so far`;
-  const heroStat = $('#moonInventoryCount');
-  if (heroStat) heroStat.textContent = MOON_CATALOGUE_STATS.directObjectCount;
-  const heroNote = $('#moonInventoryNote');
+  const heroStat = document.querySelector<HTMLElement>('#moonInventoryCount');
+  if (heroStat) heroStat.textContent = String(MOON_CATALOGUE_STATS.directObjectCount);
+  const heroNote = document.querySelector<HTMLElement>('#moonInventoryNote');
   if (heroNote) heroNote.textContent = 'rows parsed from NASA catalogue so far';
 }

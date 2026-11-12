@@ -1,5 +1,5 @@
-import { $ } from '../lib/dom.js';
-import { reducedMotion } from '../lib/utils.js';
+import { $ } from '../lib/dom';
+import { reducedMotion } from '../lib/utils';
 
 const BOOT_KEY = 'silent-fleet-acquisition-v3';
 
@@ -10,7 +10,7 @@ const BOOT_KEY = 'silent-fleet-acquisition-v3';
  * motion all get the content immediately. A local marker records repeat visits
  * without being required for the experience to work.
  */
-export function startBoot(onReady) {
+export function startBoot(onReady: () => void): void {
   const boot = $('#boot');
   const skipForMotion = reducedMotion;
   let seen = false;

@@ -46,10 +46,24 @@ try {
     if ((await page.locator('#liquidNav [aria-current="page"]').textContent())?.trim() !== 'Home') failures.push(`${viewport.name}: Liquid Glass nav did not initialise on Home`);
     await page.screenshot({ path: `${outputDirectory}/${viewport.name}.png`, fullPage: false });
 
+    if (viewport.name === 'desktop-1280x720') {
+      await page.waitForSelector('#webgl-shell canvas', { timeout: 12_000 });
+      const recoveryState = await page.evaluate(() => {
+        const canvas = document.querySelector<HTMLCanvasElement>('#webgl-shell canvas');
+        if (!canvas) return null;
+        canvas.dispatchEvent(new Event('webglcontextlost', { cancelable: true }));
+        return document.documentElement.dataset.webgl || null;
+      });
+      if (recoveryState !== 'recovering') failures.push(`${viewport.name}: persistent WebGL layer did not expose context-loss recovery state`);
+      await page.evaluate(() => document.querySelector<HTMLCanvasElement>('#webgl-shell canvas')?.dispatchEvent(new Event('webglcontextrestored')));
+      await page.waitForFunction(() => document.documentElement.dataset.webgl === 'ready', { timeout: 6_000 });
+    }
+
     // Enter the WebGL section so locally hosted map textures and the render loop
     // are exercised at every viewport as well.
     await page.locator('#observatory').scrollIntoViewIfNeeded();
-    await page.waitForTimeout(900);
+    await page.waitForSelector('#vpLoad.gone', { timeout: 15_000 });
+    await page.waitForTimeout(180);
     await page.screenshot({ path: `${outputDirectory}/${viewport.name}-observatory.png`, fullPage: false });
     const textureCredit = await page.locator('#hudTexture').textContent();
     if (!textureCredit?.includes('NASA')) failures.push(`${viewport.name}: Observatory texture credit did not render`);

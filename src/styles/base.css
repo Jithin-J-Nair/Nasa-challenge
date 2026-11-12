@@ -51,6 +51,15 @@ button,input,select{font:inherit;color:inherit}
 ::-webkit-scrollbar-thumb{background:#1c2231;border:2px solid #06070d;border-radius:8px}
 ::-webkit-scrollbar-thumb:hover{background:#2c3446}
 
+/* ---------- persistent HTML / WebGL hybrid ---------- */
+#webgl-shell{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.78;transition:opacity .45s ease;}
+#webgl-shell canvas{width:100%!important;height:100%!important;pointer-events:none;}
+main{position:relative;z-index:1;}
+html[data-webgl='recovering'] #webgl-shell{opacity:0;}
+html[data-webgl='unavailable'] #webgl-shell,html[data-webgl='reduced-motion'] #webgl-shell{display:none;}
+@media (max-width:760px),(pointer:coarse){#webgl-shell{display:none}}
+@media (prefers-reduced-motion:reduce){#webgl-shell{display:none}}
+
 /* ---------- global overlays ---------- */
 .grain{
   position:fixed;inset:-120px;z-index:9000;pointer-events:none;opacity:.08;mix-blend-mode:overlay;
