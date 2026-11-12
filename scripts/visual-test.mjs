@@ -38,7 +38,10 @@ try {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(baseUrl, { waitUntil: 'networkidle', timeout: 30_000 });
     await page.waitForSelector('#boot.done', { timeout: 12_000 });
-    await page.waitForTimeout(2_600);
+    // Wait for the overlay's fade to complete, not merely for its class to be
+    // applied, so the review captures show the actual surface experience.
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('#boot')).visibility === 'hidden', undefined, { timeout: 12_000 });
+    await page.waitForTimeout(250);
     await page.screenshot({ path: `${outputDirectory}/${viewport.name}.png`, fullPage: false });
 
     // Enter the WebGL section so locally hosted map textures and the render loop
@@ -51,6 +54,20 @@ try {
     const defaultSurfaceRecords = await page.locator('#sideList').textContent();
     if (defaultSurfaceRecords?.includes('\nLuna 2\n') || defaultSurfaceRecords?.includes('\nLunokhod 1\n') || defaultSurfaceRecords?.includes('\nLunokhod 2\n')) {
       failures.push(`${viewport.name}: Observatory exposed other-agency records in the NASA-first default view`);
+    }
+
+    // The requested report set covers both worlds plus evidence-bearing dossiers
+    // at the two review sizes.
+    if (viewport.width === 1440 || viewport.width === 390) {
+      await page.locator('.bodytoggle [data-b="mars"]').click();
+      await page.waitForTimeout(900);
+      await page.screenshot({ path: `${outputDirectory}/${viewport.name}-observatory-mars.png`, fullPage: false });
+      await page.locator('.bodytoggle [data-b="moon"]').click();
+      await page.waitForTimeout(700);
+      await page.locator('#sideList [data-id="eagle"]').click();
+      await page.waitForSelector('#dossier.open');
+      await page.screenshot({ path: `${outputDirectory}/${viewport.name}-dossier-eagle.png`, fullPage: false });
+      await page.locator('#dClose').click();
     }
 
     // Verify the NASA-first default and the explicit contextual-records switch.
@@ -67,6 +84,15 @@ try {
     if (!(await page.locator('#dossier .dossier-source a').count())) failures.push(`${viewport.name}: dossier is missing its NASA Sources link`);
     if (!(await page.locator('#dossier .unverified-record').count())) failures.push(`${viewport.name}: context record did not receive an unverified gate`);
     await page.locator('#dClose').click();
+
+    if (viewport.width === 1440 || viewport.width === 390) {
+      await page.locator('#timeline').scrollIntoViewIfNeeded();
+      await page.waitForTimeout(350);
+      await page.screenshot({ path: `${outputDirectory}/${viewport.name}-timeline.png`, fullPage: false });
+      await page.locator('#interstellar').scrollIntoViewIfNeeded();
+      await page.waitForTimeout(350);
+      await page.screenshot({ path: `${outputDirectory}/${viewport.name}-voyager.png`, fullPage: false });
+    }
   }
 } finally {
   await page.close();

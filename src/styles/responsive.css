@@ -5,6 +5,7 @@
   .intgrid{grid-template-columns:1fr}
   .helio{position:static}
   .recordwrap{grid-template-columns:1fr}
+  .catalogue-method{grid-template-columns:1fr}
 }
 @media (max-width:960px){
   .briefgrid{grid-template-columns:1fr;gap:40px}
@@ -26,6 +27,7 @@
   .dspecs div{grid-template-columns:1fr;gap:3px}
   .dossier{width:100vw}
   .tlcard{width:212px}
+  .catalogue-list ol{columns:1;padding:8px 28px 24px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}

@@ -36,17 +36,20 @@ export function initArchive() {
     grid.innerHTML = list.map((artifact) => {
       const summary = artifact.verifiedByNASA
         ? artifact.one
-        : 'Unverified contextual record — detailed claims are withheld pending NASA-source verification.';
-      const verificationFlag = artifact.verifiedByNASA ? '' : '<span class="unverified-chip">Unverified</span>';
+        : 'Claims withheld pending an artefact-by-artefact NASA source audit.';
+      const verificationFlag = artifact.verifiedByNASA ? '' : '<span class="unverified-chip">Audit pending</span>';
+      const metadata = artifact.verifiedByNASA ? `${artifact.m} · ${artifact.ag}` : 'NASA source review pending';
+      const year = artifact.verifiedByNASA ? artifact.y : '—';
+      const state = artifact.verifiedByNASA ? `<span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>` : verificationFlag;
       return `
         <button class="acard" data-id="${artifact.id}">
-          <div class="top"><div class="glow"></div><span class="yrbadge">${artifact.y}</span>
+          <div class="top"><div class="glow"></div><span class="yrbadge">${year}</span>
             <span class="bodybadge ${artifact.b}">${artifact.b === 'moon' ? 'Moon' : artifact.b === 'mars' ? 'Mars' : 'Deep space'}</span>
             ${SCHEM[artifact.sch] || SCHEM.probe}
           </div>
-          <div class="bd"><h3>${artifact.n}</h3><div class="ms">${artifact.m} · ${artifact.ag}</div>
+          <div class="bd"><h3>${artifact.n}</h3><div class="ms">${metadata}</div>
             <p>${summary}</p>
-            <div class="foot"><span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>${verificationFlag}
+            <div class="foot">${state}${artifact.verifiedByNASA ? verificationFlag : ''}
             <span class="op">Dossier <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
           </div>
         </button>`;
@@ -58,19 +61,17 @@ export function initArchive() {
     $('#ledgerGrid').innerHTML = LEDGER.map((item, index) => `
       <article class="lcard"><div class="no">${String(index + 1).padStart(2, '0')} / ${LEDGER.length}</div>
         <div class="icn">${ICO[item.ic] || ICO.plaque}</div>
-        <h4>${item.t}</h4><p style="font-family:var(--ff-m);font-size:9.5px;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;margin-bottom:12px">${item.y}</p>
-        <p>${item.p}</p>
+        <h4>${item.t}</h4><p class="unverified-copy">Historic detail withheld pending a line-by-line NASA-source audit.</p>
       </article>`).join('');
   }
 
   function renderScience() {
-    $('#scienceList').innerHTML = SCI.map((entry) => {
-      const artifact = byId(entry[0]);
-      return `<button class="srow" data-id="${entry[0]}">
-        <span class="hw">${entry[1]}<small>${artifact ? artifact.ag : ''}</small></span>
-        <span class="ds">${entry[3]}</span><span class="yr">${entry[2]}</span>
-      </button>`;
-    }).join('');
+    const checked = SCI.map((entry) => byId(entry[0])).filter((artifact) => artifact?.verifiedByNASA);
+    $('#scienceList').innerHTML = checked.map((artifact) => `
+      <button class="srow" data-id="${artifact.id}">
+        <span class="hw">${artifact.n}<small>NASA claim audit complete</small></span>
+        <span class="ds">${artifact.one}</span><span class="yr">checked</span>
+      </button>`).join('');
     $$('.srow').forEach((row) => row.addEventListener('click', () => selectArtifact(row.dataset.id, true)));
   }
 

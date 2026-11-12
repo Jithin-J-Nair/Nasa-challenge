@@ -43,3 +43,16 @@ The application intentionally uses framework-free ES modules: interactions are s
 - Planet maps, the Voyager image, and the share card are hosted in `public/assets/`. Their source credits and usage notes are in `public/assets/CREDITS.md`.
 - Each dossier exposes a NASA source link. Context records that are not verified against NASA documentation withhold narrative and technical detail.
 - `npm run test:visual` runs the responsive browser smoke test at 1280×720, 1440×900, and 390×844, validates NASA-first filtering, dossier evidence treatment, locally hosted texture credits, zero console errors, and the 42-entry no-JavaScript fallback.
+
+## NASA data and source table
+
+| source | project use |
+| --- | --- |
+| [Catalogue of Manmade Material on the Moon](https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf) | Moon inventory method, 22-row non-Apollo list, and audited lunar record locations. |
+| [NASA Voyager status](https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/) | Dated Voyager snapshot and one-light-day milestone. |
+| [NASA LRO Odysseus record](https://www.nasa.gov/missions/lro/nasas-lro-images-intuitive-machines-odysseus-lander/) | Audited Odysseus location. |
+| [NASA/JPL Mars 3 record](https://www.jpl.nasa.gov/news/nasa-mars-orbiter-images-may-show-1971-soviet-lander/) | Audited Mars 3 soft-landing and 14.5-second transmission statement. |
+| [NASA SVS CGI Moon Kit](https://svs.gsfc.nasa.gov/4720) and [NASA/USGS Mars map](https://mars.nasa.gov/resources/6435/global-geologic-map-of-mars/) | Local observatory texture maps. |
+| [NASA Image and Video Library](https://images.nasa.gov/) | Locally hosted dossier media with retained NASA credit lines. |
+
+The record-level source and claim register is in [`docs/CLAIMS-AUDIT.md`](docs/CLAIMS-AUDIT.md). The media credit table is in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). The project uses NASA data for educational reference and is not produced by, affiliated with, sponsored by, or endorsed by NASA, JPL, Caltech, the U.S. Government, or mission partners.

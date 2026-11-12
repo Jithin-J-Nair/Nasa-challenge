@@ -8,6 +8,8 @@ import { clamp, lerp, mulberry32, reducedMotion } from '../lib/utils.js';
 import { generateMars, generateMoon, toBump } from './planet-textures.js';
 import { beep, blip } from './audio.js';
 
+const assetPath = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+
 /* ============================================================
    7. THREE.JS OBSERVATORY
    ============================================================ */
@@ -86,8 +88,8 @@ function buildGlobe(body){
     const proceduralHeightMap = body==='moon' ? generateMoon(W,H) : generateMars(W,H);
     const bump = toBump(proceduralHeightMap);
     const source = body === 'moon'
-      ? '/assets/textures/moon-lroc-color.jpg'
-      : '/assets/textures/mars-usgs-mola-map.jpg';
+      ? assetPath('/assets/textures/moon-lroc-color.jpg')
+      : assetPath('/assets/textures/mars-usgs-mola-map.jpg');
     const map = new THREE.TextureLoader().load(source);
     textures[body]={
       map,
@@ -122,8 +124,11 @@ function buildGlobe(body){
   $('#hudTexture').innerHTML = body === 'moon'
     ? 'COLOR MAP · <b>NASA LRO / SVS</b>'
     : 'COLOR MAP · <b>NASA/USGS MOLA</b>';
-  $('#vpLoad').classList.remove('gone');
-  setTimeout(()=>$('#vpLoad').classList.add('gone'),220);
+  // The procedural bump canvas is generated synchronously. Toggling the
+  // overlay after that work only leaves a stale loading scrim over an already
+  // rendered globe on slower mobile devices, so remove it immediately once
+  // the map/material has been installed.
+  $('#vpLoad').classList.add('gone');
   buildHotspots();
   buildSide();
 }
@@ -244,37 +249,40 @@ function openDossier(a, doFly){
   const coordinates = a.lat !== undefined
     ? `${Math.abs(a.lat).toFixed(2)}° ${a.lat >= 0 ? 'N' : 'S'} · ${Math.abs(a.lon).toFixed(2)}° ${a.lon >= 0 ? 'E' : 'W'}`
     : (a.orbit || '—');
-  const contextFlag = a.imageContext
-    ? '<span class="image-flag">CONTEXT IMAGE · NOT AN ARTEFACT-SPECIFIC PHOTOGRAPH</span>'
-    : '<span class="image-flag verified">NASA ARCHIVAL IMAGE</span>';
+  const imageFlag = a.imageSpecific
+    ? '<span class="image-flag verified">NASA ARTEFACT-SPECIFIC IMAGE</span>'
+    : a.imageMission
+      ? '<span class="image-flag">NASA MISSION IMAGE · NOT A PHOTOGRAPH OF THIS ARTEFACT</span>'
+      : '<span class="image-flag">PLACEHOLDER · NO ARTEFACT-SPECIFIC NASA IMAGE AUDITED</span>';
   const evidence = a.verifiedByNASA
     ? `<div class="dsec"><h4>First-person log</h4><p class="voice">${a.voice}</p></div>
        <div class="dsec"><h4>Technical record</h4><dl class="dspecs">${specRows}</dl></div>
        <div class="dsec"><h4>What it made possible</h4><ol class="disc">${discoveryRows}</ol></div>
        <div class="dsec"><h4>Final transmission</h4><div class="lasttx" id="lastTx"></div></div>
        <div class="dsec" style="border:0"><p class="mono" style="line-height:1.9">${a.tags || ''}</p></div>`
-    : `<div class="dsec unverified-record"><h4>Verification status</h4><p><b>Unverified contextual record.</b> A NASA page is linked below, but this entry's mission narrative, technical figures, and discovery claims are withheld until they can be checked against NASA documentation.</p></div>`;
+    : `<div class="dsec unverified-record"><h4>Verification status</h4><p><b>Claim review incomplete.</b> An agency label or a related NASA page is not treated as verification. This entry's mission narrative, technical figures, locations, status, and discovery claims are withheld until each visible claim is checked against an opened NASA source.</p></div>`;
 
   $('#dBody').innerHTML = `
+    <figure class="dossier-media">
+      <img src="${a.image}" alt="${a.imageAlt}" width="960" height="540" loading="lazy" decoding="async" />
+      <figcaption>${imageFlag}<span>${a.imageCredit}</span>${a.imageSource ? `<a href="${a.imageSource}" target="_blank" rel="noreferrer">Image source ↗</a>` : ''}</figcaption>
+    </figure>
+    <div class="dsec dossier-source"><h4>Sources</h4><a href="${a.source}" target="_blank" rel="noreferrer">Open ${a.sourceLabel} <span aria-hidden="true">↗</span></a><p>${a.verifiedByNASA ? 'Every visible factual claim below was checked against this opened NASA source.' : 'Visible narrative, dates, status, locations, and technical figures are withheld until an opened NASA source supports the full record.'}</p></div>
     <div class="dart"><div class="plate"></div>${SCHEM[a.sch] || SCHEM.probe}
       <div class="caption"><span>${a.b === 'moon' ? 'LUNAR ARTEFACT' : a.b === 'mars' ? 'MARTIAN ARTEFACT' : 'DEEP SPACE VEHICLE'}</span><span>${a.ag}</span></div>
     </div>
-    <figure class="dossier-media">
-      <img src="${a.image}" alt="${a.imageContext ? `NASA context image used for ${a.n}` : `NASA archival image for ${a.n}`}" loading="lazy" />
-      <figcaption>${contextFlag}<span>${a.imageCredit}</span></figcaption>
-    </figure>
-    <div class="dsec"><h4>Designation</h4><dl class="dspecs">
+    <div class="dsec"><h4>Designation</h4><dl class="dspecs">${a.verifiedByNASA ? `
       <div><dt>Object</dt><dd>${a.n}</dd></div><div><dt>Mission</dt><dd>${a.m}</dd></div>
       <div><dt>Agency</dt><dd>${a.ag}</dd></div><div><dt>Year</dt><dd>${a.y}</dd></div>
       <div><dt>Status</dt><dd><span class="st ${a.st}">${statusLabel(a.st)}</span></dd></div>
       <div><dt>${a.b === 'deep' ? 'Trajectory' : 'Coordinates'}</dt><dd>${coordinates}</dd></div>
-      ${a.site ? `<div><dt>Site</dt><dd>${a.site}</dd></div>` : ''}
+      ${a.site ? `<div><dt>Site</dt><dd>${a.site}</dd></div>` : ''}` : `
+      <div><dt>Object</dt><dd>${a.n}</dd></div><div><dt>Audit</dt><dd>Claim review in progress</dd></div>`}
     </dl></div>
-    <div class="dsec dossier-source"><h4>Sources</h4><a href="${a.source}" target="_blank" rel="noreferrer">Open ${a.sourceLabel} <span aria-hidden="true">↗</span></a><p>${a.verifiedByNASA ? 'NASA source linked for this record.' : 'Context record; visible narrative is withheld pending NASA-source verification.'}</p></div>
     ${evidence}`;
   const dossierImage = $('#dBody .dossier-media img');
   dossierImage?.addEventListener('error', () => {
-    dossierImage.src = '/assets/images/dossier-context-placeholder.svg';
+    dossierImage.src = assetPath('/assets/images/dossier-context-placeholder.svg');
     dossierImage.alt = 'NASA image placeholder — artefact-specific image pending source verification';
     const imageFlag = $('#dBody .image-flag');
     if (imageFlag) imageFlag.textContent = 'NASA IMAGE PLACEHOLDER · SOURCE IMAGE FAILED TO LOAD';
@@ -326,12 +334,14 @@ function buildSide(){
   const list=A.filter(a=>a.b===archiveState.currentBody && isNASARecord(a)).sort((x,y)=>x.y-y.y);
   $('#sideTitle').textContent='Artefacts on '+(archiveState.currentBody==='moon'?'the Moon':'Mars');
   $('#sideCnt').textContent=list.length+' / '+list.length;
-  $('#sideList').innerHTML=list.map(a=>
-   '<button class="sitem'+(a.id===archiveState.selectedArtifactId?' sel':'')+'" data-id="'+a.id+'" role="option" aria-selected="false">'+
-     '<span class="yr">'+a.y+'</span>'+
-     '<span><span class="nm">'+a.n+'</span><span class="ms">'+a.m+'</span></span>'+
-     '<span class="st '+a.st+'">'+statusLabel(a.st)+'</span>'+
-   '</button>').join('');
+  $('#sideList').innerHTML=list.map(a=> {
+    const year = a.verifiedByNASA ? a.y : '—';
+    const mission = a.verifiedByNASA ? a.m : 'NASA source review pending';
+    const status = a.verifiedByNASA ? `<span class="st ${a.st}">${statusLabel(a.st)}</span>` : '<span class="unverified-chip">Audit pending</span>';
+    return `<button class="sitem${a.id===archiveState.selectedArtifactId?' sel':''}" data-id="${a.id}" role="option" aria-selected="false">
+      <span class="yr">${year}</span><span><span class="nm">${a.n}</span><span class="ms">${mission}</span></span>${status}
+    </button>`;
+  }).join('');
   $$('.sitem').forEach(s=>s.addEventListener('click',()=>{ selectArtifact(s.dataset.id,true); }));
 }
 

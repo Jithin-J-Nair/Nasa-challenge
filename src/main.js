@@ -6,7 +6,6 @@ import { A } from './data/artifacts.js';
 import { initArchive } from './components/archive.js';
 import { startBoot } from './components/boot.js';
 import { initInterface } from './components/interface.js';
-import { initObservatory, startObservatoryRenderLoop } from './components/observatory.js';
 import { initTimeline } from './components/timeline.js';
 import { $, $$ } from './lib/dom.js';
 
@@ -27,12 +26,33 @@ function bootArchive() {
   initTimeline();
   initArchive();
 
-  try {
-    initObservatory();
-    startObservatoryRenderLoop();
-  } catch (error) {
-    console.warn('WebGL unavailable:', error);
-    $('#vpLoad').textContent = 'WebGL unavailable — dossiers still available in the Field Guide';
+  // Three.js and the observatory are intentionally split out of the first
+  // interaction chunk. The archive remains searchable while the optional 3D
+  // experience loads only as it approaches the viewport.
+  const observatory = $('#observatory');
+  let observatoryLoaded = false;
+  const loadObservatory = async () => {
+    if (observatoryLoaded) return;
+    observatoryLoaded = true;
+    try {
+      const { initObservatory, startObservatoryRenderLoop } = await import('./components/observatory.js');
+      initObservatory();
+      startObservatoryRenderLoop();
+    } catch (error) {
+      console.warn('WebGL unavailable:', error);
+      $('#vpLoad').textContent = 'WebGL unavailable — dossiers still available in the Field Guide';
+    }
+  };
+  if ('IntersectionObserver' in window && observatory) {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        observer.disconnect();
+        loadObservatory();
+      }
+    }, { rootMargin: '360px 0px' });
+    observer.observe(observatory);
+  } else {
+    loadObservatory();
   }
 
   $('#fDate').textContent = new Date().toUTCString();

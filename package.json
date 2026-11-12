@@ -7,8 +7,11 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
+    "build:pages": "VITE_BASE_PATH=/Nasa-challenge/ vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test:visual": "node scripts/visual-test.mjs"
+    "test:visual": "node scripts/visual-test.mjs",
+    "test:lighthouse": "node scripts/lighthouse-mobile.mjs",
+    "audit:claims": "node scripts/generate-claims-audit.mjs"
   },
   "dependencies": {
     "@fontsource-variable/space-grotesk": "^5.3.0",
@@ -19,6 +22,7 @@
   },
   "devDependencies": {
     "@sparticuz/chromium": "^153.0.0",
+    "lighthouse": "^13.6.0",
     "playwright-core": "^1.65.0",
     "vite": "^8.3.8"
   }

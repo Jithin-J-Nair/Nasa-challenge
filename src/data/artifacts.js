@@ -1,4 +1,5 @@
 /** Catalogue records and supporting archive content. */
+const assetPath = (path) => `${import.meta?.env?.BASE_URL || '/'}${path.replace(/^\//, '')}`;
 export const A = [
 {id:'luna2',n:'Luna 2',m:'Luna programme',ag:'USSR',b:'moon',y:1959,st:'destroyed',lat:29.1,lon:0.0,site:'Palus Putredinis, near Aristides',sch:'probe',one:'The first human-made object ever to reach another world. It did not land — it hit.',spec:[['Arrived','13 Sep 1959, 21:02 UTC'],['Fate','Deliberate impact at 3.3 km/s'],['Mass','390 kg'],['Instruments','Scintillation, Cherenkov & ion detectors'],['Survived','~34 minutes of data after impact']],voice:'I was built to be destroyed. That was the entire plan — a 390-kilogram sphere stuffed with instruments, aimed at a moving target 384,000 kilometres away, with 1959 guidance. I missed my first correction burn and the whole world assumed the mission was over. Then I hit the Moon within two kilometres of aim point, and I told everyone on the way down that the Moon has no magnetic field worth speaking of and no radiation belt at all. That single negative result is the reason anyone thought landing there was survivable.',disc:['No detectable lunar magnetic field — critical for planning crewed landings.','No radiation belt around the Moon, unlike Earth.','Direct measurement of solar-wind ion density in interplanetary space.','Carried pentagonal steel pennants that scattered on impact — the first human artefacts on another world.'],last:'IMPACT CONFIRMED · 21:02:24 UTC · 13 SEP 1959\nRadio tracking stations at Jodrell Bank, UK recorded the signal cutting out.\nNo further transmission.',tags:'First object to reach another celestial body'},
 {id:'surveyor3',n:'Surveyor 3',m:'Surveyor programme',ag:'NASA',b:'moon',y:1967,st:'derelict',lat:-2.94,lon:-23.34,site:'Ocean of Storms',sch:'surveyor',one:'The first American soft landing on the Moon — and the only spacecraft in history to be visited by humans on another world.',spec:[['Landed','20 Apr 1967'],['Status','Derelict · partially dismantled'],['Mass','281 kg at landing'],['Images','6,315 television frames'],['Special','First spacecraft to dig into another world']],voice:'My surface sampler scooped a trench in the regolith and reported back that the soil behaved like damp sand — cohesive, load-bearing, safe to walk on. Two and a half years later I heard boots. Alan Bean and Pete Conrad walked 155 metres from me, the closest any human has ever come to another machine on another world. They photographed me, then took my camera, my cable samples and my soil scoop home. Back on Earth, researchers found a Streptococcus bacterium sealed inside my camera housing. Whether it hitched a ride from the assembly clean room or survived thirty-one months in vacuum and 120 °C swings is still argued. Either answer is extraordinary.',disc:['Soil mechanics: lunar regolith is cohesive and can bear a crewed lander.','Thermal behaviour of real Moon dust, measured across a full lunar night.','Proved the accuracy needed for Apollo — Surveyor 3 became the target for Apollo 12.','Biological question: terrestrial microbes may survive years exposed on the lunar surface.'],last:'LAST FRAME · 6,315\nTelevision camera powered down 1 May 1967 after the first lunar night.\nVisited by Apollo 12 crew · 20 Nov 1969',tags:'First US soft landing · visited by Apollo 12'},
@@ -45,34 +46,45 @@ export const A = [
 ];
 
 const NASA_LUNAR_CATALOGUE = 'https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf';
-const NASA_MARS = 'https://science.nasa.gov/mars/';
-const NASA_MISSIONS = 'https://science.nasa.gov/nasa-missions/';
+const NASA_VOYAGER_STATUS = 'https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/';
+
+/**
+ * Mission-specific NASA references. A link is not treated as a fact check: it
+ * is the record's primary reading path and is separately audited below.
+ */
 const NASA_SOURCES = {
   luna2: NASA_LUNAR_CATALOGUE,
-  surveyor3: 'https://science.nasa.gov/mission/surveyor/',
-  eagle: 'https://www.nasa.gov/history/apollo-11-mission-overview/',
-  intrepid: 'https://www.nasa.gov/history/apollo-12-mission-overview/',
-  antares: 'https://www.nasa.gov/history/apollo-14-mission-overview/',
-  falcon: 'https://www.nasa.gov/history/apollo-15-mission-overview/',
-  orion: 'https://www.nasa.gov/history/apollo-16-mission-overview/',
-  challenger: 'https://www.nasa.gov/history/apollo-17-mission-overview/',
+  surveyor3: NASA_LUNAR_CATALOGUE,
+  eagle: NASA_LUNAR_CATALOGUE,
+  intrepid: NASA_LUNAR_CATALOGUE,
+  antares: NASA_LUNAR_CATALOGUE,
+  falcon: NASA_LUNAR_CATALOGUE,
+  orion: NASA_LUNAR_CATALOGUE,
+  challenger: NASA_LUNAR_CATALOGUE,
+  lunokhod1: NASA_LUNAR_CATALOGUE,
+  lunokhod2: NASA_LUNAR_CATALOGUE,
+  fallen: NASA_LUNAR_CATALOGUE,
+  lrrr: NASA_LUNAR_CATALOGUE,
   odysseus: 'https://www.nasa.gov/missions/lro/nasas-lro-images-intuitive-machines-odysseus-lander/',
+  mariner9: 'https://science.nasa.gov/mission/mariner-9/',
   mars3: 'https://www.jpl.nasa.gov/news/nasa-mars-orbiter-images-may-show-1971-soviet-lander/',
-  voyager1: 'https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/',
-  voyager2: 'https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/',
-  newhorizons: 'https://science.nasa.gov/mission/new-horizons/',
-  curiosity: 'https://science.nasa.gov/mission/msl-curiosity/',
-  perseverance: 'https://science.nasa.gov/mission/mars-2020-perseverance/',
-  ingenuity: 'https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-helicopter/',
-  insight: 'https://science.nasa.gov/mission/insight/',
   viking1: 'https://science.nasa.gov/mission/viking/',
   viking2: 'https://science.nasa.gov/mission/viking/',
-  phoenix: 'https://science.nasa.gov/mission/phoenix/',
+  beagle2: 'https://www.jpl.nasa.gov/news/nasa-mars-reconnaissance-orbiter-views-beagle-2-lander/',
+  sojourner: 'https://science.nasa.gov/mission/mars-pathfinder/',
   spirit: 'https://science.nasa.gov/mission/mars-exploration-rovers/',
   opportunity: 'https://science.nasa.gov/mission/mars-exploration-rovers/',
-  sojourner: 'https://science.nasa.gov/mission/mars-pathfinder/',
+  phoenix: 'https://science.nasa.gov/mission/phoenix/',
+  curiosity: 'https://science.nasa.gov/mission/msl-curiosity/',
+  insight: 'https://science.nasa.gov/mission/insight/',
+  perseverance: 'https://science.nasa.gov/mission/mars-2020-perseverance/',
+  ingenuity: 'https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-helicopter/',
+  threeforks: 'https://science.nasa.gov/mission/mars-2020-perseverance/mars-sample-return/',
   mariner4: 'https://science.nasa.gov/mission/mariner-4/',
-  mariner9: 'https://science.nasa.gov/mission/mariner-9/',
+  pioneer10: 'https://science.nasa.gov/mission/pioneer-10/',
+  pioneer11: 'https://science.nasa.gov/mission/pioneer-11/',
+  voyager1: NASA_VOYAGER_STATUS,
+  voyager2: NASA_VOYAGER_STATUS,
   galileo: 'https://science.nasa.gov/mission/galileo/',
   near: 'https://science.nasa.gov/mission/near-shoemaker/',
   stardust: 'https://science.nasa.gov/mission/stardust/',
@@ -80,32 +92,202 @@ const NASA_SOURCES = {
   cassini: 'https://science.nasa.gov/mission/cassini/',
   messenger: 'https://science.nasa.gov/mission/messenger/',
   dawn: 'https://science.nasa.gov/mission/dawn/',
+  newhorizons: 'https://science.nasa.gov/mission/new-horizons/',
   dart: 'https://science.nasa.gov/mission/dart/',
+  apollo13sivb: NASA_LUNAR_CATALOGUE,
 };
 
 /**
- * Presentation metadata is kept separate from mission copy. Every dossier has a
- * NASA link and a credited local image. Context imagery is explicitly labelled
- * so it cannot be mistaken for a photograph of the individual artefact.
+ * Complete claim checks made against NASA pages opened for this correction.
+ * Only these small, source-bounded records may render narrative or technical
+ * claims. See docs/CLAIMS-AUDIT.md for the withheld claim register.
  */
+const CLAIM_AUDIT = {
+  surveyor3: {
+    summary: 'NASA’s lunar catalogue lists Surveyor 3 at 3.015° S, 23.418° W.',
+    specs: [['Catalogue location', '3.015° S, 23.418° W']],
+    lat: -3.015, lon: -23.418, site: 'NASA catalogue location',
+  },
+  eagle: {
+    summary: 'NASA’s lunar catalogue lists the Apollo 11 lunar-module descent stage at 0.67408° N, 23.47297° E.',
+    specs: [['Catalogue location', '0.67408° N, 23.47297° E']],
+    lat: .67408, lon: 23.47297, site: 'NASA catalogue location',
+  },
+  intrepid: {
+    summary: 'NASA’s lunar catalogue lists the Apollo 12 lunar-module descent stage at 3.01239° S, 23.42157° W.',
+    specs: [['Catalogue location', '3.01239° S, 23.42157° W']],
+    lat: -3.01239, lon: -23.42157, site: 'NASA catalogue location',
+  },
+  antares: {
+    summary: 'NASA’s lunar catalogue lists the Apollo 14 lunar-module descent stage at 3.64530° S, 17.47136° W.',
+    specs: [['Catalogue location', '3.64530° S, 17.47136° W']],
+    lat: -3.64530, lon: -17.47136, site: 'NASA catalogue location',
+  },
+  apollo13sivb: {
+    summary: 'NASA’s lunar catalogue lists the Apollo 13 S-IVB impact location at 2.553° S, 27.887° E.',
+    specs: [['Catalogue location', '2.553° S, 27.887° E']],
+    lat: -2.553, lon: 27.887, site: 'NASA catalogue location',
+  },
+  mars3: {
+    summary: 'NASA/JPL reports that Mars 3 made a soft landing and stopped transmitting after 14.5 seconds.',
+    specs: [['Transmission', '14.5 seconds after landing'], ['NASA/JPL record', 'Soft landing, 2 Dec 1971']],
+    lat: -45, lon: 202, site: 'Ptolemaeus Crater · predicted site in NASA/JPL article',
+  },
+  odysseus: {
+    summary: 'NASA LRO identifies Odysseus at 80.13° S, 1.44° E.',
+    specs: [['NASA LRO location', '80.13° S, 1.44° E']],
+    lat: -80.13, lon: 1.44, site: 'NASA LRO-reported location',
+  },
+  voyager1: {
+    summary: 'NASA’s status table listed Voyager 1 at 173.05362265 AU from Earth as of 12 Nov 2026.',
+    specs: [['NASA status snapshot', '173.05362265 AU · 12 Nov 2026']],
+  },
+  voyager2: {
+    summary: 'NASA’s status table listed Voyager 2 at 144.83334845 AU from Earth as of 12 Nov 2026.',
+    specs: [['NASA status snapshot', '144.83334845 AU · 12 Nov 2026']],
+  },
+};
+
+const SPECIFIC_IMAGES = {
+  eagle: {
+    path: assetPath('/assets/dossiers/eagle.jpg'),
+    credit: 'NASA · AS11-40-5927 · Neil A. Armstrong',
+    source: 'https://images.nasa.gov/details-as11-40-5927',
+    alt: 'Apollo 11 lunar surface activity beside Eagle’s descent stage.',
+  },
+  antares: {
+    path: assetPath('/assets/dossiers/antares.jpg'),
+    credit: 'NASA · AS14-68-9405 · Edgar D. Mitchell',
+    source: 'https://images.nasa.gov/details-AS14-68-9405',
+    alt: 'Apollo 14 surface activity near the Antares lunar module.',
+  },
+  falcon: {
+    path: assetPath('/assets/dossiers/falcon-lrrr.jpg'),
+    credit: 'NASA · AS15-086-11601',
+    source: 'https://images.nasa.gov/details-as15-086-11601',
+    alt: 'Apollo 15 Lunar Roving Vehicle with Falcon and the undeployed Laser Ranging Retroreflector nearby.',
+  },
+  lrrr: {
+    path: assetPath('/assets/dossiers/falcon-lrrr.jpg'),
+    credit: 'NASA · AS15-086-11601',
+    source: 'https://images.nasa.gov/details-as15-086-11601',
+    alt: 'Apollo 15 Laser Ranging Retroreflector on Falcon’s equipment stowage assembly.',
+  },
+  challenger: {
+    path: assetPath('/assets/dossiers/challenger.jpg'),
+    credit: 'NASA · AS17-134-20476 · Harrison H. Schmitt',
+    source: 'https://images.nasa.gov/details-as17-134-20476',
+    alt: 'Apollo 17 Lunar Roving Vehicle at the Challenger mission landing site.',
+  },
+  viking1: {
+    path: assetPath('/assets/dossiers/viking1.jpg'),
+    credit: 'NASA · 101-KSC-75P-12',
+    source: 'https://images.nasa.gov/details/101-KSC-75P-12',
+    alt: 'Viking Lander 1 during preparation at Kennedy Space Center.',
+  },
+  sojourner: {
+    path: assetPath('/assets/dossiers/sojourner.jpg'),
+    credit: 'NASA/JPL · PIA00619',
+    source: 'https://images.nasa.gov/details/PIA00619',
+    alt: 'Mars Pathfinder landing scene with Sojourner’s deployment area visible.',
+  },
+  voyager1: {
+    path: assetPath('/assets/dossiers/voyager.jpg'),
+    credit: 'NASA/JPL-Caltech · Voyager spacecraft artwork',
+    source: 'https://images.nasa.gov/details/PIA17049',
+    alt: 'NASA/JPL-Caltech artwork of the Voyager spacecraft.',
+  },
+  voyager2: {
+    path: assetPath('/assets/dossiers/voyager.jpg'),
+    credit: 'NASA/JPL-Caltech · Voyager spacecraft artwork',
+    source: 'https://images.nasa.gov/details/PIA17049',
+    alt: 'NASA/JPL-Caltech artwork of the Voyager spacecraft type used by Voyager 2.',
+  },
+  curiosity: {
+    path: assetPath('/assets/dossiers/curiosity.jpg'),
+    credit: 'NASA/JPL-Caltech/MSSS · PIA19808',
+    source: 'https://images.nasa.gov/details/PIA19808',
+    alt: 'Self-portrait of NASA’s Curiosity Mars rover at the Buckskin rock target.',
+  },
+  pioneer10: {
+    path: assetPath('/assets/dossiers/pioneer10.jpg'),
+    credit: 'NASA Ames · ARC-1972-AC72-1338',
+    source: 'https://images.nasa.gov/details/ARC-1972-AC72-1338',
+    alt: 'The Pioneer 10 plaque, a component carried by the Pioneer 10 spacecraft.',
+  },
+};
+
+const MISSION_IMAGES = {
+  perseverance: { path: assetPath('/assets/dossiers/perseverance.jpg'), credit: 'NASA/JPL-Caltech/ASU/MSSS · PIA26474', source: 'https://images.nasa.gov/details/PIA26474', alt: 'NASA Perseverance Mastcam-Z panorama of Rio Chiquito.' },
+  ingenuity: { path: assetPath('/assets/dossiers/ingenuity.jpg'), credit: 'NASA/JPL-Caltech · Mars Helicopter Mission Overview', source: 'https://images.nasa.gov/details/JPL-20200713-TECHf-0001-Mars%20Helicopter%20Mission%20Overview', alt: 'NASA Ingenuity Mars Helicopter mission-overview image.' },
+  insight: { path: assetPath('/assets/dossiers/insight.jpg'), credit: 'NASA/JPL-Caltech · PIA23202', source: 'https://images.nasa.gov/details/PIA23202', alt: 'Martian sunset captured by NASA’s InSight lander.' },
+  galileo: { path: assetPath('/assets/dossiers/galileo.jpg'), credit: 'NASA/JPL · PIA09235', source: 'https://images.nasa.gov/details/PIA09235', alt: 'Jupiter and Io image from NASA’s Galileo mission.' },
+  cassini: { path: assetPath('/assets/dossiers/cassini.jpg'), credit: 'NASA/JPL/Space Science Institute · PIA05389', source: 'https://images.nasa.gov/details-PIA05389', alt: 'Saturn and its rings captured by NASA’s Cassini mission.' },
+  messenger: { path: assetPath('/assets/dossiers/messenger.jpg'), credit: 'NASA/Johns Hopkins University Applied Physics Laboratory/Carnegie Institution of Washington · PIA19285', source: 'https://images.nasa.gov/details-PIA19285', alt: 'Mercury gravity-anomaly image made with data from NASA’s MESSENGER mission.' },
+  dawn: { path: assetPath('/assets/dossiers/dawn.jpg'), credit: 'NASA/JPL-Caltech/UCLA/MPS/DLR/IDA · PIA21079', source: 'https://images.nasa.gov/details/PIA21079', alt: 'Ceres image captured by NASA’s Dawn mission.' },
+};
+
+const PLACEHOLDER = {
+  path: assetPath('/assets/images/dossier-context-placeholder.svg'),
+  credit: 'Silent Fleet placeholder · no artefact-specific NASA image has been audited for this record',
+  source: '',
+};
+
 A.forEach((artifact) => {
-  const isNASARecord = artifact.ag.includes('NASA');
-  const isMoon = artifact.b === 'moon';
-  const isMars = artifact.b === 'mars';
+  // Preserve the original material for the checked-in audit, but never use an
+  // agency label as proof. Raw narrative and specifications are hidden unless
+  // the whole visible set is backed by an opened NASA source above.
+  artifact.claimsAudit = {
+    summary: artifact.one,
+    specificationRows: artifact.spec.map(([label, value]) => `${label}: ${value}`),
+    discoveries: artifact.disc,
+    transmission: artifact.last,
+  };
+  const audit = CLAIM_AUDIT[artifact.id];
+  const image = SPECIFIC_IMAGES[artifact.id] || MISSION_IMAGES[artifact.id] || PLACEHOLDER;
   Object.assign(artifact, {
-    source: NASA_SOURCES[artifact.id] || (isMoon ? NASA_LUNAR_CATALOGUE : isMars ? NASA_MARS : NASA_MISSIONS),
-    sourceLabel: NASA_SOURCES[artifact.id] ? 'NASA mission source' : 'NASA contextual source',
-    verifiedByNASA: isNASARecord || ['luna2', 'mars3', 'lunokhod1', 'lunokhod2'].includes(artifact.id),
-    image: isMoon ? '/assets/textures/moon-lroc-color.jpg' : isMars ? '/assets/textures/mars-usgs-mola-map.jpg' : '/assets/images/voyager-context.jpg',
-    imageCredit: isMoon ? 'NASA/GSFC Scientific Visualization Studio · LRO CGI Moon Kit' : isMars ? 'NASA/USGS · Mars MOLA map context' : 'NASA/JPL-Caltech · Voyager context image (PIA17049)',
-    imageContext: artifact.id !== 'voyager1',
+    source: NASA_SOURCES[artifact.id],
+    sourceLabel: 'NASA mission-specific source',
+    verifiedByNASA: Boolean(audit),
+    auditStatus: audit ? 'complete' : 'withheld',
+    image: image.path,
+    imageCredit: image.credit,
+    imageSource: image.source,
+    imageAlt: image.alt || `Placeholder for ${artifact.n}; an artefact-specific NASA image has not been audited.`,
+    imageSpecific: Boolean(SPECIFIC_IMAGES[artifact.id]),
+    imageMission: Boolean(MISSION_IMAGES[artifact.id]),
+    imagePlaceholder: !SPECIFIC_IMAGES[artifact.id] && !MISSION_IMAGES[artifact.id],
   });
+  if (audit) {
+    artifact.one = audit.summary;
+    artifact.spec = audit.specs;
+    artifact.voice = audit.summary;
+    artifact.disc = [audit.summary];
+    artifact.last = `SOURCE REVIEW · NASA claim audit complete\n${audit.summary}`;
+    if (audit.lat !== undefined) {
+      artifact.lat = audit.lat;
+      artifact.lon = audit.lon;
+      artifact.site = audit.site;
+    }
+  } else {
+    artifact.one = 'Claims withheld pending an artefact-by-artefact NASA source audit.';
+    artifact.spec = [];
+    artifact.voice = '';
+    artifact.disc = [];
+    artifact.last = '';
+    delete artifact.lat;
+    delete artifact.lon;
+    delete artifact.site;
+    delete artifact.orbit;
+  }
 });
 
+export const verifiedArtifactCount = Object.keys(CLAIM_AUDIT).length;
 export const isNASARecord = (artifact) => artifact.ag.includes('NASA');
 export const order = A.slice().sort((a,b)=>a.y-b.y||a.n.localeCompare(b.n));
 export const idxOf = id => order.findIndex(o=>o.id===id);
 export const byId  = id => A.find(a=>a.id===id);
+
 
 export const LEDGER = [
  {ic:'plaque',t:'The plaque',y:'Apollo 11 · 1969',p:'Bolted to the ladder of Eagle’s descent stage: “HERE MEN FROM THE PLANET EARTH FIRST SET FOOT UPON THE MOON JULY 1969, A.D. WE CAME IN PEACE FOR ALL MANKIND.” It is still on the ladder, facing the direction the crew walked away from.'},

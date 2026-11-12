@@ -20,7 +20,8 @@ export function initTimeline() {
         .replace(/^My /, 'Its ')
         .replace(/^We /, 'They ')
       : 'Unverified contextual record. Narrative withheld pending NASA-source verification.';
-    $('#tlCaption').innerHTML = `<b>${artifact.y} · ${artifact.m} · ${artifact.ag}</b>${summary.endsWith('.') ? summary : `${summary}.`}`;
+    const label = artifact.verifiedByNASA ? `${artifact.y} · ${artifact.m} · ${artifact.ag}` : 'NASA claim review pending';
+    $('#tlCaption').innerHTML = `<b>${label}</b>${summary.endsWith('.') ? summary : `${summary}.`}`;
   }
 
   function renderTimeline() {
@@ -42,11 +43,13 @@ export function initTimeline() {
           ${decades[decade].map((artifact) => {
             const summary = artifact.verifiedByNASA
               ? artifact.one
-              : 'Unverified contextual record — detailed claims withheld.';
+              : 'Claims withheld pending an artefact-by-artefact NASA source audit.';
+            const year = artifact.verifiedByNASA ? artifact.y : '—';
+            const mission = artifact.verifiedByNASA ? artifact.m : 'NASA source review pending';
             return `
               <button class="tlcard${artifact.id === archiveState.selectedArtifactId ? ' act' : ''}" data-id="${artifact.id}">
-                <span class="tick"></span><div class="y">${artifact.y}</div><h4>${artifact.n}</h4>
-                <div class="sub">${artifact.m}</div><p>${summary}</p><div class="go">Open dossier →</div>
+                <span class="tick"></span><div class="y">${year}</div><h4>${artifact.n}</h4>
+                <div class="sub">${mission}</div><p>${summary}</p><div class="go">Open dossier →</div>
               </button>`;
           }).join('')}
         </div></div>`).join('');

@@ -52,6 +52,18 @@
 .asides article:nth-child(3) h4 i{background:var(--cyan)}
 .asides p{margin:0;font-size:13.5px;line-height:1.68;color:var(--muted)}
 
+/* ---------- MOON CATALOGUE ---------- */
+.catalogue-section{padding:clamp(64px,9vw,118px) 0;border-top:1px solid var(--line);background:linear-gradient(180deg,#05070e,var(--void))}
+.catalogue-method{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;border:1px solid var(--line);background:var(--line);margin-top:34px}
+.catalogue-method div{background:var(--panel);padding:22px;display:grid;gap:7px}
+.catalogue-method b{font-size:clamp(26px,3vw,42px);line-height:1;color:var(--amberL);font-variant-numeric:tabular-nums}
+.catalogue-method span{font:10px/1.6 var(--ff-m);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.catalogue-list{margin-top:1px;border:1px solid var(--line);background:rgba(10,13,22,.78)}
+.catalogue-list summary{cursor:pointer;padding:18px 20px;color:var(--ink);font:500 11px var(--ff-m);letter-spacing:.16em;text-transform:uppercase}
+.catalogue-list ol{columns:2;gap:32px;margin:0;padding:8px 42px 24px}
+.catalogue-list li{break-inside:avoid;margin:0 0 8px;color:var(--ink2);font-size:14px}
+.catalogue-list p{margin:0;padding:0 24px 24px;color:var(--muted);line-height:1.8}
+
 /* ---------- OBSERVATORY ---------- */
 #observatory{padding:clamp(60px,9vw,120px) 0 clamp(70px,10vw,140px);border-top:1px solid var(--line);background:#05060c}
 .obs-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:26px}

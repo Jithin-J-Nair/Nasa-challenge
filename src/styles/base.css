@@ -37,7 +37,7 @@ body{
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
-  padding-bottom:var(--tel-h);
+  padding-bottom:calc(var(--tel-h) + 48px);
 }
 img,svg,canvas{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
@@ -53,7 +53,7 @@ button,input,select{font:inherit;color:inherit}
 
 /* ---------- global overlays ---------- */
 .grain{
-  position:fixed;inset:-120px;z-index:9000;pointer-events:none;opacity:.30;mix-blend-mode:overlay;
+  position:fixed;inset:-120px;z-index:9000;pointer-events:none;opacity:.08;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
   animation:grainShift 1.1s steps(3) infinite;
 }
@@ -62,9 +62,6 @@ button,input,select{font:inherit;color:inherit}
 }
 .vig{position:fixed;inset:0;z-index:8990;pointer-events:none;
   background:radial-gradient(ellipse 120% 85% at 50% 42%,transparent 42%,rgba(0,0,0,.55) 100%);}
-.scanlines{position:fixed;inset:0;z-index:8985;pointer-events:none;opacity:.05;
-  background:repeating-linear-gradient(to bottom,#fff 0 1px,transparent 1px 3px);}
-
 #reticle{position:fixed;top:0;left:0;width:34px;height:34px;z-index:9500;pointer-events:none;
   margin:-17px 0 0 -17px;opacity:0;transition:opacity .3s ease,transform .18s cubic-bezier(.2,.9,.2,1);mix-blend-mode:screen}
 #reticle.on{opacity:.75}
@@ -101,7 +98,7 @@ header.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:8000;
 .brand em{font-style:normal;font-family:var(--ff-m);font-size:9px;letter-spacing:.2em;color:var(--muted);display:block;margin-top:-3px}
 .navlinks{display:flex;gap:2px;margin-left:auto;align-items:center}
 .navlinks a{font-family:var(--ff-m);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--muted);padding:9px 13px;position:relative;transition:color .25s}
+  color:var(--muted);padding:9px 13px;position:relative;transition:color .25s;white-space:nowrap}
 .navlinks a::after{content:'';position:absolute;left:13px;right:13px;bottom:4px;height:1px;background:var(--amber);
   transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.9,.2,1)}
 .navlinks a:hover{color:var(--ink)}
