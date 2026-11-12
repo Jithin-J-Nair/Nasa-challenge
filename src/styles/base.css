@@ -69,6 +69,7 @@ button,input,select{font:inherit;color:inherit}
 #reticle svg{width:100%;height:100%;stroke:var(--amberL);fill:none;stroke-width:1}
 
 /* ---------- BOOT ---------- */
+#boot[hidden]{display:none!important}
 #boot{position:fixed;inset:0;z-index:10000;background:#03040a;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:22px;font-family:var(--ff-m);transition:opacity .7s ease,visibility .7s}
 #boot.done{opacity:0;visibility:hidden}

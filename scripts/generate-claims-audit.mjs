@@ -24,11 +24,11 @@ for (const artifact of records) {
   lines.push(`| ${escape(artifact.n)} | ${escape(raw.summary)} | ${escape(specs)} | ${source} | ${state} |`);
 }
 
-lines.push('', '## Opened-source evidence used for the nine complete records', '', '| artefact(s) | opened NASA source | retained claim scope |', '| --- | --- | --- |');
-lines.push(`| Surveyor 3; Eagle; Intrepid; Antares; Apollo 13 S-IVB | [Catalogue of Manmade Material on the Moon](${A.find((artifact) => artifact.id === 'eagle').source}) | Only the catalogue location/object statements shown in their dossiers. |`);
-lines.push(`| Mars 3 lander | [NASA Mars Orbiter Images May Show 1971 Soviet Lander](${A.find((artifact) => artifact.id === 'mars3').source}) | Soft landing and 14.5-second transmission only. |`);
-lines.push(`| Odysseus | [NASA’s LRO Images Intuitive Machines’ Odysseus Lander](${A.find((artifact) => artifact.id === 'odysseus').source}) | NASA LRO-reported 80.13° S, 1.44° E location only. |`);
-lines.push(`| Voyager 1; Voyager 2 | [Where Are Voyager 1 and 2 Now?](${A.find((artifact) => artifact.id === 'voyager1').source}) | Dated 12 Nov 2026 status-table distances only. |`);
+lines.push('', `## Opened-source evidence used for all ${verifiedArtifactCount} complete records`, '', '| artefact | opened NASA source | visible source-bounded scope |', '| --- | --- | --- |');
+for (const artifact of records.filter((entry) => entry.verifiedByNASA)) {
+  const sentenceCount = artifact.one.split(/(?<=[.!?])\s+/).filter(Boolean).length;
+  lines.push(`| ${escape(artifact.n)} | [NASA mission-specific source](${artifact.source}) | ${sentenceCount} supported sentence${sentenceCount === 1 ? '' : 's'}; ${artifact.spec.length} supported specification rows. |`);
+}
 lines.push('', '## Image audit', '', '| measure | count | method |', '| --- | ---: | --- |');
 const specific = records.filter((artifact) => artifact.imageSpecific);
 const missionImages = records.filter((artifact) => artifact.imageMission);
@@ -36,6 +36,11 @@ const placeholders = records.filter((artifact) => artifact.imagePlaceholder);
 lines.push(`| Artefact-specific NASA images | ${specific.length} | Local image exists, the NASA Image and Video Library/mission source is recorded in the dossier and ` + '`public/assets/CREDITS.md`' + '. |');
 lines.push(`| NASA mission images, labelled as non-artefact photographs | ${missionImages.length} | The image is mission-relevant but is explicitly not presented as a photograph of the hardware record. |`);
 lines.push(`| Clearly labelled placeholders | ${placeholders.length} | No different spacecraft or shared body texture is shown where an artefact-specific image has not been audited. |`);
+lines.push('', '### Artefact-specific image register', '', '| dossier | local file | NASA credit/source | intrinsic dimensions |', '| --- | --- | --- | --- |');
+for (const artifact of specific) {
+  const localPath = artifact.image.replace(/^.*\/assets\//, 'public/assets/');
+  lines.push(`| ${escape(artifact.n)} | \`${escape(localPath)}\` | [${escape(artifact.imageCredit)}](${artifact.imageSource}) | ${artifact.imageWidth} × ${artifact.imageHeight} |`);
+}
 
 await mkdir('docs', { recursive: true });
 await writeFile('docs/CLAIMS-AUDIT.md', `${lines.join('\n')}\n`);

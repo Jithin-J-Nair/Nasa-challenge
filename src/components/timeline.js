@@ -19,40 +19,49 @@ export function initTimeline() {
         .replace(/^I /, 'This machine ')
         .replace(/^My /, 'Its ')
         .replace(/^We /, 'They ')
-      : 'Unverified contextual record. Narrative withheld pending NASA-source verification.';
-    const label = artifact.verifiedByNASA ? `${artifact.y} · ${artifact.m} · ${artifact.ag}` : 'NASA claim review pending';
+      : 'We’re still checking this spacecraft’s story with NASA. Open its dossier for the source link.';
+    const label = artifact.verifiedByNASA ? `${artifact.y} · ${artifact.m} · ${artifact.ag}` : 'NASA source review';
     $('#tlCaption').innerHTML = `<b>${label}</b>${summary.endsWith('.') ? summary : `${summary}.`}`;
   }
 
   function renderTimeline() {
     // Keep contextual non-NASA records behind the explicit Field Guide agency toggle.
-    const list = order.filter((artifact) => isNASARecord(artifact) && (timelineFilter === 'all' || artifact.b === timelineFilter));
-    $('#tlCount').textContent = `${list.length} events`;
-    const decades = {};
-    list.forEach((artifact) => {
-      const decade = Math.floor(artifact.y / 10) * 10;
-      (decades[decade] ||= []).push(artifact);
-    });
+    // Within the selected body, checked records lead so readers meet complete
+    // source-bounded dossiers before the shorter review notes.
+    const list = order
+      .filter((artifact) => isNASARecord(artifact) && (timelineFilter === 'all' || artifact.b === timelineFilter))
+      .sort((a, b) => Number(b.verifiedByNASA) - Number(a.verifiedByNASA) || a.y - b.y || a.n.localeCompare(b.n));
+    const verified = list.filter((artifact) => artifact.verifiedByNASA);
+    const withheld = list.filter((artifact) => !artifact.verifiedByNASA);
+    $('#tlCount').textContent = `${verified.length} checked · ${withheld.length} in review`;
+
+    const card = (artifact) => {
+      const summary = artifact.verifiedByNASA
+        ? artifact.one
+        : 'We’re still checking this spacecraft’s story with NASA.';
+      const year = artifact.verifiedByNASA ? artifact.y : '—';
+      const mission = artifact.verifiedByNASA ? artifact.m : 'NASA source link in dossier';
+      return `
+        <button class="tlcard${artifact.id === archiveState.selectedArtifactId ? ' act' : ''}" data-id="${artifact.id}">
+          <span class="tick"></span><div class="y">${year}</div><h4>${artifact.n}</h4>
+          <div class="sub">${mission}</div><p>${summary}</p><div class="go">Open dossier →</div>
+        </button>`;
+    };
+    const renderGroup = (title, records) => {
+      if (!records.length) return '';
+      const decades = {};
+      records.forEach((artifact) => {
+        const decade = Math.floor(artifact.y / 10) * 10;
+        (decades[decade] ||= []).push(artifact);
+      });
+      return `<div class="timeline-verification-group"><div class="timeline-group-label">${title}</div>${Object.keys(decades)
+        .map(Number).sort((a, b) => a - b)
+        .map((decade) => `<div class="era"><div class="era-tag">${decade}s</div><div class="tl-items">${decades[decade].map(card).join('')}</div></div>`)
+        .join('')}</div>`;
+    };
 
     const track = $('#track');
-    track.innerHTML = Object.keys(decades)
-      .map(Number)
-      .sort((a, b) => a - b)
-      .map((decade) => `
-        <div class="era"><div class="era-tag">${decade}s</div><div class="tl-items">
-          ${decades[decade].map((artifact) => {
-            const summary = artifact.verifiedByNASA
-              ? artifact.one
-              : 'Claims withheld pending an artefact-by-artefact NASA source audit.';
-            const year = artifact.verifiedByNASA ? artifact.y : '—';
-            const mission = artifact.verifiedByNASA ? artifact.m : 'NASA source review pending';
-            return `
-              <button class="tlcard${artifact.id === archiveState.selectedArtifactId ? ' act' : ''}" data-id="${artifact.id}">
-                <span class="tick"></span><div class="y">${year}</div><h4>${artifact.n}</h4>
-                <div class="sub">${mission}</div><p>${summary}</p><div class="go">Open dossier →</div>
-              </button>`;
-          }).join('')}
-        </div></div>`).join('');
+    track.innerHTML = `${renderGroup('NASA source-audited records', verified)}${renderGroup('NASA records awaiting claim review', withheld)}`;
 
     $$('.tlcard').forEach((card) => {
       card.addEventListener('click', () => {

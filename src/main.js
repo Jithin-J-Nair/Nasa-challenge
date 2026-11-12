@@ -6,6 +6,7 @@ import { A } from './data/artifacts.js';
 import { initArchive } from './components/archive.js';
 import { startBoot } from './components/boot.js';
 import { initInterface } from './components/interface.js';
+import { initMoonCatalogue } from './components/moon-catalogue.js';
 import { initTimeline } from './components/timeline.js';
 import { $, $$ } from './lib/dom.js';
 
@@ -25,6 +26,7 @@ function bootArchive() {
   // even on browsers without a hardware-accelerated canvas.
   initTimeline();
   initArchive();
+  initMoonCatalogue();
 
   // Three.js and the observatory are intentionally split out of the first
   // interaction chunk. The archive remains searchable while the optional 3D

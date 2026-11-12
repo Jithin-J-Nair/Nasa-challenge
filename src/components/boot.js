@@ -1,59 +1,34 @@
-import { A } from '../data/artifacts.js';
 import { $ } from '../lib/dom.js';
 import { reducedMotion } from '../lib/utils.js';
 
-const bootLines = [
-  'DEEP SPACE NETWORK · UPLINK ESTABLISHED',
-  'EPHEMERIS SYNC · <b>OK</b>',
-  `LOADING ARTEFACT CATALOGUE · <i>${A.length} OBJECTS</i>`,
-  'GENERATING LUNAR SURFACE MODEL · <b>1,737.4 KM</b>',
-  'GENERATING MARTIAN SURFACE MODEL · <b>3,389.5 KM</b>',
-  'COMPILING MISSION CHRONOLOGY · 1959 → 2026',
-  'QUERYING VOYAGER 1 · <i>173 AU · RESPONDING</i>',
-  'ARCHIVE READY',
-];
+const BOOT_KEY = 'silent-fleet-acquisition-v3';
 
-/** Runs the archive-acquisition screen and starts the supplied experience callback. */
+/**
+ * Starts the archive without allowing a decorative acquisition screen to delay
+ * the hero. The old overlay is retained in markup for progressive enhancement,
+ * but is hidden before it can paint: first visits, repeat visits, and reduced
+ * motion all get the content immediately. A local marker records repeat visits
+ * without being required for the experience to work.
+ */
 export function startBoot(onReady) {
-  const bootLog = $('#bootlog');
-  const bootFill = $('#bootfill');
-  let complete = false;
-
-  function finish() {
-    if (complete) return;
-    complete = true;
-    bootFill.style.width = '100%';
-    setTimeout(() => {
-      $('#boot').classList.add('done');
-      document.body.classList.add('ready');
-      onReady();
-    }, reducedMotion ? 60 : 420);
+  const boot = $('#boot');
+  const skipForMotion = reducedMotion;
+  let seen = false;
+  try {
+    seen = localStorage.getItem(BOOT_KEY) === 'seen';
+    if (!skipForMotion && !seen) localStorage.setItem(BOOT_KEY, 'seen');
+  } catch {
+    // Private browsing can deny storage; it must not reintroduce a blocker.
   }
 
-  function run() {
-    let lineIndex = 0;
-    const step = () => {
-      if (lineIndex >= bootLines.length) {
-        finish();
-        return;
-      }
-      const line = document.createElement('div');
-      line.innerHTML = `&gt; ${bootLines[lineIndex]}`;
-      line.style.opacity = '0';
-      bootLog.appendChild(line);
-      requestAnimationFrame(() => {
-        line.style.transition = 'opacity .25s';
-        line.style.opacity = '1';
-      });
-      while (bootLog.children.length > 6) bootLog.removeChild(bootLog.firstChild);
-      bootFill.style.width = `${Math.round(((lineIndex + 1) / bootLines.length) * 100)}%`;
-      lineIndex += 1;
-      setTimeout(step, reducedMotion ? 10 : 150 + Math.random() * 90);
-    };
-    step();
+  if (boot) {
+    boot.hidden = true;
+    boot.classList.add('done');
   }
+  document.body.classList.add('ready');
+  onReady();
 
-  $('#bootskip').addEventListener('click', finish, { once: true });
-  setTimeout(finish, 9000);
-  run();
+  // Retain these booleans in a dataset for repeat-visit and motion checks in
+  // visual diagnostics, with no user-facing delay or overlay paint.
+  document.documentElement.dataset.boot = (skipForMotion || seen) ? 'skipped' : 'instant';
 }

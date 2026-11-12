@@ -8,7 +8,9 @@ import { beep } from './audio.js';
 export function initArchive() {
   // NASA records are the default view. Contextual material from other agencies is
   // intentionally kept behind an explicit toggle.
-  const filterState = { query: '', body: 'all', agency: 'nasa', status: 'all', sort: 'year-asc' };
+  // A source-bounded record is useful immediately; records still being checked
+  // remain available, but deliberately follow it in the default reading order.
+  const filterState = { query: '', body: 'all', agency: 'nasa', status: 'all', sort: 'verified-first' };
 
   function renderGrid() {
     let list = A.slice();
@@ -22,8 +24,10 @@ export function initArchive() {
         `${artifact.n} ${artifact.m} ${artifact.ag} ${artifact.one} ${artifact.site || ''} ${artifact.orbit || ''} ${artifact.tags} ${artifact.y}`
       ).toLowerCase().includes(query));
     }
-    if (filterState.sort === 'year-asc') list.sort((a, b) => a.y - b.y);
-    else if (filterState.sort === 'year-desc') list.sort((a, b) => b.y - a.y);
+    if (filterState.sort === 'verified-first') {
+      list.sort((a, b) => Number(b.verifiedByNASA) - Number(a.verifiedByNASA) || a.y - b.y || a.n.localeCompare(b.n));
+    } else if (filterState.sort === 'year-asc') list.sort((a, b) => a.y - b.y || a.n.localeCompare(b.n));
+    else if (filterState.sort === 'year-desc') list.sort((a, b) => b.y - a.y || a.n.localeCompare(b.n));
     else list.sort((a, b) => a.n.localeCompare(b.n));
 
     const agencyLabel = filterState.agency === 'nasa' ? 'NASA records' : 'other-agency context records';
@@ -36,7 +40,7 @@ export function initArchive() {
     grid.innerHTML = list.map((artifact) => {
       const summary = artifact.verifiedByNASA
         ? artifact.one
-        : 'Claims withheld pending an artefact-by-artefact NASA source audit.';
+        : 'We’re still checking this spacecraft’s story with NASA.';
       const verificationFlag = artifact.verifiedByNASA ? '' : '<span class="unverified-chip">Audit pending</span>';
       const metadata = artifact.verifiedByNASA ? `${artifact.m} · ${artifact.ag}` : 'NASA source review pending';
       const year = artifact.verifiedByNASA ? artifact.y : '—';
@@ -117,6 +121,8 @@ export function initArchive() {
     filterState.body = 'all';
     filterState.agency = 'nasa';
     filterState.status = 'all';
+    filterState.sort = 'verified-first';
+    $('#sortSel').value = 'verified-first';
     $('#search').value = '';
     $('#searchBox').classList.remove('has');
     $$('.chips [data-f="body"]').forEach((item) => item.classList.toggle('sel', item.dataset.v === 'all'));

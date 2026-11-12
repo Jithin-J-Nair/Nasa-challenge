@@ -1,4 +1,6 @@
 /** Catalogue records and supporting archive content. */
+import { FEATURED_AUDIT, FEATURED_SOURCES } from './featured-audit.js';
+
 const assetPath = (path) => `${import.meta?.env?.BASE_URL || '/'}${path.replace(/^\//, '')}`;
 export const A = [
 {id:'luna2',n:'Luna 2',m:'Luna programme',ag:'USSR',b:'moon',y:1959,st:'destroyed',lat:29.1,lon:0.0,site:'Palus Putredinis, near Aristides',sch:'probe',one:'The first human-made object ever to reach another world. It did not land — it hit.',spec:[['Arrived','13 Sep 1959, 21:02 UTC'],['Fate','Deliberate impact at 3.3 km/s'],['Mass','390 kg'],['Instruments','Scintillation, Cherenkov & ion detectors'],['Survived','~34 minutes of data after impact']],voice:'I was built to be destroyed. That was the entire plan — a 390-kilogram sphere stuffed with instruments, aimed at a moving target 384,000 kilometres away, with 1959 guidance. I missed my first correction burn and the whole world assumed the mission was over. Then I hit the Moon within two kilometres of aim point, and I told everyone on the way down that the Moon has no magnetic field worth speaking of and no radiation belt at all. That single negative result is the reason anyone thought landing there was survivable.',disc:['No detectable lunar magnetic field — critical for planning crewed landings.','No radiation belt around the Moon, unlike Earth.','Direct measurement of solar-wind ion density in interplanetary space.','Carried pentagonal steel pennants that scattered on impact — the first human artefacts on another world.'],last:'IMPACT CONFIRMED · 21:02:24 UTC · 13 SEP 1959\nRadio tracking stations at Jodrell Bank, UK recorded the signal cutting out.\nNo further transmission.',tags:'First object to reach another celestial body'},
@@ -97,6 +99,9 @@ const NASA_SOURCES = {
   apollo13sivb: NASA_LUNAR_CATALOGUE,
 };
 
+// Correction-pass mission pages supersede generic programme links for featured dossiers.
+Object.assign(NASA_SOURCES, FEATURED_SOURCES);
+
 /**
  * Complete claim checks made against NASA pages opened for this correction.
  * Only these small, source-bounded records may render narrative or technical
@@ -148,7 +153,23 @@ const CLAIM_AUDIT = {
   },
 };
 
+// FEATURED_AUDIT is the source-bounded expansion prepared from opened NASA
+// records. Its entries intentionally replace the smaller first-pass audit.
+Object.assign(CLAIM_AUDIT, FEATURED_AUDIT);
+
 const SPECIFIC_IMAGES = {
+  ingenuity: {
+    path: assetPath('/assets/dossiers/ingenuity-specific.jpg'),
+    credit: 'NASA/JPL-Caltech · PIA25881 · Perseverance Mastcam-Z',
+    source: 'https://images.nasa.gov/details/PIA25881',
+    alt: 'NASA’s Ingenuity Mars Helicopter on the surface of Jezero Crater, photographed by Perseverance.',
+  },
+  galileo: {
+    path: assetPath('/assets/dossiers/galileo-specific.jpg'),
+    credit: 'NASA · S89-48714 · STS-34 crew',
+    source: 'https://images.nasa.gov/details/S89-48714',
+    alt: 'NASA’s Galileo spacecraft being deployed from Space Shuttle Atlantis in 1989.',
+  },
   eagle: {
     path: assetPath('/assets/dossiers/eagle.jpg'),
     credit: 'NASA · AS11-40-5927 · Neil A. Armstrong',
@@ -219,12 +240,25 @@ const SPECIFIC_IMAGES = {
 
 const MISSION_IMAGES = {
   perseverance: { path: assetPath('/assets/dossiers/perseverance.jpg'), credit: 'NASA/JPL-Caltech/ASU/MSSS · PIA26474', source: 'https://images.nasa.gov/details/PIA26474', alt: 'NASA Perseverance Mastcam-Z panorama of Rio Chiquito.' },
-  ingenuity: { path: assetPath('/assets/dossiers/ingenuity.jpg'), credit: 'NASA/JPL-Caltech · Mars Helicopter Mission Overview', source: 'https://images.nasa.gov/details/JPL-20200713-TECHf-0001-Mars%20Helicopter%20Mission%20Overview', alt: 'NASA Ingenuity Mars Helicopter mission-overview image.' },
+  phoenix: { path: assetPath('/assets/dossiers/phoenix-site.jpg'), credit: 'NASA/JPL-Caltech/University of Arizona/Texas A&M University · PIA11734', source: 'https://science.nasa.gov/photojournal/full-circle-color-panorama-of-phoenix-landing-site-on-northern-mars-2', alt: 'NASA Phoenix Mars Lander’s arctic landing site panorama on northern Mars.' },
+  spirit: { path: assetPath('/assets/dossiers/spirit-site.jpg'), credit: 'NASA/JPL/Arizona State University · PIA05336', source: 'https://science.nasa.gov/photojournal/spirit-has-landed', alt: 'NASA 2001 Mars Odyssey view of Gusev Crater, Spirit’s landing area.' },
+  opportunity: { path: assetPath('/assets/dossiers/opportunity-site.jpg'), credit: 'NASA/JPL · PIA05460', source: 'https://science.nasa.gov/photojournal/opportunitys-empty-nest/', alt: 'NASA Opportunity mission view of Challenger Memorial Station at Meridiani Planum.' },
   insight: { path: assetPath('/assets/dossiers/insight.jpg'), credit: 'NASA/JPL-Caltech · PIA23202', source: 'https://images.nasa.gov/details/PIA23202', alt: 'Martian sunset captured by NASA’s InSight lander.' },
-  galileo: { path: assetPath('/assets/dossiers/galileo.jpg'), credit: 'NASA/JPL · PIA09235', source: 'https://images.nasa.gov/details/PIA09235', alt: 'Jupiter and Io image from NASA’s Galileo mission.' },
   cassini: { path: assetPath('/assets/dossiers/cassini.jpg'), credit: 'NASA/JPL/Space Science Institute · PIA05389', source: 'https://images.nasa.gov/details-PIA05389', alt: 'Saturn and its rings captured by NASA’s Cassini mission.' },
   messenger: { path: assetPath('/assets/dossiers/messenger.jpg'), credit: 'NASA/Johns Hopkins University Applied Physics Laboratory/Carnegie Institution of Washington · PIA19285', source: 'https://images.nasa.gov/details-PIA19285', alt: 'Mercury gravity-anomaly image made with data from NASA’s MESSENGER mission.' },
   dawn: { path: assetPath('/assets/dossiers/dawn.jpg'), credit: 'NASA/JPL-Caltech/UCLA/MPS/DLR/IDA · PIA21079', source: 'https://images.nasa.gov/details/PIA21079', alt: 'Ceres image captured by NASA’s Dawn mission.' },
+};
+
+// Intrinsic dimensions are recorded for every locally hosted raster used in a
+// dossier. They reserve the correct layout before the image decodes.
+const IMAGE_DIMENSIONS = {
+  eagle: [720, 720], antares: [720, 720], falcon: [720, 720], lrrr: [720, 720],
+  challenger: [736, 720], viking1: [919, 720], sojourner: [640, 430],
+  voyager1: [640, 360], voyager2: [640, 360], curiosity: [960, 584],
+  pioneer10: [960, 640], ingenuity: [1920, 1148], galileo: [959, 1280],
+  perseverance: [960, 234], phoenix: [1280, 300], spirit: [1384, 3239],
+  opportunity: [4367, 2995], insight: [640, 640], cassini: [640, 640],
+  messenger: [576, 720], dawn: [640, 640],
 };
 
 const PLACEHOLDER = {
@@ -254,6 +288,8 @@ A.forEach((artifact) => {
     imageCredit: image.credit,
     imageSource: image.source,
     imageAlt: image.alt || `Placeholder for ${artifact.n}; an artefact-specific NASA image has not been audited.`,
+    imageWidth: IMAGE_DIMENSIONS[artifact.id]?.[0] || 960,
+    imageHeight: IMAGE_DIMENSIONS[artifact.id]?.[1] || 540,
     imageSpecific: Boolean(SPECIFIC_IMAGES[artifact.id]),
     imageMission: Boolean(MISSION_IMAGES[artifact.id]),
     imagePlaceholder: !SPECIFIC_IMAGES[artifact.id] && !MISSION_IMAGES[artifact.id],

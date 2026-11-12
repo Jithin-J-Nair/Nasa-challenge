@@ -28,6 +28,11 @@
   .dossier{width:100vw}
   .tlcard{width:212px}
   .catalogue-list ol{columns:1;padding:8px 28px 24px}
+  .moon-catalogue-search{grid-template-columns:1fr;gap:8px}
+  .moon-catalogue-search span{white-space:normal}
+  .catalogue-list li{grid-template-columns:1fr}
+  .catalogue-list li small{grid-column:auto}
+  .catalogue-stat{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}

@@ -37,10 +37,9 @@ try {
     activeViewport = viewport.name;
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto(baseUrl, { waitUntil: 'networkidle', timeout: 30_000 });
-    await page.waitForSelector('#boot.done', { timeout: 12_000 });
-    // Wait for the overlay's fade to complete, not merely for its class to be
-    // applied, so the review captures show the actual surface experience.
-    await page.waitForFunction(() => getComputedStyle(document.querySelector('#boot')).visibility === 'hidden', undefined, { timeout: 12_000 });
+    // Acquisition never blocks first paint. It is marked done and hidden before
+    // it can paint; repeat visits and reduced motion use the same instant path.
+    await page.waitForSelector('#boot.done', { state: 'attached', timeout: 12_000 });
     await page.waitForTimeout(250);
     await page.screenshot({ path: `${outputDirectory}/${viewport.name}.png`, fullPage: false });
 

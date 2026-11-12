@@ -27,7 +27,7 @@ src/
 │   ├── telemetry.js          # Dated NASA Voyager status snapshot and SVG diagrams
 │   ├── visual-effects.js     # Starfields and text effects
 │   ├── audio.js              # Optional ambient telemetry audio
-│   └── boot.js               # Opening acquisition sequence
+│   └── boot.js               # Instant, non-blocking acquisition preference
 ├── data/             # Catalogue records and reusable SVG artwork
 ├── lib/              # DOM helpers, shared state, events, utility functions
 ├── styles/           # Fonts, shared tokens, sections, footer, responsive rules
@@ -48,11 +48,13 @@ The application intentionally uses framework-free ES modules: interactions are s
 
 | source | project use |
 | --- | --- |
-| [Catalogue of Manmade Material on the Moon](https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf) | Moon inventory method, 22-row non-Apollo list, and audited lunar record locations. |
+| [Catalogue of Manmade Material on the Moon](https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf) | Programmatic Moon-catalogue parse, its separately reported line/direct-row/bracket-quantity counts, and audited lunar record locations. |
 | [NASA Voyager status](https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/) | Dated Voyager snapshot and one-light-day milestone. |
 | [NASA LRO Odysseus record](https://www.nasa.gov/missions/lro/nasas-lro-images-intuitive-machines-odysseus-lander/) | Audited Odysseus location. |
 | [NASA/JPL Mars 3 record](https://www.jpl.nasa.gov/news/nasa-mars-orbiter-images-may-show-1971-soviet-lander/) | Audited Mars 3 soft-landing and 14.5-second transmission statement. |
 | [NASA SVS CGI Moon Kit](https://svs.gsfc.nasa.gov/4720) and [NASA/USGS Mars map](https://mars.nasa.gov/resources/6435/global-geologic-map-of-mars/) | Local observatory texture maps. |
 | [NASA Image and Video Library](https://images.nasa.gov/) | Locally hosted dossier media with retained NASA credit lines. |
+
+Run `npm run catalogue:parse` to rebuild the searchable catalogue module and [`docs/MOON-CATALOGUE-METHOD.md`](docs/MOON-CATALOGUE-METHOD.md). Pass a downloaded NASA PDF through `MOON_CATALOGUE_PDF=path/to/final-catalogue-of-manmade-material-on-the-moon.pdf` to refresh the text cache with `pdftotext`.
 
 The record-level source and claim register is in [`docs/CLAIMS-AUDIT.md`](docs/CLAIMS-AUDIT.md). The media credit table is in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). The project uses NASA data for educational reference and is not produced by, affiliated with, sponsored by, or endorsed by NASA, JPL, Caltech, the U.S. Government, or mission partners.

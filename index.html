@@ -108,7 +108,7 @@
       </section>
     </noscript>
 <!-- ============ BOOT ============ -->
-<div id="boot" role="status" aria-live="polite">
+<div id="boot" role="status" aria-live="polite" hidden>
   <div class="bootmark"><span></span><span></span><span></span></div>
   <div id="bootlog"></div>
   <div class="bootbar"><i id="bootfill"></i></div>
@@ -172,18 +172,17 @@
   <div class="wrap heroinner">
     <div class="eyebrow" data-scramble>NASA Space Apps 2026 · Interactive Archive</div>
     <h1 class="herotitle">
-      <span class="lm"><span data-scramble>THE SILENT</span></span>
-      <span class="lm"><span><em class="thin">fleet</em> <span class="out" data-scramble>1959→</span></span></span>
+      <img class="hero-title-image" src="/assets/images/silent-fleet-hero-title.svg" width="1600" height="620" alt="The Silent Fleet, 1959 onward" fetchpriority="high" decoding="sync" />
     </h1>
 
-    <div class="herometa">
+    <dl class="herometa">
       <div>
         <dt>Objects catalogued</dt>
         <dd><span class="count" data-to="42" id="heroCount">0</span> <small>in this archive</small></dd>
       </div>
       <div>
         <dt>Moon inventory</dt>
-        <dd><span id="moonInventoryCount">22</span> <small>U.S. non-Apollo object/location rows · NASA catalogue table 1</small></dd>
+        <dd><span id="moonInventoryCount">—</span> <small>parsed direct object/location rows · NASA catalogue</small></dd>
       </div>
       <div>
         <dt>Farthest human object</dt>
@@ -193,7 +192,7 @@
         <dt>Still transmitting</dt>
         <dd><span class="count" data-to="5">0</span> <small>spacecraft · 2 interstellar</small></dd>
       </div>
-    </div>
+    </dl>
 
     <div class="herocta">
       <button class="btn solid" data-scroll="#observatory"><span>Open the Observatory</span>
@@ -258,21 +257,10 @@
       <div>
         <div class="eyebrow cold">NASA History Program · parsed source table</div>
         <h2 class="h2" style="margin-top:18px">Moon inventory, without a made-up mass</h2>
-        <p>The first table in NASA’s 2012 <a href="https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf" target="_blank" rel="noreferrer">Catalogue of Manmade Material on the Moon</a> contains 22 U.S. non-Apollo object/location rows. This is a browsable transcription of that table—not a total count of all material on the Moon, and not a mass estimate.</p>
+        <p>This searchable list is generated from NASA’s 2012 <a href="https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf" target="_blank" rel="noreferrer">Catalogue of Manmade Material on the Moon</a>. Its three counting methods stay separate: the displayed number is a filtered object/location-row count, never a mass estimate or an invented total.</p>
       </div>
     </div>
-    <div class="catalogue-method" data-reveal>
-      <div><b>22</b><span>lines in the U.S. non-Apollo source table</span></div>
-      <div><b>22</b><span>after excluding no “see below” or nested sub-item rows in this table</span></div>
-      <div><b>—</b><span>quantity sum not reported: this table records objects, not a complete quantity ledger</span></div>
-    </div>
-    <details class="catalogue-list" data-reveal>
-      <summary>Browse the 22 transcribed rows and source locations</summary>
-      <ol>
-        <li>Ranger 4 — 15.5° S, 130.7° E</li><li>Ranger 6 — 9.388° N, 21.480° E</li><li>Ranger 7 — 10.63° S, 20.60° W</li><li>Ranger 8 — 2.638° N, 24.787° E</li><li>Ranger 9 — 112.828° N, 2.387° W (as rendered in the PDF table)</li><li>Surveyor 1 — 2.474° S, 43.339° W</li><li>Lunar Orbiter 1 — 6.70° N, 162° E</li><li>Surveyor 2 — 5.5° N, 12° W</li><li>Lunar Orbiter 2 — 3.0° N, 119° E</li><li>Lunar Orbiter 3 — 14.3° N, 97.7° W</li><li>Surveyor 3 — 3.015° S, 23.418° W</li><li>Lunar Orbiter 4 — crashed</li><li>Surveyor 4 — unknown</li><li>Explorer 35 (IMP-E) — unknown</li><li>Lunar Orbiter 5 — 3° S, 83° W</li><li>Surveyor 5 — 1.461° N, 23.195° E</li><li>Surveyor 6 — 0.473° N, 1.427° W</li><li>Surveyor 7 — 40.980° S, 11.509° W</li><li>Explorer 49 (RAE-B) — unknown</li><li>Lunar Prospector — unknown</li><li>LCROSS Shepherding Spacecraft — 84.72° S, 49.62° W</li><li>LCROSS Centaur — 84.9° S, 35.5° W</li>
-      </ol>
-      <p class="mono">Method note · one top-level row per object/location in the source’s “U.S. Material (Non-Apollo)” table. “Crashed” and “unknown” are preserved from the catalogue; no coordinates have been supplied by this site.</p>
-    </details>
+    <div id="moonCatalogue" aria-live="polite"></div>
   </div>
 </section>
 
@@ -286,6 +274,7 @@
           <p>A procedurally generated interactive model of the Moon and Mars. Marker locations are shown only where an audited NASA source supports the visible record. Drag to orbit. Click a marker to open its dossier.</p>
       </div>
       <div class="obs-head" style="margin:0">
+        <span class="catalogue-stat" id="moonCatalogueStat">Loading parsed Moon rows…</span>
         <div class="bodytoggle" role="tablist" aria-label="Celestial body">
           <button data-b="moon" class="sel" role="tab" aria-selected="true"><i></i>Moon</button>
           <button data-b="mars" role="tab" aria-selected="false"><i></i>Mars</button>
@@ -507,6 +496,7 @@
       </div>
       <div class="selectwrap">
         <select id="sortSel" aria-label="Sort artefacts">
+          <option value="verified-first" selected>NASA-checked first</option>
           <option value="year-asc">Oldest first</option>
           <option value="year-desc">Newest first</option>
           <option value="name">A → Z</option>

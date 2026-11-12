@@ -8,6 +8,10 @@
    linear-gradient(180deg,rgba(4,5,10,.72) 0%,transparent 34%,rgba(4,5,10,.55) 78%,var(--void) 100%);}
 .heroinner{position:relative;z-index:3;padding-bottom:clamp(40px,7vh,86px)}
 .herotitle{margin:20px 0 0;font-size:clamp(56px,15.4vw,236px);line-height:.82;letter-spacing:-.045em;font-weight:700}
+/* Hero text is the meaningful first paint and LCP; do not hold it behind the
+   decorative line-mask animation that is used for lower-page headings. */
+.herotitle .lm>span{transform:none;opacity:1}
+.herotitle img{display:block;width:min(100%,1280px);height:auto}
 .herotitle .thin{font-weight:400;font-family:var(--ff-s);font-style:italic;letter-spacing:-.01em;color:var(--amberL)}
 .herotitle .out{-webkit-text-stroke:1.4px rgba(239,234,225,.62);color:transparent}
 .herometa{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);
@@ -63,6 +67,16 @@
 .catalogue-list ol{columns:2;gap:32px;margin:0;padding:8px 42px 24px}
 .catalogue-list li{break-inside:avoid;margin:0 0 8px;color:var(--ink2);font-size:14px}
 .catalogue-list p{margin:0;padding:0 24px 24px;color:var(--muted);line-height:1.8}
+.moon-catalogue-search{display:grid;grid-template-columns:auto minmax(220px,1fr) auto;align-items:center;gap:14px;padding:16px 20px;border:1px solid var(--line);border-top:0;background:rgba(10,13,22,.78);font:10px var(--ff-m);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.moon-catalogue-search input{min-width:0;border:1px solid var(--line2);border-radius:2px;background:#080b13;color:var(--ink);padding:10px 12px;font:12px var(--ff-m);letter-spacing:normal;text-transform:none}
+.moon-catalogue-search input:focus{outline:2px solid rgba(95,225,255,.55);outline-offset:2px}
+.moon-catalogue-search span{white-space:nowrap;color:var(--cyan)}
+.catalogue-list li{display:grid;grid-template-columns:minmax(150px,1.2fr) minmax(120px,1fr);gap:8px 16px}
+.catalogue-list li b{font-weight:500;color:var(--ink)}
+.catalogue-list li span{color:var(--ink2)}
+.catalogue-list li small{grid-column:1/-1;color:var(--muted);font:9px var(--ff-m);letter-spacing:.08em;text-transform:uppercase}
+.catalogue-list li.moon-catalogue-empty{display:block;color:var(--muted)}
+.catalogue-stat{padding:9px 11px;border:1px solid var(--line);font:9px var(--ff-m);letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);white-space:nowrap}
 
 /* ---------- OBSERVATORY ---------- */
 #observatory{padding:clamp(60px,9vw,120px) 0 clamp(70px,10vw,140px);border-top:1px solid var(--line);background:#05060c}
@@ -207,7 +221,10 @@
   padding:56px var(--pad) 40px;scroll-behavior:auto}
 .railscroll::-webkit-scrollbar{display:none}
 .railscroll.drag{cursor:grabbing;user-select:none}
-.track{position:relative;display:flex;gap:0;min-width:max-content}
+.track{position:relative;display:flex;gap:34px;min-width:max-content}
+.timeline-verification-group{display:flex;gap:0;position:relative;padding-top:24px}
+.timeline-group-label{position:absolute;top:-18px;left:0;font-family:var(--ff-m);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);white-space:nowrap}
+.timeline-verification-group + .timeline-verification-group .timeline-group-label{color:var(--muted)}
 .era{position:relative;padding:0 0 0 0;flex-shrink:0}
 .era::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--line2),transparent)}
 .era-tag{position:absolute;top:-40px;left:0;font-family:var(--ff-m);font-size:10px;letter-spacing:.24em;color:#4d5566}

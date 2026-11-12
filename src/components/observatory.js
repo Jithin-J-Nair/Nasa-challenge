@@ -260,14 +260,14 @@ function openDossier(a, doFly){
        <div class="dsec"><h4>What it made possible</h4><ol class="disc">${discoveryRows}</ol></div>
        <div class="dsec"><h4>Final transmission</h4><div class="lasttx" id="lastTx"></div></div>
        <div class="dsec" style="border:0"><p class="mono" style="line-height:1.9">${a.tags || ''}</p></div>`
-    : `<div class="dsec unverified-record"><h4>Verification status</h4><p><b>Claim review incomplete.</b> An agency label or a related NASA page is not treated as verification. This entry's mission narrative, technical figures, locations, status, and discovery claims are withheld until each visible claim is checked against an opened NASA source.</p></div>`;
+    : `<div class="dsec unverified-record"><h4>Verification status</h4><p>We’re still checking this spacecraft’s story with NASA — explore the source link above while we do.</p></div>`;
 
   $('#dBody').innerHTML = `
     <figure class="dossier-media">
-      <img src="${a.image}" alt="${a.imageAlt}" width="960" height="540" loading="lazy" decoding="async" />
+      <img src="${a.image}" alt="${a.imageAlt}" width="${a.imageWidth}" height="${a.imageHeight}" loading="lazy" decoding="async" />
       <figcaption>${imageFlag}<span>${a.imageCredit}</span>${a.imageSource ? `<a href="${a.imageSource}" target="_blank" rel="noreferrer">Image source ↗</a>` : ''}</figcaption>
     </figure>
-    <div class="dsec dossier-source"><h4>Sources</h4><a href="${a.source}" target="_blank" rel="noreferrer">Open ${a.sourceLabel} <span aria-hidden="true">↗</span></a><p>${a.verifiedByNASA ? 'Every visible factual claim below was checked against this opened NASA source.' : 'Visible narrative, dates, status, locations, and technical figures are withheld until an opened NASA source supports the full record.'}</p></div>
+    <div class="dsec dossier-source"><h4>Sources</h4><a href="${a.source}" target="_blank" rel="noreferrer">Open ${a.sourceLabel} <span aria-hidden="true">↗</span></a><p>${a.verifiedByNASA ? 'Every visible factual claim below was checked against this opened NASA source.' : 'NASA’s page is ready to explore; this dossier will grow after its full fact-check.'}</p></div>
     <div class="dart"><div class="plate"></div>${SCHEM[a.sch] || SCHEM.probe}
       <div class="caption"><span>${a.b === 'moon' ? 'LUNAR ARTEFACT' : a.b === 'mars' ? 'MARTIAN ARTEFACT' : 'DEEP SPACE VEHICLE'}</span><span>${a.ag}</span></div>
     </div>
