@@ -26,8 +26,9 @@ src/
 │   ├── planet-textures.js    # Procedural bump maps for local NASA color textures
 │   ├── telemetry.js          # Dated NASA Voyager status snapshot and SVG diagrams
 │   ├── visual-effects.js     # Starfields and text effects
+│   ├── ui/liquid-glass-navbar.js # Framework-native Liquid Glass navigation
 │   ├── audio.js              # Optional ambient telemetry audio
-│   └── boot.js               # Opening acquisition sequence
+│   └── boot.js               # Instant, non-blocking acquisition preference
 ├── data/             # Catalogue records and reusable SVG artwork
 ├── lib/              # DOM helpers, shared state, events, utility functions
 ├── styles/           # Fonts, shared tokens, sections, footer, responsive rules
@@ -35,7 +36,21 @@ src/
 └── main.js           # Application composition root
 ```
 
-The application intentionally uses framework-free ES modules: interactions are separated by responsibility without adding a heavyweight client framework.
+The application intentionally uses framework-free ES modules: interactions are separated by responsibility without adding a heavyweight client framework. The Liquid Glass navigation is therefore implemented in `src/components/ui/` as a native adapter, rather than adding an unused React runtime.
+
+### React, Tailwind, and shadcn alternative
+
+This repository is not a React, TypeScript, Tailwind, or shadcn project. If a future migration needs the original TSX component, create a React TypeScript Vite application, install Tailwind, then initialise shadcn:
+
+```bash
+npm create vite@latest silent-fleet-react -- --template react-ts
+cd silent-fleet-react && npm install
+npm install tailwindcss @tailwindcss/vite
+npx shadcn@latest init
+mkdir -p src/components/ui
+```
+
+`src/components/ui` is the important equivalent of a shadcn `/components/ui` directory in a Vite source tree: it keeps reusable UI code inside the compiled source root and matches the import path that shadcn-generated components expect. Copy the supplied `liquid-glass-navbar.tsx` there only after that React/TypeScript setup is in place.
 
 ## Assets and verification
 
@@ -48,11 +63,21 @@ The application intentionally uses framework-free ES modules: interactions are s
 
 | source | project use |
 | --- | --- |
-| [Catalogue of Manmade Material on the Moon](https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf) | Moon inventory method, 22-row non-Apollo list, and audited lunar record locations. |
+| [Catalogue of Manmade Material on the Moon](https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf) | Programmatic Moon-catalogue parse, its separately reported line/direct-row/bracket-quantity counts, and audited lunar record locations. |
 | [NASA Voyager status](https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/) | Dated Voyager snapshot and one-light-day milestone. |
 | [NASA LRO Odysseus record](https://www.nasa.gov/missions/lro/nasas-lro-images-intuitive-machines-odysseus-lander/) | Audited Odysseus location. |
 | [NASA/JPL Mars 3 record](https://www.jpl.nasa.gov/news/nasa-mars-orbiter-images-may-show-1971-soviet-lander/) | Audited Mars 3 soft-landing and 14.5-second transmission statement. |
 | [NASA SVS CGI Moon Kit](https://svs.gsfc.nasa.gov/4720) and [NASA/USGS Mars map](https://mars.nasa.gov/resources/6435/global-geologic-map-of-mars/) | Local observatory texture maps. |
 | [NASA Image and Video Library](https://images.nasa.gov/) | Locally hosted dossier media with retained NASA credit lines. |
+
+## Refreshing the Moon catalogue from a local PDF
+
+The checked-in Moon catalogue cache is explicitly partial. To rebuild it from a local copy of NASA’s named PDF, install the command-line **Poppler** tool `pdftotext`, then run:
+
+```bash
+MOON_CATALOGUE_PDF=path/to/final-catalogue-of-manmade-material-on-the-moon.pdf npm run catalogue:parse
+```
+
+Required tools: Node.js/npm for the script and `pdftotext` from Poppler for PDF extraction. The command regenerates the searchable module and [`docs/MOON-CATALOGUE-METHOD.md`](docs/MOON-CATALOGUE-METHOD.md).
 
 The record-level source and claim register is in [`docs/CLAIMS-AUDIT.md`](docs/CLAIMS-AUDIT.md). The media credit table is in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). The project uses NASA data for educational reference and is not produced by, affiliated with, sponsored by, or endorsed by NASA, JPL, Caltech, the U.S. Government, or mission partners.

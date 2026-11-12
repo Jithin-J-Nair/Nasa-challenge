@@ -2,6 +2,7 @@ import { gsap } from 'gsap';
 import { $, $$ } from '../lib/dom.js';
 import { formatNumber, lerp, reducedMotion } from '../lib/utils.js';
 import { scramble, starCanvas } from './visual-effects.js';
+import { initLiquidGlassNavbar } from './ui/liquid-glass-navbar.js';
 import { buildHelio, buildRecord, buildTicker, liveNumbers } from './telemetry.js';
 
 /* ============================================================
@@ -58,15 +59,7 @@ export function initInterface(){
     });
   });
 
-  $$('.navlinks a').forEach(a=>a.addEventListener('click',e=>{
-    const t=$(a.getAttribute('href')); if(!t) return; e.preventDefault();
-    $('#navlinks').classList.remove('open'); $('#burger').setAttribute('aria-expanded','false');
-    window.scrollTo({top:t.getBoundingClientRect().top+scrollY-40,behavior:reducedMotion?'auto':'smooth'});
-  }));
-  $('#burger').addEventListener('click',()=>{
-    const open=$('#navlinks').classList.toggle('open');
-    $('#burger').setAttribute('aria-expanded',open);
-  });
+  initLiquidGlassNavbar();
 
   if(matchMedia('(pointer:fine)').matches && !reducedMotion){
     const r=$('#reticle'); let rx=0,ry=0,tx=0,ty=0;

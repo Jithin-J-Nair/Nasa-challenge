@@ -10,17 +10,14 @@
 @media (max-width:960px){
   .briefgrid{grid-template-columns:1fr;gap:40px}
   .briefstick{position:static}
-  .navlinks{display:none}
-  .navlinks.open{display:flex;position:absolute;top:var(--nav-h);left:0;right:0;flex-direction:column;background:#070911;
-    border-bottom:1px solid var(--line);padding:10px 0;gap:0}
-  .navlinks.open a{padding:14px var(--pad);font-size:12px}
-  #burger{display:grid}
   .hero-tag{display:none}
   .tracklist{columns:1}
   .utc{display:none}
 }
 @media (max-width:620px){
   .herometa{grid-template-columns:1fr 1fr}
+  /* Reserve the wrapped mono-label row before its local font is ready. */
+  .herometa div{min-height:112px}
   .cdu{grid-template-columns:repeat(2,1fr)}
   .srow{grid-template-columns:1fr;gap:8px}
   .srow .yr{text-align:left}
@@ -28,6 +25,11 @@
   .dossier{width:100vw}
   .tlcard{width:212px}
   .catalogue-list ol{columns:1;padding:8px 28px 24px}
+  .moon-catalogue-search{grid-template-columns:1fr;gap:8px}
+  .moon-catalogue-search span{white-space:normal}
+  .catalogue-list li{grid-template-columns:1fr}
+  .catalogue-list li small{grid-column:auto}
+  .catalogue-stat{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}

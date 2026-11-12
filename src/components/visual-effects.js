@@ -8,7 +8,10 @@ export function starCanvas(cv, density, drift){
   const rnd=mulberry32(9182);
   function size(){
     const dpr=Math.min(devicePixelRatio||1,2);
-    w=cv.clientWidth; h=cv.clientHeight;
+    // CSS can arrive just after the module on a cold mobile navigation. Avoid
+    // briefly sizing the hero canvas to 0×0, which Lighthouse records as a
+    // full-viewport layout shift when the stylesheet finishes loading.
+    w=cv.clientWidth || innerWidth; h=cv.clientHeight || innerHeight;
     cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
     stars=[];
     const n=Math.round(w*h*density);
@@ -16,7 +19,9 @@ export function starCanvas(cv, density, drift){
       stars.push({x:rnd()*w,y:rnd()*h,r:rnd()*1.25+.18,a:.15+rnd()*.85,tw:.4+rnd()*2.4, ph:rnd()*6.28, hue: rnd()<.12? (rnd()<.5?'#9fd8ff':'#ffd6a8') : '#ffffff', z:.25+rnd()*1});
     }
   }
-  size(); addEventListener('resize',size);
+  // Let layout settle once before allocating the backing bitmap. Initializing a
+  // canvas' default 300 × 150 box is recorded as a viewport-sized CLS source.
+  requestAnimationFrame(size); addEventListener('resize',size);
   let t=0, mx=0,my=0;
   addEventListener('pointermove',e=>{ mx=(e.clientX/innerWidth-.5); my=(e.clientY/innerHeight-.5); });
   function frame(){

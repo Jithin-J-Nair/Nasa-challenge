@@ -5,6 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A NASA-first interactive learning archive of discarded and enduring spacecraft hardware on the Moon, Mars, and beyond." />
     <meta name="robots" content="index,follow" />
+    <style>
+      /* Critical geometry: Vite injects the complete stylesheet through the
+         entry module. These first-viewport rules prevent an unstyled hero from
+         reflowing before it arrives. */
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; background: #04050a; color: #efeae1; font: 16px/1.55 system-ui, sans-serif; }
+      button { font: inherit; color: inherit; }
+      a { color: inherit; text-decoration: none; }
+      #boot[hidden] { display: none !important; }
+      .grain, .vig { position: fixed; inset: 0; }
+      #reticle { position: fixed; top: 0; left: 0; width: 34px; height: 34px; margin: -17px 0 0 -17px; }
+      header.nav { position: fixed; inset: 0 0 auto; z-index: 8000; display: flex; align-items: center; height: var(--nav-h, 66px); gap: 26px; padding: 0 18px; }
+      .brand { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
+      .brand svg { width: 26px; height: 26px; } .brand b { font-size: 14px; letter-spacing: .24em; } .brand em { display: block; margin-top: -3px; font-size: 9px; letter-spacing: .2em; }
+      .liquid-navbar { position: relative; display: inline-flex; align-items: center; gap: 2px; margin-left: auto; padding: 6px; border-radius: 999px; }
+      .liquid-nav-item { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 14px; border-radius: 999px; white-space: nowrap; }
+      .liquid-nav-icon { display: inline-flex; } .liquid-nav-icon svg { width: 17px; height: 17px; }
+      .navright { display: flex; align-items: center; gap: 14px; margin-left: 14px; }
+      .iconbtn { width: 34px; height: 34px; display: grid; place-items: center; }
+      .telemetry { position: fixed; inset: auto 0 0; z-index: 8000; height: 30px; }
+      #hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; padding-top: var(--nav-h, 66px); }
+      #stars, .herograd { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .heroinner { position: relative; z-index: 3; padding: 0 18px clamp(40px, 7vh, 86px); }
+      .eyebrow { display: flex; align-items: center; gap: 12px; font-size: 10.5px; line-height: 16.275px; letter-spacing: .3em; text-transform: uppercase; } .eyebrow::before { content: ''; width: 26px; height: 1px; flex: 0 0 26px; }
+      .herotitle { margin: 20px 0 0; line-height: .82; } .herotitle img { display: block; width: min(100%, 1280px); height: auto; }
+      .herometa { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin: clamp(28px, 4.4vw, 54px) 0 0; border: 1px solid rgba(236,231,222,.1); overflow: hidden; }
+      .herometa div { padding: 16px 18px; } .herometa dt { margin: 0 0 7px; font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; } .herometa dd { margin: 0; font-size: 16px; line-height: 1.15; font-weight: 600; } .herometa dd small { display: block; margin-top: 5px; font-size: 10px; font-weight: 400; letter-spacing: .08em; } @media (max-width:620px) { .herometa div { min-height: 112px; } }
+      .herocta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: clamp(24px, 3.4vw, 42px); align-items: center; }
+      .btn { display: inline-flex; align-items: center; gap: 11px; padding: 14px 24px; border: 1px solid rgba(236,231,222,.2); background: rgba(255,255,255,.02); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; } .btn svg { width: 13px; height: 13px; } .btn.solid { background: #ff9d3d; color: #08090d; border-color: #ff9d3d; }
+      .scrollcue { display: flex; align-items: center; gap: 12px; margin-left: auto; font-size: 10px; letter-spacing: .24em; } .scrollcue i { display: block; width: 1px; height: 44px; }
+      .hero-tag { display: none; }
+      @media (max-width:960px) {
+        :root { --nav-h: 118px; }
+        header.nav { height: var(--nav-h); align-content: flex-start; flex-wrap: wrap; gap: 0; padding: 9px 14px; }
+        .brand em { display: none; }
+        .liquid-navbar { order: 3; width: 100%; justify-content: center; margin-top: 7px; }
+        .liquid-nav-item { height: 38px; padding: 0 clamp(7px, 2.1vw, 11px); }
+        .liquid-nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+        .navright { margin-left: auto; }
+      }
+    </style>
     <link rel="canonical" href="https://jithin-j-nair.github.io/Nasa-challenge/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Silent Fleet" />
@@ -108,7 +149,7 @@
       </section>
     </noscript>
 <!-- ============ BOOT ============ -->
-<div id="boot" role="status" aria-live="polite">
+<div id="boot" role="status" aria-live="polite" hidden>
   <div class="bootmark"><span></span><span></span><span></span></div>
   <div id="bootlog"></div>
   <div class="bootbar"><i id="bootfill"></i></div>
@@ -123,7 +164,7 @@
 
 <!-- ============ NAV ============ -->
 <header class="nav">
-  <a class="brand" href="#hero" aria-label="Silent Fleet — home">
+  <a class="brand" href="#hero">
     <svg viewBox="0 0 32 32" aria-hidden="true">
       <circle cx="16" cy="16" r="14.2" fill="none" stroke="rgba(239,234,225,.22)" stroke-width="1"/>
       <ellipse cx="16" cy="16" rx="14.2" ry="5.4" fill="none" stroke="rgba(255,157,61,.65)" stroke-width="1" transform="rotate(-24 16 16)"/>
@@ -132,22 +173,21 @@
     </svg>
     <span><b>Silent&nbsp;Fleet</b><em>Off-world hardware archive</em></span>
   </a>
-  <nav class="navlinks" id="navlinks" aria-label="Primary">
-    <a href="#briefing">Briefing</a>
-    <a href="#observatory">Observatory</a>
-    <a href="#ledger">Ledger</a>
-    <a href="#timeline">Timeline</a>
-    <a href="#interstellar">Beyond</a>
-    <a href="#fieldguide">Archive</a>
-    <a href="#science">Science</a>
+  <nav class="liquid-navbar" id="liquidNav" aria-label="Primary navigation">
+    <span class="liquid-nav-glass" aria-hidden="true"></span><canvas class="liquid-nav-water" aria-hidden="true"></canvas><span class="liquid-nav-drop" aria-hidden="true"></span>
+    <a class="liquid-nav-item" href="#hero" data-fx="glow" aria-current="page"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M6 9.6V20h12V9.6"/><path d="M10 20v-5h4v5Z"/></svg></span><span class="liquid-nav-label">Home</span></a>
+    <a class="liquid-nav-item" href="#briefing" data-fx="spin"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 2.6 14.6 0 17M12 3.5c-2.6 2.4-2.6 14.6 0 17"/></svg></span><span class="liquid-nav-label">Briefing</span></a>
+    <a class="liquid-nav-item" href="#observatory" data-fx="plane"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12.2 3.6 5.4l2.7 6.8-2.7 6.4L21 12.2Z"/><path d="M6.3 12.2H13"/></svg></span><span class="liquid-nav-label">Observatory</span></a>
+    <a class="liquid-nav-item" href="#ledger" data-fx="drop"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4.5h14v15H5z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg></span><span class="liquid-nav-label">Ledger</span></a>
+    <a class="liquid-nav-item" href="#timeline" data-fx="wave"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4v16M19 4v16M8.5 8h7M8.5 16h7"/><path d="M10 12h4"/></svg></span><span class="liquid-nav-label">Timeline</span></a>
+    <a class="liquid-nav-item" href="#interstellar" data-fx="plane"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 13 16-9-5 16-3-6z"/><path d="m12 14 3-3"/></svg></span><span class="liquid-nav-label">Beyond</span></a>
+    <a class="liquid-nav-item" href="#fieldguide" data-fx="pop"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 7.5h15v12h-15z"/><path d="M8 7.5V5h8v2.5M9 12h6"/></svg></span><span class="liquid-nav-label">Archive</span></a>
+    <a class="liquid-nav-item" href="#science" data-fx="spin"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-4.5 8.1A2.6 2.6 0 0 0 7.8 21h8.4a2.6 2.6 0 0 0 2.3-3.9L14 9V3"/><path d="M8.7 16h6.6"/></svg></span><span class="liquid-nav-label">Science</span></a>
   </nav>
   <div class="navright">
     <div class="utc">UTC <b id="clock">--:--:--</b></div>
     <button class="iconbtn" id="soundBtn" aria-pressed="false" title="Toggle ambient telemetry audio">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 8.5a5 5 0 0 1 0 7" class="wave"/><path d="M20 6a8.5 8.5 0 0 1 0 12" class="wave"/></svg>
-    </button>
-    <button class="iconbtn" id="burger" aria-label="Menu" aria-expanded="false">
-      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
   </div>
 </header>
@@ -161,7 +201,7 @@
 
 <!-- ============ HERO ============ -->
 <section id="hero">
-  <canvas id="stars" aria-hidden="true"></canvas>
+  <canvas id="stars" width="780" height="1688" style="position:absolute;inset:0;display:block;width:100%;height:100%" aria-hidden="true"></canvas>
   <div class="herograd" aria-hidden="true"></div>
 
   <div class="hero-tag">
@@ -172,18 +212,17 @@
   <div class="wrap heroinner">
     <div class="eyebrow" data-scramble>NASA Space Apps 2026 · Interactive Archive</div>
     <h1 class="herotitle">
-      <span class="lm"><span data-scramble>THE SILENT</span></span>
-      <span class="lm"><span><em class="thin">fleet</em> <span class="out" data-scramble>1959→</span></span></span>
+      <img class="hero-title-image" src="/assets/images/silent-fleet-hero-title.svg" width="1600" height="620" alt="The Silent Fleet, 1959 onward" fetchpriority="high" decoding="sync" />
     </h1>
 
-    <div class="herometa">
+    <dl class="herometa">
       <div>
         <dt>Objects catalogued</dt>
         <dd><span class="count" data-to="42" id="heroCount">0</span> <small>in this archive</small></dd>
       </div>
       <div>
         <dt>Moon inventory</dt>
-        <dd><span id="moonInventoryCount">22</span> <small>U.S. non-Apollo object/location rows · NASA catalogue table 1</small></dd>
+        <dd><span id="moonInventoryCount">98</span> <small id="moonInventoryNote">rows parsed from NASA catalogue so far</small></dd>
       </div>
       <div>
         <dt>Farthest human object</dt>
@@ -193,7 +232,7 @@
         <dt>Still transmitting</dt>
         <dd><span class="count" data-to="5">0</span> <small>spacecraft · 2 interstellar</small></dd>
       </div>
-    </div>
+    </dl>
 
     <div class="herocta">
       <button class="btn solid" data-scroll="#observatory"><span>Open the Observatory</span>
@@ -240,9 +279,9 @@
       <p>This archive exists because most people only ever hear about the missions that are still working. But the machines that stopped are the ones with the stories. They were built by people, launched on fire, and abandoned on purpose — and every one of them bought us something we did not have before.</p>
 
       <div class="asides">
-        <article><h4><i></i>Claim-level evidence</h4><p>A mission name, agency label, or related page is not enough. A dossier is marked complete only when its displayed claims share an opened NASA source.</p></article>
-        <article><h4><i></i>Failure is data</h4><p>NASA/JPL’s Mars 3 record is retained because the opened source specifically reports its 14.5-second transmission. Other contextual records remain withheld until equally specific evidence is reviewed.</p></article>
-        <article><h4><i></i>Images carry evidence too</h4><p>An image is either artefact-specific, a clearly labelled mission image, or a placeholder. The site never uses a different spacecraft as a visual stand-in.</p></article>
+        <article><h3><i></i>Claim-level evidence</h3><p>A mission name, agency label, or related page is not enough. A dossier is marked complete only when its displayed claims share an opened NASA source.</p></article>
+        <article><h3><i></i>Failure is data</h3><p>NASA/JPL’s Mars 3 record is retained because the opened source specifically reports its 14.5-second transmission. Other contextual records remain withheld until equally specific evidence is reviewed.</p></article>
+        <article><h3><i></i>Images carry evidence too</h3><p>An image is either artefact-specific, a clearly labelled mission image, or a placeholder. The site never uses a different spacecraft as a visual stand-in.</p></article>
       </div>
 
       <p class="mono" style="line-height:1.9">Catalogue scope · NASA mission hardware · Moon, Mars &amp; deep space<br>
@@ -258,21 +297,10 @@
       <div>
         <div class="eyebrow cold">NASA History Program · parsed source table</div>
         <h2 class="h2" style="margin-top:18px">Moon inventory, without a made-up mass</h2>
-        <p>The first table in NASA’s 2012 <a href="https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf" target="_blank" rel="noreferrer">Catalogue of Manmade Material on the Moon</a> contains 22 U.S. non-Apollo object/location rows. This is a browsable transcription of that table—not a total count of all material on the Moon, and not a mass estimate.</p>
+        <p>This searchable list is a <b>partial parse so far</b> of NASA’s 2012 <a href="https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf" target="_blank" rel="noreferrer">Catalogue of Manmade Material on the Moon</a>. Its three counting methods stay separate: the displayed number is a filtered object/location-row count, never a mass estimate or an invented total.</p>
       </div>
     </div>
-    <div class="catalogue-method" data-reveal>
-      <div><b>22</b><span>lines in the U.S. non-Apollo source table</span></div>
-      <div><b>22</b><span>after excluding no “see below” or nested sub-item rows in this table</span></div>
-      <div><b>—</b><span>quantity sum not reported: this table records objects, not a complete quantity ledger</span></div>
-    </div>
-    <details class="catalogue-list" data-reveal>
-      <summary>Browse the 22 transcribed rows and source locations</summary>
-      <ol>
-        <li>Ranger 4 — 15.5° S, 130.7° E</li><li>Ranger 6 — 9.388° N, 21.480° E</li><li>Ranger 7 — 10.63° S, 20.60° W</li><li>Ranger 8 — 2.638° N, 24.787° E</li><li>Ranger 9 — 112.828° N, 2.387° W (as rendered in the PDF table)</li><li>Surveyor 1 — 2.474° S, 43.339° W</li><li>Lunar Orbiter 1 — 6.70° N, 162° E</li><li>Surveyor 2 — 5.5° N, 12° W</li><li>Lunar Orbiter 2 — 3.0° N, 119° E</li><li>Lunar Orbiter 3 — 14.3° N, 97.7° W</li><li>Surveyor 3 — 3.015° S, 23.418° W</li><li>Lunar Orbiter 4 — crashed</li><li>Surveyor 4 — unknown</li><li>Explorer 35 (IMP-E) — unknown</li><li>Lunar Orbiter 5 — 3° S, 83° W</li><li>Surveyor 5 — 1.461° N, 23.195° E</li><li>Surveyor 6 — 0.473° N, 1.427° W</li><li>Surveyor 7 — 40.980° S, 11.509° W</li><li>Explorer 49 (RAE-B) — unknown</li><li>Lunar Prospector — unknown</li><li>LCROSS Shepherding Spacecraft — 84.72° S, 49.62° W</li><li>LCROSS Centaur — 84.9° S, 35.5° W</li>
-      </ol>
-      <p class="mono">Method note · one top-level row per object/location in the source’s “U.S. Material (Non-Apollo)” table. “Crashed” and “unknown” are preserved from the catalogue; no coordinates have been supplied by this site.</p>
-    </details>
+    <div id="moonCatalogue" aria-live="polite"></div>
   </div>
 </section>
 
@@ -286,6 +314,7 @@
           <p>A procedurally generated interactive model of the Moon and Mars. Marker locations are shown only where an audited NASA source supports the visible record. Drag to orbit. Click a marker to open its dossier.</p>
       </div>
       <div class="obs-head" style="margin:0">
+        <span class="catalogue-stat" id="moonCatalogueStat">Loading parsed Moon rows…</span>
         <div class="bodytoggle" role="tablist" aria-label="Celestial body">
           <button data-b="moon" class="sel" role="tab" aria-selected="true"><i></i>Moon</button>
           <button data-b="mars" role="tab" aria-selected="false"><i></i>Mars</button>
@@ -507,6 +536,7 @@
       </div>
       <div class="selectwrap">
         <select id="sortSel" aria-label="Sort artefacts">
+          <option value="verified-first" selected>NASA-checked first</option>
           <option value="year-asc">Oldest first</option>
           <option value="year-desc">Newest first</option>
           <option value="name">A → Z</option>
@@ -518,7 +548,7 @@
     <div class="grid" id="grid"></div>
     <div class="empty" id="empty">
       <svg viewBox="0 0 64 64"><circle cx="28" cy="28" r="17"/><path d="M40 40l14 14M20 28h16M28 20v16" stroke-dasharray="3 4"/></svg>
-      <h4>Nothing in the archive matches that.</h4>
+      <h3>Nothing in the archive matches that.</h3>
       <p><span data-total>42</span> objects catalogued · try a mission name, a year, or a world</p>
       <button class="btn" id="resetFilters"><span>Reset filters</span></button>
     </div>
@@ -586,7 +616,7 @@
         <p class="note" style="margin-top:16px">Not affiliated with or endorsed by NASA. All facts drawn from public mission documentation.</p>
       </div>
       <div>
-        <h5>Sections</h5>
+        <p class="footer-title">Sections</p>
         <ul>
           <li><a href="#briefing">Mission briefing</a></li>
           <li><a href="#observatory">Observatory</a></li>
@@ -598,7 +628,7 @@
         </ul>
       </div>
       <div>
-        <h5>Still transmitting</h5>
+        <p class="footer-title">Still transmitting</p>
         <ul>
           <li>Curiosity · Gale Crater</li>
           <li>Perseverance · Jezero Crater</li>
@@ -609,7 +639,7 @@
         </ul>
       </div>
       <div>
-        <h5>Data &amp; sources</h5>
+        <p class="footer-title">Data &amp; sources</p>
         <ul>
           <li>NASA Science mission pages</li>
           <li>JPL mission status &amp; odometers</li>

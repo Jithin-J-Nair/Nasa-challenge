@@ -11,7 +11,8 @@
     "preview": "vite preview --host 0.0.0.0",
     "test:visual": "node scripts/visual-test.mjs",
     "test:lighthouse": "node scripts/lighthouse-mobile.mjs",
-    "audit:claims": "node scripts/generate-claims-audit.mjs"
+    "audit:claims": "node scripts/generate-claims-audit.mjs",
+    "catalogue:parse": "node scripts/parse-moon-catalogue.mjs"
   },
   "dependencies": {
     "@fontsource-variable/space-grotesk": "^5.3.0",
