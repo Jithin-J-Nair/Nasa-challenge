@@ -9,7 +9,6 @@ import { startBoot } from './components/boot';
 import { initInterface } from './components/interface';
 import { initMoonCatalogue } from './components/moon-catalogue';
 import { initTimeline } from './components/timeline';
-import { initScrollEngine } from './experience/scroll-engine';
 import { $, $$ } from './lib/dom';
 import { reducedMotion } from './lib/utils';
 
@@ -25,7 +24,6 @@ function bootArchive(): void {
   initTimeline();
   initArchive();
   initMoonCatalogue();
-  initScrollEngine();
   if (!reducedMotion) {
     const loadAmbientCanvas = (): void => {
       void import('./experience/mount').then(({ mountWebglExperience }) => mountWebglExperience());
