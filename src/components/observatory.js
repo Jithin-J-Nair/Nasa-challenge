@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { A, byId, idxOf, order, statusLabel } from '../data/artifacts.js';
+import { A, byId, idxOf, isNASARecord, order, statusLabel } from '../data/artifacts.js';
 import { SCHEM } from '../data/artwork.js';
 import { $, $$ } from '../lib/dom.js';
 import { selectArtifact, onArtifactSelection } from '../lib/events.js';
@@ -15,8 +15,10 @@ let renderer,scene,camera,globeGroup,mesh,glowMesh,gratGroup,sunLight;
 let textures = {}, hotData = [], camSph = { r: 2.9, th: 0.35, ph: Math.PI / 2.15 };
 let target={r:2.9,th:0.35,ph:Math.PI/2.15}, autoSpin=!reducedMotion, dragging=false, lastP=null, idle=0;
 let obsVisible=false, rafId=null;
+let pageVisible = !document.hidden;
 
 export function initObservatory(){
+  if (typeof THREE === 'undefined') throw new Error('Three.js did not load.');
   const cv=$('#globe');
   renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
@@ -78,11 +80,17 @@ function buildGlobe(body){
   if(mesh){ globeGroup.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); }
   if(glowMesh){ globeGroup.remove(glowMesh); glowMesh.material.dispose(); }
   if(!textures[body]){
-    const W=body==='moon'?1600:1600, H=W/2;
-    const map = body==='moon' ? generateMoon(W,H) : generateMars(W,H);
-    const bump = toBump(map);
+    // Color comes from local, credited archival maps. Procedural canvas data is
+    // retained only as a lightweight bump approximation for the interaction.
+    const W=1600, H=W/2;
+    const proceduralHeightMap = body==='moon' ? generateMoon(W,H) : generateMars(W,H);
+    const bump = toBump(proceduralHeightMap);
+    const source = body === 'moon'
+      ? '/assets/textures/moon-lroc-color.jpg'
+      : '/assets/textures/mars-usgs-mola-map.jpg';
+    const map = new THREE.TextureLoader().load(source);
     textures[body]={
-      map:new THREE.CanvasTexture(map),
+      map,
       bump:new THREE.CanvasTexture(bump)
     };
     textures[body].map.encoding=THREE.sRGBEncoding;
@@ -111,6 +119,9 @@ function buildGlobe(body){
 
   $('#hudBody').innerHTML='BODY · <b>'+(body==='moon'?'THE MOON':'MARS')+'</b>';
   $('#hudSite').innerHTML= body==='moon' ? 'MEAN RADIUS · <b>1,737.4 KM</b>' : 'MEAN RADIUS · <b>3,389.5 KM</b>';
+  $('#hudTexture').innerHTML = body === 'moon'
+    ? 'COLOR MAP · <b>NASA LRO / SVS</b>'
+    : 'COLOR MAP · <b>NASA/USGS MOLA</b>';
   $('#vpLoad').classList.remove('gone');
   setTimeout(()=>$('#vpLoad').classList.add('gone'),220);
   buildHotspots();
@@ -118,7 +129,9 @@ function buildGlobe(body){
 }
 function buildHotspots(){
   const wrap=$('#hotspots'); wrap.innerHTML=''; hotData=[];
-  const list=A.filter(a=>a.b===archiveState.currentBody && a.lat!==undefined);
+  // The immersive surface view follows the NASA-first default. Other-agency
+  // contextual records remain discoverable through the explicit Field Guide toggle.
+  const list=A.filter(a=>a.b===archiveState.currentBody && a.lat!==undefined && isNASARecord(a));
   list.forEach(a=>{
     const btn=document.createElement('button');
     btn.className='hot'+(a.st==='active'?' act':'');
@@ -149,6 +162,10 @@ function attachControls(cv){
 }
 const _v=new THREE.Vector3(), _cam=new THREE.Vector3();
 export function startObservatoryRenderLoop(){
+  if (!pageVisible) {
+    rafId = null;
+    return;
+  }
   rafId=requestAnimationFrame(startObservatoryRenderLoop);
   if(!obsVisible){ return; }
   const vp=$('#viewport');
@@ -203,6 +220,14 @@ $$('.bodytoggle button').forEach(b=>{
 });
 new IntersectionObserver(es=>{es.forEach(e=>{obsVisible=e.isIntersecting})},{threshold:.02}).observe($('#viewport'));
 addEventListener('resize',()=>{ if(renderer) resizeRenderer(); });
+document.addEventListener('visibilitychange', () => {
+  pageVisible = !document.hidden;
+  if (!pageVisible && rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+  if (pageVisible && renderer && !rafId) startObservatoryRenderLoop();
+});
 
 /* ============================================================
    8. DOSSIER
@@ -214,29 +239,49 @@ function openDossier(a, doFly){
   $('#dTitle').textContent=a.n;
   const i=idxOf(a.id);
   $('#dPrev').disabled = i<=0; $('#dNext').disabled = i>=order.length-1;
-  const specRows=a.spec.map(s=>'<div><dt>'+s[0]+'</dt><dd>'+s[1]+'</dd></div>').join('');
-  const discRows=a.disc.map(x=>'<li>'+x+'</li>').join('');
-  const coord = a.lat!==undefined ? Math.abs(a.lat).toFixed(2)+'° '+(a.lat>=0?'N':'S')+' · '+Math.abs(a.lon).toFixed(2)+'° '+(a.lon>=0?'E':'W') : (a.orbit||'—');
-  $('#dBody').innerHTML =
-   '<div class="dart"><div class="plate"></div>'+ (SCHEM[a.sch]||SCHEM.probe) +
-   '<div class="caption"><span>'+ (a.b==='moon'?'LUNAR ARTEFACT':a.b==='mars'?'MARTIAN ARTEFACT':'DEEP SPACE VEHICLE') +'</span><span>'+a.ag+'</span></div></div>'+
-   '<div class="dsec"><h4>First-person log</h4><p class="voice">'+a.voice+'</p></div>'+
-   '<div class="dsec"><h4>Designation</h4><dl class="dspecs">'+
-     '<div><dt>Object</dt><dd>'+a.n+'</dd></div>'+
-     '<div><dt>Mission</dt><dd>'+a.m+'</dd></div>'+
-     '<div><dt>Agency</dt><dd>'+a.ag+'</dd></div>'+
-     '<div><dt>Year</dt><dd>'+a.y+'</dd></div>'+
-     '<div><dt>Status</dt><dd><span class="st '+a.st+'">'+statusLabel(a.st)+'</span></dd></div>'+
-     '<div><dt>'+(a.b==='deep'?'Trajectory':'Coordinates')+'</dt><dd>'+coord+'</dd></div>'+
-     (a.site?'<div><dt>Site</dt><dd>'+a.site+'</dd></div>':'')+
-   '</dl></div>'+
-   '<div class="dsec"><h4>Technical record</h4><dl class="dspecs">'+specRows+'</dl></div>'+
-   '<div class="dsec"><h4>What it made possible</h4><ol class="disc">'+discRows+'</ol></div>'+
-   '<div class="dsec"><h4>Final transmission</h4><div class="lasttx" id="lastTx"></div></div>'+
-   '<div class="dsec" style="border:0"><p class="mono" style="line-height:1.9">'+(a.tags||'')+'</p></div>';
+  const specRows = a.spec.map((item) => `<div><dt>${item[0]}</dt><dd>${item[1]}</dd></div>`).join('');
+  const discoveryRows = a.disc.map((item) => `<li>${item}</li>`).join('');
+  const coordinates = a.lat !== undefined
+    ? `${Math.abs(a.lat).toFixed(2)}° ${a.lat >= 0 ? 'N' : 'S'} · ${Math.abs(a.lon).toFixed(2)}° ${a.lon >= 0 ? 'E' : 'W'}`
+    : (a.orbit || '—');
+  const contextFlag = a.imageContext
+    ? '<span class="image-flag">CONTEXT IMAGE · NOT AN ARTEFACT-SPECIFIC PHOTOGRAPH</span>'
+    : '<span class="image-flag verified">NASA ARCHIVAL IMAGE</span>';
+  const evidence = a.verifiedByNASA
+    ? `<div class="dsec"><h4>First-person log</h4><p class="voice">${a.voice}</p></div>
+       <div class="dsec"><h4>Technical record</h4><dl class="dspecs">${specRows}</dl></div>
+       <div class="dsec"><h4>What it made possible</h4><ol class="disc">${discoveryRows}</ol></div>
+       <div class="dsec"><h4>Final transmission</h4><div class="lasttx" id="lastTx"></div></div>
+       <div class="dsec" style="border:0"><p class="mono" style="line-height:1.9">${a.tags || ''}</p></div>`
+    : `<div class="dsec unverified-record"><h4>Verification status</h4><p><b>Unverified contextual record.</b> A NASA page is linked below, but this entry's mission narrative, technical figures, and discovery claims are withheld until they can be checked against NASA documentation.</p></div>`;
+
+  $('#dBody').innerHTML = `
+    <div class="dart"><div class="plate"></div>${SCHEM[a.sch] || SCHEM.probe}
+      <div class="caption"><span>${a.b === 'moon' ? 'LUNAR ARTEFACT' : a.b === 'mars' ? 'MARTIAN ARTEFACT' : 'DEEP SPACE VEHICLE'}</span><span>${a.ag}</span></div>
+    </div>
+    <figure class="dossier-media">
+      <img src="${a.image}" alt="${a.imageContext ? `NASA context image used for ${a.n}` : `NASA archival image for ${a.n}`}" loading="lazy" />
+      <figcaption>${contextFlag}<span>${a.imageCredit}</span></figcaption>
+    </figure>
+    <div class="dsec"><h4>Designation</h4><dl class="dspecs">
+      <div><dt>Object</dt><dd>${a.n}</dd></div><div><dt>Mission</dt><dd>${a.m}</dd></div>
+      <div><dt>Agency</dt><dd>${a.ag}</dd></div><div><dt>Year</dt><dd>${a.y}</dd></div>
+      <div><dt>Status</dt><dd><span class="st ${a.st}">${statusLabel(a.st)}</span></dd></div>
+      <div><dt>${a.b === 'deep' ? 'Trajectory' : 'Coordinates'}</dt><dd>${coordinates}</dd></div>
+      ${a.site ? `<div><dt>Site</dt><dd>${a.site}</dd></div>` : ''}
+    </dl></div>
+    <div class="dsec dossier-source"><h4>Sources</h4><a href="${a.source}" target="_blank" rel="noreferrer">Open ${a.sourceLabel} <span aria-hidden="true">↗</span></a><p>${a.verifiedByNASA ? 'NASA source linked for this record.' : 'Context record; visible narrative is withheld pending NASA-source verification.'}</p></div>
+    ${evidence}`;
+  const dossierImage = $('#dBody .dossier-media img');
+  dossierImage?.addEventListener('error', () => {
+    dossierImage.src = '/assets/images/dossier-context-placeholder.svg';
+    dossierImage.alt = 'NASA image placeholder — artefact-specific image pending source verification';
+    const imageFlag = $('#dBody .image-flag');
+    if (imageFlag) imageFlag.textContent = 'NASA IMAGE PLACEHOLDER · SOURCE IMAGE FAILED TO LOAD';
+  }, { once: true });
   d.classList.add('open'); d.setAttribute('aria-hidden','false');
   $('#scrim').classList.add('on');
-  typewrite($('#lastTx'), a.last, a.st);
+  if (a.verifiedByNASA) typewrite($('#lastTx'), a.last, a.st);
   $$('.hot').forEach(h=>h.classList.remove('sel'));
   const hd=hotData.find(o=>o.id===a.id); if(hd){hd.el.classList.add('sel');hd.el.classList.add('pulse');setTimeout(()=>hd.el.classList.remove('pulse'),5200)}
   $$('.sitem').forEach(s=>s.classList.toggle('sel', s.dataset.id===a.id));
@@ -278,7 +323,7 @@ function typewrite(el, text, st){
    9. SIDE LIST
    ============================================================ */
 function buildSide(){
-  const list=A.filter(a=>a.b===archiveState.currentBody).sort((x,y)=>x.y-y.y);
+  const list=A.filter(a=>a.b===archiveState.currentBody && isNASARecord(a)).sort((x,y)=>x.y-y.y);
   $('#sideTitle').textContent='Artefacts on '+(archiveState.currentBody==='moon'?'the Moon':'Mars');
   $('#sideCnt').textContent=list.length+' / '+list.length;
   $('#sideList').innerHTML=list.map(a=>

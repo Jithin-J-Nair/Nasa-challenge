@@ -1,5 +1,5 @@
 import { gsap } from 'gsap';
-import { byId, order } from '../data/artifacts.js';
+import { byId, isNASARecord, order } from '../data/artifacts.js';
 import { $, $$ } from '../lib/dom.js';
 import { onArtifactSelection, selectArtifact } from '../lib/events.js';
 import { archiveState } from '../lib/state.js';
@@ -14,15 +14,18 @@ export function initTimeline() {
 
   function setCaption(artifact) {
     if (!artifact) return;
-    $('#tlCaption').innerHTML = `<b>${artifact.y} · ${artifact.m} · ${artifact.ag}</b>${artifact.voice
-      .split('.')[0]
-      .replace(/^I /, 'This machine ')
-      .replace(/^My /, 'Its ')
-      .replace(/^We /, 'They ')}.`;
+    const summary = artifact.verifiedByNASA
+      ? artifact.voice.split('.')[0]
+        .replace(/^I /, 'This machine ')
+        .replace(/^My /, 'Its ')
+        .replace(/^We /, 'They ')
+      : 'Unverified contextual record. Narrative withheld pending NASA-source verification.';
+    $('#tlCaption').innerHTML = `<b>${artifact.y} · ${artifact.m} · ${artifact.ag}</b>${summary.endsWith('.') ? summary : `${summary}.`}`;
   }
 
   function renderTimeline() {
-    const list = order.filter((artifact) => timelineFilter === 'all' || artifact.b === timelineFilter);
+    // Keep contextual non-NASA records behind the explicit Field Guide agency toggle.
+    const list = order.filter((artifact) => isNASARecord(artifact) && (timelineFilter === 'all' || artifact.b === timelineFilter));
     $('#tlCount').textContent = `${list.length} events`;
     const decades = {};
     list.forEach((artifact) => {
@@ -36,11 +39,16 @@ export function initTimeline() {
       .sort((a, b) => a - b)
       .map((decade) => `
         <div class="era"><div class="era-tag">${decade}s</div><div class="tl-items">
-          ${decades[decade].map((artifact) => `
-            <button class="tlcard${artifact.id === archiveState.selectedArtifactId ? ' act' : ''}" data-id="${artifact.id}">
-              <span class="tick"></span><div class="y">${artifact.y}</div><h4>${artifact.n}</h4>
-              <div class="sub">${artifact.m}</div><p>${artifact.one}</p><div class="go">Open dossier →</div>
-            </button>`).join('')}
+          ${decades[decade].map((artifact) => {
+            const summary = artifact.verifiedByNASA
+              ? artifact.one
+              : 'Unverified contextual record — detailed claims withheld.';
+            return `
+              <button class="tlcard${artifact.id === archiveState.selectedArtifactId ? ' act' : ''}" data-id="${artifact.id}">
+                <span class="tick"></span><div class="y">${artifact.y}</div><h4>${artifact.n}</h4>
+                <div class="sub">${artifact.m}</div><p>${summary}</p><div class="go">Open dossier →</div>
+              </button>`;
+          }).join('')}
         </div></div>`).join('');
 
     $$('.tlcard').forEach((card) => {
@@ -72,12 +80,18 @@ export function initTimeline() {
       cards.forEach((item) => item.classList.remove('act'));
       card.classList.add('act');
       setCaption(byId(card.dataset.id));
-      playTween = gsap.to(rail, {
-        scrollLeft: Math.min(maximumScroll, card.offsetLeft - rail.clientWidth * .32),
-        duration: 1.1,
-        ease: 'power2.inOut',
-        onComplete: () => beep(430 + index * 4, .05, .03),
-      });
+      const scrollLeft = Math.min(maximumScroll, card.offsetLeft - rail.clientWidth * .32);
+      if (typeof gsap !== 'undefined') {
+        playTween = gsap.to(rail, {
+          scrollLeft,
+          duration: 1.1,
+          ease: 'power2.inOut',
+          onComplete: () => beep(430 + index * 4, .05, .03),
+        });
+      } else {
+        rail.scrollTo({ left: scrollLeft, behavior: reducedMotion ? 'auto' : 'smooth' });
+        beep(430 + index * 4, .05, .03);
+      }
       index += 1;
       setTimeout(next, reducedMotion ? 900 : 2200);
     };

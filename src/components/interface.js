@@ -14,7 +14,7 @@ export function initInterface(){
   $$('.count').forEach(el=>{
     const to=+el.dataset.to, sfx=el.dataset.suffix||'';
     const io=new IntersectionObserver(es=>{es.forEach(e=>{ if(e.isIntersecting){
-      if(reducedMotion){ el.textContent=formatNumber(to)+sfx; return; }
+      if(reducedMotion || typeof gsap === 'undefined') { el.textContent=formatNumber(to)+sfx; io.disconnect(); return; }
       gsap.fromTo(el,{innerText:0},{innerText:to,duration:2.1,ease:'power2.out',snap:{innerText:1}, onUpdate(){el.textContent=formatNumber(Math.round(+el.innerText))+sfx}});
       io.disconnect();
     }})},{threshold:.4}); io.observe(el);
@@ -22,7 +22,8 @@ export function initInterface(){
 
   const io2=new IntersectionObserver(es=>{es.forEach(e=>{ if(e.isIntersecting){
     const spans=e.target.querySelectorAll('.lm>span');
-    spans.forEach((s,i)=>gsap.to(s,{y:0,opacity:1,duration:reducedMotion?0:1.05,delay:reducedMotion?0:i*.11,ease:'expo.out'}));
+    if (typeof gsap === 'undefined') spans.forEach((span) => { span.style.transform = 'none'; span.style.opacity = '1'; });
+    else spans.forEach((s,i)=>gsap.to(s,{y:0,opacity:1,duration:reducedMotion?0:1.05,delay:reducedMotion?0:i*.11,ease:'expo.out'}));
     io2.unobserve(e.target);
   }})},{threshold:.2});
   $$('.h1,.h2,.herotitle').forEach(h=>io2.observe(h));

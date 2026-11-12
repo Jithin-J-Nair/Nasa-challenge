@@ -1,4 +1,4 @@
-import { A, LEDGER, SCI, byId, statusLabel } from '../data/artifacts.js';
+import { A, LEDGER, SCI, byId, isNASARecord, statusLabel } from '../data/artifacts.js';
 import { ICO, SCHEM } from '../data/artwork.js';
 import { $, $$ } from '../lib/dom.js';
 import { selectArtifact } from '../lib/events.js';
@@ -6,10 +6,14 @@ import { beep } from './audio.js';
 
 /** Initialise the searchable Field Guide, small-things ledger, and science index. */
 export function initArchive() {
-  const filterState = { query: '', body: 'all', status: 'all', sort: 'year-asc' };
+  // NASA records are the default view. Contextual material from other agencies is
+  // intentionally kept behind an explicit toggle.
+  const filterState = { query: '', body: 'all', agency: 'nasa', status: 'all', sort: 'year-asc' };
 
   function renderGrid() {
     let list = A.slice();
+    if (filterState.agency === 'nasa') list = list.filter(isNASARecord);
+    if (filterState.agency === 'other') list = list.filter((artifact) => !isNASARecord(artifact));
     if (filterState.body !== 'all') list = list.filter((artifact) => artifact.b === filterState.body);
     if (filterState.status !== 'all') list = list.filter((artifact) => artifact.st === filterState.status);
     if (filterState.query) {
@@ -22,24 +26,31 @@ export function initArchive() {
     else if (filterState.sort === 'year-desc') list.sort((a, b) => b.y - a.y);
     else list.sort((a, b) => a.n.localeCompare(b.n));
 
-    $('#results').innerHTML = `Showing <b>${list.length}</b> of ${A.length} artefacts${
+    const agencyLabel = filterState.agency === 'nasa' ? 'NASA records' : 'other-agency context records';
+    $('#results').innerHTML = `Showing <b>${list.length}</b> of ${A.length} artefacts · ${agencyLabel}${
       filterState.query ? ` · matching “${filterState.query.replace(/</g, '&lt;')}”` : ''
     }`;
     $('#empty').classList.toggle('on', list.length === 0);
     const grid = $('#grid');
     grid.style.display = list.length ? 'grid' : 'none';
-    grid.innerHTML = list.map((artifact) => `
-      <button class="acard" data-id="${artifact.id}">
-        <div class="top"><div class="glow"></div><span class="yrbadge">${artifact.y}</span>
-          <span class="bodybadge ${artifact.b}">${artifact.b === 'moon' ? 'Moon' : artifact.b === 'mars' ? 'Mars' : 'Deep space'}</span>
-          ${SCHEM[artifact.sch] || SCHEM.probe}
-        </div>
-        <div class="bd"><h3>${artifact.n}</h3><div class="ms">${artifact.m} · ${artifact.ag}</div>
-          <p>${artifact.one}</p>
-          <div class="foot"><span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>
-          <span class="op">Dossier <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
-        </div>
-      </button>`).join('');
+    grid.innerHTML = list.map((artifact) => {
+      const summary = artifact.verifiedByNASA
+        ? artifact.one
+        : 'Unverified contextual record — detailed claims are withheld pending NASA-source verification.';
+      const verificationFlag = artifact.verifiedByNASA ? '' : '<span class="unverified-chip">Unverified</span>';
+      return `
+        <button class="acard" data-id="${artifact.id}">
+          <div class="top"><div class="glow"></div><span class="yrbadge">${artifact.y}</span>
+            <span class="bodybadge ${artifact.b}">${artifact.b === 'moon' ? 'Moon' : artifact.b === 'mars' ? 'Mars' : 'Deep space'}</span>
+            ${SCHEM[artifact.sch] || SCHEM.probe}
+          </div>
+          <div class="bd"><h3>${artifact.n}</h3><div class="ms">${artifact.m} · ${artifact.ag}</div>
+            <p>${summary}</p>
+            <div class="foot"><span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>${verificationFlag}
+            <span class="op">Dossier <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          </div>
+        </button>`;
+    }).join('');
     $$('.acard', grid).forEach((card) => card.addEventListener('click', () => selectArtifact(card.dataset.id, true)));
   }
 
@@ -82,6 +93,13 @@ export function initArchive() {
     renderGrid();
     beep(700, .03, .03);
   }));
+  $$('.chips [data-f="agency"]').forEach((chip) => chip.addEventListener('click', () => {
+    $$('.chips [data-f="agency"]').forEach((item) => item.classList.remove('sel'));
+    chip.classList.add('sel');
+    filterState.agency = chip.dataset.v;
+    renderGrid();
+    beep(620, .03, .03);
+  }));
   $$('.chips [data-f="status"]').forEach((chip) => chip.addEventListener('click', () => {
     $$('.chips [data-f="status"]').forEach((item) => item.classList.remove('sel'));
     chip.classList.add('sel');
@@ -96,10 +114,12 @@ export function initArchive() {
   $('#resetFilters').addEventListener('click', () => {
     filterState.query = '';
     filterState.body = 'all';
+    filterState.agency = 'nasa';
     filterState.status = 'all';
     $('#search').value = '';
     $('#searchBox').classList.remove('has');
     $$('.chips [data-f="body"]').forEach((item) => item.classList.toggle('sel', item.dataset.v === 'all'));
+    $$('.chips [data-f="agency"]').forEach((item) => item.classList.toggle('sel', item.dataset.v === 'nasa'));
     $$('.chips [data-f="status"]').forEach((item) => item.classList.toggle('sel', item.dataset.v === 'all'));
     renderGrid();
   });

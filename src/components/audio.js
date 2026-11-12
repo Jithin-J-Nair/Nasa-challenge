@@ -42,7 +42,8 @@ $('#soundBtn').addEventListener('click',()=>{
   if(AC.state==='suspended') AC.resume();
   droneOn=!droneOn;
   const b=$('#soundBtn'); b.classList.toggle('on',droneOn); b.setAttribute('aria-pressed',droneOn);
-  gsap.to(masterGain.gain,{value:droneOn?.6:0,duration:1.2});
+  if (typeof gsap !== 'undefined') gsap.to(masterGain.gain,{value:droneOn?.6:0,duration:1.2});
+  else masterGain.gain.value = droneOn ? .6 : 0;
   if(droneOn) startDrone();
   if(droneOn) beep(880,.08,.06);
 });

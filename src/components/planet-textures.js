@@ -1,4 +1,4 @@
-import { mulberry32 } from '../lib/utils.js';
+import { clamp, mulberry32 } from '../lib/utils.js';
 
 /* ============================================================
    4. PROCEDURAL PLANET TEXTURES

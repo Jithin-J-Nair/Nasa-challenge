@@ -10,7 +10,9 @@ import { initObservatory, startObservatoryRenderLoop } from './components/observ
 import { initTimeline } from './components/timeline.js';
 import { $, $$ } from './lib/dom.js';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 /** Application composition root. Individual experiences live in focused modules. */
 function bootArchive() {
