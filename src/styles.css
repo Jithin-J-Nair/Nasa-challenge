@@ -1,0 +1,9 @@
+/* Application stylesheet entry point. Keep visual layers independently maintainable. */
+@import './styles/fonts.css';
+@import './styles/base.css';
+@import './styles/sections.css';
+@import './styles/dossier-media.css';
+@import './styles/verification.css';
+@import './styles/audit.css';
+@import './styles/footer.css';
+@import './styles/responsive.css';

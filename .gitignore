@@ -1,0 +1,5 @@
+node_modules/
+dist/
+artifacts/
+image-search/
+.DS_Store
