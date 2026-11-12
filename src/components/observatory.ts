@@ -335,7 +335,7 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
        </section>`
     : `<section class="dsec unverified-record"><h3>Verification status</h3><p>We’re still checking this spacecraft’s story with NASA — explore the source link above while we do.</p></section>`;
   $('#dBody').innerHTML = `
-    <figure class="dossier-media">
+    <figure class="dossier-media" data-webgl-plane="dossier-media">
       <img src="${artifact.image}" alt="${artifact.imageAlt}" width="${artifact.imageWidth}" height="${artifact.imageHeight}" loading="lazy" decoding="async" />
       <figcaption>${imageFlag}<span>${artifact.imageCredit}</span>${artifact.imageSource ? `<a href="${artifact.imageSource}" target="_blank" rel="noreferrer">Image source ↗</a>` : ''}</figcaption>
     </figure>
@@ -359,6 +359,7 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
     const flag = document.querySelector<HTMLElement>('#dBody .image-flag');
     if (flag) flag.textContent = 'NASA IMAGE PLACEHOLDER · SOURCE IMAGE FAILED TO LOAD';
   }, { once: true });
+  dossier.removeAttribute('inert');
   dossier.classList.add('open');
   dossier.setAttribute('aria-hidden', 'false');
   $('#scrim').classList.add('on');
@@ -385,6 +386,7 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
 function closeDossier(): void {
   $('#dossier').classList.remove('open');
   $('#dossier').setAttribute('aria-hidden', 'true');
+  $('#dossier').setAttribute('inert', '');
   $('#scrim').classList.remove('on');
   archiveState.selectedArtifactId = null;
   $$<HTMLButtonElement>('.hot').forEach((hotspot) => hotspot.classList.remove('sel'));

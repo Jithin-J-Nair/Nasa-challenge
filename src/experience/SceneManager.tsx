@@ -6,17 +6,31 @@ import * as THREE from 'three';
 import { SCROLL_SIGNAL_EVENT, type ScrollSignal } from './LenisScrollWrapper';
 import { atmosphereFragmentShader, atmosphereVertexShader } from './shaders/atmosphere.glsl';
 import { domEchoFragmentShader, domEchoVertexShader } from './shaders/dom-echo.glsl';
+import { mediaPlaneFragmentShader, mediaPlaneVertexShader } from './shaders/media-plane.glsl';
 import { particleFragmentShader, particleVertexShader } from './shaders/particles.glsl';
 
 const PARTICLE_COUNT = 2600;
+const DOM_MEDIA_SELECTORS = "[data-webgl-plane='hero-title'], [data-webgl-plane='archive-card-media'], [data-webgl-plane='dossier-media']";
+const DOM_MEDIA_DISTANCE = 5.75;
 
 interface SceneRuntime {
   mouse: THREE.Vector2;
-  previousMouse: THREE.Vector2;
+  targetMouse: THREE.Vector2;
+  previousTargetMouse: THREE.Vector2;
   velocity: THREE.Vector2;
   targetVelocity: THREE.Vector2;
+  pointerClient: THREE.Vector2;
   scrollProgress: number;
   scrollVelocity: number;
+}
+
+interface RuntimeProps {
+  runtime: MutableRefObject<SceneRuntime>;
+}
+
+interface DomEchoPlaneProps extends RuntimeProps {
+  selector: string;
+  color: string;
 }
 
 interface AtmosphericUniforms extends Record<string, THREE.IUniform> {
@@ -50,6 +64,30 @@ interface DomEchoUniforms extends Record<string, THREE.IUniform> {
   uOpacity: THREE.IUniform<number>;
 }
 
+interface MediaPlaneUniforms extends Record<string, THREE.IUniform> {
+  uTime: THREE.IUniform<number>;
+  uScrollVelocity: THREE.IUniform<number>;
+  uHover: THREE.IUniform<number>;
+  uPointer: THREE.IUniform<THREE.Vector2>;
+  uTint: THREE.IUniform<THREE.Color>;
+  uOpacity: THREE.IUniform<number>;
+}
+
+interface MediaPlaneEntry {
+  element: HTMLElement;
+  geometry: THREE.PlaneGeometry;
+  material: MediaPlaneMaterial;
+  mesh: THREE.Mesh<THREE.PlaneGeometry, MediaPlaneMaterial>;
+  hover: number;
+}
+
+interface MediaProjectionScratch {
+  anchor: THREE.Vector3;
+  direction: THREE.Vector3;
+  right: THREE.Vector3;
+  up: THREE.Vector3;
+}
+
 class AtmosphericMaterial extends THREE.ShaderMaterial {
   declare uniforms: AtmosphericUniforms;
 }
@@ -62,6 +100,10 @@ class DomEchoMaterial extends THREE.ShaderMaterial {
   declare uniforms: DomEchoUniforms;
 }
 
+class MediaPlaneMaterial extends THREE.ShaderMaterial {
+  declare uniforms: MediaPlaneUniforms;
+}
+
 function isScrollSignal(value: unknown): value is ScrollSignal {
   return typeof value === 'object' && value !== null
     && 'scroll' in value && typeof value.scroll === 'number'
@@ -70,29 +112,51 @@ function isScrollSignal(value: unknown): value is ScrollSignal {
 }
 
 function useSceneRuntime(): MutableRefObject<SceneRuntime> {
-  const pointer = useThree((state) => state.pointer);
   const runtime = useRef<SceneRuntime>({
     mouse: new THREE.Vector2(),
-    previousMouse: new THREE.Vector2(),
+    targetMouse: new THREE.Vector2(),
+    previousTargetMouse: new THREE.Vector2(),
     velocity: new THREE.Vector2(),
     targetVelocity: new THREE.Vector2(),
+    pointerClient: new THREE.Vector2(),
     scrollProgress: 0,
     scrollVelocity: 0,
   });
+
   useEffect(() => {
     const onScroll = (event: Event): void => {
       if (!(event instanceof CustomEvent) || !isScrollSignal(event.detail)) return;
       runtime.current.scrollProgress = event.detail.progress;
       runtime.current.scrollVelocity = event.detail.velocity;
     };
+    const updatePointer = (clientX: number, clientY: number): void => {
+      const width = Math.max(window.innerWidth, 1);
+      const height = Math.max(window.innerHeight, 1);
+      runtime.current.targetMouse.set(clientX / width * 2 - 1, -(clientY / height) * 2 + 1);
+      runtime.current.pointerClient.set(clientX, clientY);
+    };
+    const onPointerMove = (event: PointerEvent): void => updatePointer(event.clientX, event.clientY);
+    const onTouchMove = (event: TouchEvent): void => {
+      const touch = event.touches.item(0);
+      if (touch) updatePointer(touch.clientX, touch.clientY);
+    };
     window.addEventListener(SCROLL_SIGNAL_EVENT, onScroll);
-    return () => window.removeEventListener(SCROLL_SIGNAL_EVENT, onScroll);
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('touchstart', onTouchMove, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    return () => {
+      window.removeEventListener(SCROLL_SIGNAL_EVENT, onScroll);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('touchstart', onTouchMove);
+      window.removeEventListener('touchmove', onTouchMove);
+    };
   }, []);
+
   useFrame((_, delta) => {
     const value = runtime.current;
     const frameTime = Math.max(delta, .001);
-    const deltaX = (pointer.x - value.previousMouse.x) / frameTime;
-    const deltaY = (pointer.y - value.previousMouse.y) / frameTime;
+    const deltaX = (value.targetMouse.x - value.previousTargetMouse.x) / frameTime;
+    const deltaY = (value.targetMouse.y - value.previousTargetMouse.y) / frameTime;
     const magnitude = Math.hypot(deltaX, deltaY);
     if (magnitude > .0001) {
       value.targetVelocity.set(deltaX / magnitude, deltaY / magnitude).multiplyScalar(Math.min(magnitude * .075, 1.25));
@@ -100,8 +164,8 @@ function useSceneRuntime(): MutableRefObject<SceneRuntime> {
       value.targetVelocity.set(0, 0);
     }
     value.velocity.lerp(value.targetVelocity, .14);
-    value.mouse.lerp(pointer, .18);
-    value.previousMouse.copy(pointer);
+    value.mouse.lerp(value.targetMouse, .18);
+    value.previousTargetMouse.copy(value.targetMouse);
   });
   return runtime;
 }
@@ -168,6 +232,43 @@ function createDomEchoMaterial(color: string): DomEchoMaterial {
   });
 }
 
+function mediaPlaneTint(element: HTMLElement): THREE.Color {
+  if (element.dataset.webglPlane === 'hero-title') return new THREE.Color('#ffb15d');
+  if (element.dataset.webglPlane === 'dossier-media') return new THREE.Color('#b58dff');
+  return new THREE.Color('#72e6ff');
+}
+
+function createMediaPlaneEntry(element: HTMLElement): MediaPlaneEntry {
+  const geometry = new THREE.PlaneGeometry(1, 1, 24, 14);
+  const uniforms: MediaPlaneUniforms = {
+    uTime: { value: 0 },
+    uScrollVelocity: { value: 0 },
+    uHover: { value: 0 },
+    uPointer: { value: new THREE.Vector2(.5, .5) },
+    uTint: { value: mediaPlaneTint(element) },
+    uOpacity: { value: element.dataset.webglPlane === 'hero-title' ? .24 : .18 },
+  };
+  const material = new MediaPlaneMaterial({
+    uniforms,
+    vertexShader: mediaPlaneVertexShader,
+    fragmentShader: mediaPlaneFragmentShader,
+    transparent: true,
+    depthTest: false,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.frustumCulled = false;
+  mesh.renderOrder = 4;
+  return { element, geometry, material, mesh, hover: 0 };
+}
+
+function disposeMediaPlane(entry: MediaPlaneEntry, group: THREE.Group | null): void {
+  group?.remove(entry.mesh);
+  entry.geometry.dispose();
+  entry.material.dispose();
+}
+
 function createParticleGeometry(): THREE.BufferGeometry {
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(PARTICLE_COUNT * 3);
@@ -196,7 +297,7 @@ function createParticleGeometry(): THREE.BufferGeometry {
   return geometry;
 }
 
-function CameraRig({ runtime }: { runtime: MutableRefObject<SceneRuntime> }): null {
+function CameraRig({ runtime }: RuntimeProps): null {
   const camera = useThree((state) => state.camera);
   const lookAt = useRef(new THREE.Vector3());
   useFrame(() => {
@@ -215,7 +316,7 @@ function CameraRig({ runtime }: { runtime: MutableRefObject<SceneRuntime> }): nu
   return null;
 }
 
-function AtmosphericField({ runtime }: { runtime: MutableRefObject<SceneRuntime> }): JSX.Element {
+function AtmosphericField({ runtime }: RuntimeProps): JSX.Element {
   const material = useMemo(createAtmosphericMaterial, []);
   const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1, 220, 140), []);
   const viewport = useThree((state) => state.viewport);
@@ -234,7 +335,7 @@ function AtmosphericField({ runtime }: { runtime: MutableRefObject<SceneRuntime>
   return <mesh geometry={geometry} material={material} position={[0, 0, -4.2]} scale={[viewport.width * 1.5, viewport.height * 1.5, 1]} frustumCulled={false} dispose={null} />;
 }
 
-function GpuParticleField({ runtime }: { runtime: MutableRefObject<SceneRuntime> }): JSX.Element {
+function GpuParticleField({ runtime }: RuntimeProps): JSX.Element {
   const geometry = useMemo(createParticleGeometry, []);
   const material = useMemo(createParticleMaterial, []);
   useEffect(() => () => {
@@ -253,8 +354,8 @@ function GpuParticleField({ runtime }: { runtime: MutableRefObject<SceneRuntime>
   return <points geometry={geometry} material={material} frustumCulled={false} dispose={null} />;
 }
 
-function DomEchoPlane({ selector, color, runtime }: { selector: string; color: string; runtime: MutableRefObject<SceneRuntime> }): JSX.Element {
-  const mesh = useRef<THREE.Mesh>(null);
+function DomEchoPlane({ selector, color, runtime }: DomEchoPlaneProps): JSX.Element {
+  const mesh = useRef<THREE.Mesh<THREE.PlaneGeometry, DomEchoMaterial>>(null);
   const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1, 40, 26), []);
   const material = useMemo(() => createDomEchoMaterial(color), [color]);
   const size = useThree((state) => state.size);
@@ -281,7 +382,86 @@ function DomEchoPlane({ selector, color, runtime }: { selector: string; color: s
   return <mesh ref={mesh} geometry={geometry} material={material} frustumCulled={false} dispose={null} />;
 }
 
-/** Active-Theory-style atmospheric scene: fluid background, GPU particles, DOM echoes, and camera rig. */
+function DomMediaPlaneLayer({ runtime }: RuntimeProps): JSX.Element | null {
+  const group = useRef<THREE.Group>(null);
+  const entries = useRef<Map<HTMLElement, MediaPlaneEntry>>(new Map());
+  const discoveryNeeded = useRef(true);
+  const enabled = useMemo(() => !matchMedia('(pointer: coarse)').matches, []);
+  const scratch = useMemo<MediaProjectionScratch>(() => ({
+    anchor: new THREE.Vector3(),
+    direction: new THREE.Vector3(),
+    right: new THREE.Vector3(),
+    up: new THREE.Vector3(),
+  }), []);
+
+  useEffect(() => {
+    if (!enabled) return undefined;
+    const observer = new MutationObserver(() => { discoveryNeeded.current = true; });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      entries.current.forEach((entry) => disposeMediaPlane(entry, group.current));
+      entries.current.clear();
+      discoveryNeeded.current = true;
+    };
+  }, [enabled]);
+
+  useFrame((state) => {
+    if (!enabled || !group.current) return;
+    if (discoveryNeeded.current) {
+      const elements = new Set(Array.from(document.querySelectorAll<HTMLElement>(DOM_MEDIA_SELECTORS)));
+      elements.forEach((element) => {
+        if (entries.current.has(element)) return;
+        const entry = createMediaPlaneEntry(element);
+        entries.current.set(element, entry);
+        group.current?.add(entry.mesh);
+      });
+      entries.current.forEach((entry, element) => {
+        if (elements.has(element)) return;
+        disposeMediaPlane(entry, group.current);
+        entries.current.delete(element);
+      });
+      discoveryNeeded.current = false;
+    }
+
+    state.camera.getWorldDirection(scratch.direction);
+    scratch.anchor.copy(state.camera.position).addScaledVector(scratch.direction, DOM_MEDIA_DISTANCE);
+    scratch.right.setFromMatrixColumn(state.camera.matrixWorld, 0).normalize();
+    scratch.up.setFromMatrixColumn(state.camera.matrixWorld, 1).normalize();
+    const viewport = state.viewport.getCurrentViewport(state.camera, scratch.anchor);
+    const signal = runtime.current;
+
+    entries.current.forEach((entry) => {
+      const rect = entry.element.getBoundingClientRect();
+      const visible = rect.width > 1 && rect.height > 1 && rect.bottom >= 0 && rect.top <= state.size.height && rect.right >= 0 && rect.left <= state.size.width;
+      entry.mesh.visible = visible;
+      if (!visible) return;
+
+      const width = rect.width / state.size.width * viewport.width;
+      const height = rect.height / state.size.height * viewport.height;
+      const centerX = (rect.left + rect.width * .5) / state.size.width * viewport.width - viewport.width * .5;
+      const centerY = -((rect.top + rect.height * .5) / state.size.height * viewport.height - viewport.height * .5);
+      entry.mesh.position.copy(scratch.anchor)
+        .addScaledVector(scratch.right, centerX)
+        .addScaledVector(scratch.up, centerY);
+      entry.mesh.quaternion.copy(state.camera.quaternion);
+      entry.mesh.scale.set(width, height, 1);
+
+      const pointerX = THREE.MathUtils.clamp((signal.pointerClient.x - rect.left) / rect.width, 0, 1);
+      const pointerY = THREE.MathUtils.clamp(1 - (signal.pointerClient.y - rect.top) / rect.height, 0, 1);
+      const hovered = signal.pointerClient.x >= rect.left && signal.pointerClient.x <= rect.right && signal.pointerClient.y >= rect.top && signal.pointerClient.y <= rect.bottom;
+      entry.hover = THREE.MathUtils.lerp(entry.hover, hovered ? 1 : 0, .15);
+      entry.material.uniforms.uTime.value = state.clock.elapsedTime;
+      entry.material.uniforms.uScrollVelocity.value = signal.scrollVelocity;
+      entry.material.uniforms.uHover.value = entry.hover;
+      entry.material.uniforms.uPointer.value.set(pointerX, pointerY);
+    });
+  });
+
+  return enabled ? <group ref={group} dispose={null} /> : null;
+}
+
+/** Persistent shader scene synchronized with the semantic DOM overlay. */
 export function SceneManager(): JSX.Element {
   const runtime = useSceneRuntime();
   return <>
@@ -290,6 +470,7 @@ export function SceneManager(): JSX.Element {
     <GpuParticleField runtime={runtime} />
     <DomEchoPlane selector="[data-webgl-plane='hero-title']" color="#ff9d3d" runtime={runtime} />
     <DomEchoPlane selector="#observatory .h2" color="#5fe1ff" runtime={runtime} />
+    <DomMediaPlaneLayer runtime={runtime} />
     <AdaptiveDpr pixelated />
     <EffectComposer multisampling={0} enableNormalPass={false}>
       <Bloom intensity={.34} luminanceThreshold={.42} mipmapBlur />

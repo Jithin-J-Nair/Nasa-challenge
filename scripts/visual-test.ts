@@ -48,6 +48,34 @@ try {
 
     if (viewport.name === 'desktop-1280x720') {
       await page.waitForSelector('#webgl-shell canvas', { timeout: 12_000 });
+      const spatialHud = await page.evaluate(() => {
+        const shell = document.querySelector<HTMLElement>('#webgl-shell');
+        const main = document.querySelector<HTMLElement>('main');
+        const action = document.querySelector<HTMLButtonElement>('.herocta .btn');
+        if (!shell || !main || !action) return null;
+        return {
+          shellPointerEvents: getComputedStyle(shell).pointerEvents,
+          mainPointerEvents: getComputedStyle(main).pointerEvents,
+          actionPointerEvents: getComputedStyle(action).pointerEvents,
+          headingCharacters: document.querySelectorAll('.spatial-char').length,
+          cardMediaMarkers: document.querySelectorAll('[data-webgl-plane="archive-card-media"]').length,
+        };
+      });
+      if (!spatialHud || spatialHud.shellPointerEvents !== 'auto' || spatialHud.mainPointerEvents !== 'none' || spatialHud.actionPointerEvents !== 'auto' || spatialHud.headingCharacters === 0 || spatialHud.cardMediaMarkers === 0) {
+        failures.push(`${viewport.name}: spatial HUD layering, kinetic headings, or DOM media markers did not initialise`);
+      }
+      await page.locator('.herocta .btn').first().hover();
+      await page.waitForTimeout(120);
+      const reticleState = await page.evaluate(() => {
+        const reticle = document.querySelector<HTMLElement>('#reticle');
+        if (!reticle) return null;
+        return {
+          active: reticle.classList.contains('on'),
+          magnetic: reticle.classList.contains('hot'),
+          scale: getComputedStyle(reticle).getPropertyValue('--reticle-scale').trim(),
+        };
+      });
+      if (!reticleState || !reticleState.active || !reticleState.magnetic || reticleState.scale !== '1.45') failures.push(`${viewport.name}: magnetic cursor reticle did not lock to an interactive control`);
       const recoveryState = await page.evaluate(() => {
         const canvas = document.querySelector<HTMLCanvasElement>('#webgl-shell canvas');
         if (!canvas) return null;
@@ -62,7 +90,7 @@ try {
     // Enter the WebGL section so locally hosted map textures and the render loop
     // are exercised at every viewport as well.
     await page.locator('#observatory').scrollIntoViewIfNeeded();
-    await page.waitForSelector('#vpLoad.gone', { timeout: 15_000 });
+    await page.waitForFunction(() => document.querySelector('#vpLoad')?.classList.contains('gone') === true, undefined, { timeout: 15_000 });
     await page.waitForTimeout(180);
     await page.screenshot({ path: `${outputDirectory}/${viewport.name}-observatory.png`, fullPage: false });
     const textureCredit = await page.locator('#hudTexture').textContent();
@@ -130,6 +158,33 @@ try {
   await staticContext.close();
 } finally {
   await staticBrowser.close();
+}
+
+// A real touch context verifies the native-scroll and no-reticle fallback rather
+// than treating a narrow desktop viewport as equivalent to a coarse pointer.
+const touchBrowser = await chromium.launch({
+  executablePath: await chromiumLambda.executablePath(),
+  headless: true,
+  args: chromiumLambda.args,
+});
+try {
+  const touchContext = await touchBrowser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const touchPage = await touchContext.newPage();
+  await touchPage.goto(baseUrl, { waitUntil: 'networkidle', timeout: 30_000 });
+  await touchPage.waitForFunction(() => document.documentElement.dataset.scrollEngine === 'native', undefined, { timeout: 12_000 });
+  const touchState = await touchPage.evaluate(() => {
+    const shell = document.querySelector<HTMLElement>('#webgl-shell');
+    const reticle = document.querySelector<HTMLElement>('#reticle');
+    return {
+      shellHidden: shell ? getComputedStyle(shell).display === 'none' : false,
+      reticleActive: reticle?.classList.contains('on') || false,
+      scrollEngine: document.documentElement.dataset.scrollEngine,
+    };
+  });
+  if (!touchState.shellHidden || touchState.reticleActive || touchState.scrollEngine !== 'native') failures.push('touch fallback: expected native scrolling, hidden ambient canvas, and no magnetic cursor');
+  await touchContext.close();
+} finally {
+  await touchBrowser.close();
 }
 
 if (failures.length) {

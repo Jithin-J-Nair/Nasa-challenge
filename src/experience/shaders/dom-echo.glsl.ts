@@ -28,7 +28,7 @@ varying float vPulse;
 
 void main() {
   vec2 mirrored = abs(vUv - 0.5) * 2.0;
-  float frame = max(smoothstep(0.99, 0.88, mirrored.x), smoothstep(0.99, 0.88, mirrored.y));
+  float frame = max(smoothstep(0.84, 0.98, mirrored.x), smoothstep(0.84, 0.98, mirrored.y));
   float scan = smoothstep(0.94, 1.0, sin((vUv.y + uTime * 0.045) * 180.0) * 0.5 + 0.5);
   float alpha = (frame * 0.62 + scan * 0.11) * (0.65 + vPulse * 0.22) * uOpacity;
   gl_FragColor = vec4(uColor, alpha);

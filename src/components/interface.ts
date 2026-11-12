@@ -3,6 +3,7 @@ import { $, $$ } from '../lib/dom';
 import { formatNumber, lerp, reducedMotion } from '../lib/utils';
 import { scramble, starCanvas } from './visual-effects';
 import { initLiquidGlassNavbar } from './ui/liquid-glass-navbar';
+import { initSpatialUi } from './spatial-ui';
 import { buildHelio, buildRecord, buildTicker, liveNumbers } from './telemetry';
 
 /** Set up the semantic DOM overlay after the non-blocking boot completes. */
@@ -92,28 +93,7 @@ export function initInterface(): void {
   });
 
   initLiquidGlassNavbar();
-
-  if (matchMedia('(pointer:fine)').matches && !reducedMotion) {
-    const reticle = $<HTMLElement>('#reticle');
-    let currentX = 0;
-    let currentY = 0;
-    let targetX = 0;
-    let targetY = 0;
-    addEventListener('mousemove', (event: MouseEvent) => { targetX = event.clientX; targetY = event.clientY; reticle.classList.add('on'); });
-    addEventListener('mouseleave', () => reticle.classList.remove('on'));
-    const followPointer = (): void => {
-      currentX = lerp(currentX, targetX, .19);
-      currentY = lerp(currentY, targetY, .19);
-      reticle.style.transform = `translate(${currentX}px, ${currentY}px)`;
-      requestAnimationFrame(followPointer);
-    };
-    requestAnimationFrame(followPointer);
-    document.addEventListener('mouseover', (event: MouseEvent) => {
-      const target = event.target;
-      const interactive = target instanceof Element && target.closest('button,a,.acard,.tlcard,.sitem,.lcard,.srow,.hot');
-      reticle.classList.toggle('hot', Boolean(interactive));
-    });
-  }
+  initSpatialUi();
 
   buildTicker();
   buildHelio();

@@ -87,7 +87,7 @@ void main() {
 
   vec4 modelViewPosition = modelViewMatrix * vec4(simulationPosition, 1.0);
   float depth = clamp((-modelViewPosition.z) / 12.0, 0.0, 1.0);
-  gl_PointSize = aSize * uPixelRatio * (20.0 / max(1.0, -modelViewPosition.z));
+  gl_PointSize = aSize * uPixelRatio * (9.0 / max(1.0, -modelViewPosition.z));
   gl_Position = projectionMatrix * modelViewPosition;
   vDepth = depth;
   vAlpha = (0.38 + fract(aSeed * 91.1) * 0.62) * (1.0 - depth * 0.58);
@@ -104,8 +104,8 @@ varying float vDepth;
 void main() {
   vec2 coordinate = gl_PointCoord - 0.5;
   float distanceToCenter = length(coordinate);
-  float softCircle = smoothstep(0.5, 0.04, distanceToCenter);
-  float core = smoothstep(0.18, 0.0, distanceToCenter);
+  float softCircle = 1.0 - smoothstep(0.04, 0.5, distanceToCenter);
+  float core = 1.0 - smoothstep(0.0, 0.18, distanceToCenter);
   vec3 color = mix(uNearColor, uFarColor, vDepth);
   color += core * 0.62;
   gl_FragColor = vec4(color, softCircle * vAlpha);

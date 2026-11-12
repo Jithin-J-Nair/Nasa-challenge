@@ -116,7 +116,7 @@ void main() {
   float scrollEnergy = clamp(abs(uScrollVelocity) * 0.006, 0.0, 1.0);
   float wake = sin((mouseDistance * 25.0) - uTime * (4.0 + scrollEnergy * 1.8)) * exp(-mouseDistance * (4.4 - velocityEnergy));
   float strata = smoothstep(-0.35, 0.72, fluid + secondaryFluid * 0.38 + wake * (0.35 + velocityEnergy + scrollEnergy * 0.18));
-  float edge = smoothstep(0.72, 0.04, length(centeredUv));
+  float edge = 1.0 - smoothstep(0.04, 0.72, length(centeredUv));
   float shimmer = smoothstep(0.15, 0.86, fluid + vDisplacement * 0.38);
   vec3 color = mix(uCoreColor, uEdgeColor, strata);
   color += uEdgeColor * wake * 0.34;
