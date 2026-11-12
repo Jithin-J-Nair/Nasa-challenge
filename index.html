@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="An interactive archive of NASA's off-world hardware: the landers, rovers, probes and small objects left on the Moon, on Mars, and in deep space. Built for the 2026 NASA Space Apps Challenge." />
+    <title>SILENT FLEET — An Archive of the Machines We Left Behind</title>
+  </head>
+  <body>
+<!-- ============ BOOT ============ -->
+<div id="boot" role="status" aria-live="polite">
+  <div class="bootmark"><span></span><span></span><span></span></div>
+  <div id="bootlog"></div>
+  <div class="bootbar"><i id="bootfill"></i></div>
+  <button id="bootskip">SKIP ACQUISITION</button>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="vig" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
+<div id="reticle" aria-hidden="true">
+  <svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="9"/><path d="M17 0v7M17 27v7M0 17h7M27 17h7"/></svg>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <a class="brand" href="#hero" aria-label="Silent Fleet — home">
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="16" r="14.2" fill="none" stroke="rgba(239,234,225,.22)" stroke-width="1"/>
+      <ellipse cx="16" cy="16" rx="14.2" ry="5.4" fill="none" stroke="rgba(255,157,61,.65)" stroke-width="1" transform="rotate(-24 16 16)"/>
+      <circle cx="16" cy="16" r="3.1" fill="#ff9d3d"/>
+      <circle cx="27.4" cy="10.6" r="1.5" fill="#5fe1ff"/>
+    </svg>
+    <span><b>Silent&nbsp;Fleet</b><em>Off-world hardware archive</em></span>
+  </a>
+  <nav class="navlinks" id="navlinks" aria-label="Primary">
+    <a href="#briefing">Briefing</a>
+    <a href="#observatory">Observatory</a>
+    <a href="#ledger">Small Things</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#interstellar">Beyond</a>
+    <a href="#fieldguide">Archive</a>
+    <a href="#science">Science</a>
+  </nav>
+  <div class="navright">
+    <div class="utc">UTC <b id="clock">--:--:--</b></div>
+    <button class="iconbtn" id="soundBtn" aria-pressed="false" title="Toggle ambient telemetry audio">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 8.5a5 5 0 0 1 0 7" class="wave"/><path d="M20 6a8.5 8.5 0 0 1 0 12" class="wave"/></svg>
+    </button>
+    <button class="iconbtn" id="burger" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============ TELEMETRY BAR ============ -->
+<div class="telemetry" aria-hidden="true">
+  <div class="telwrap" id="telwrap"></div>
+</div>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="herograd" aria-hidden="true"></div>
+
+  <div class="hero-tag">
+    <p>“We came in peace for all mankind.”</p>
+    <div class="who">Plaque left on the Moon · Apollo 11 · 1969</div>
+  </div>
+
+  <div class="wrap heroinner">
+    <div class="eyebrow" data-scramble>NASA Space Apps 2026 · Interactive Archive</div>
+    <h1 class="herotitle">
+      <span class="lm"><span data-scramble>THE SILENT</span></span>
+      <span class="lm"><span><em class="thin">fleet</em> <span class="out" data-scramble>1959→</span></span></span>
+    </h1>
+
+    <div class="herometa">
+      <div>
+        <dt>Objects catalogued</dt>
+        <dd><span class="count" data-to="42" id="heroCount">0</span> <small>in this archive</small></dd>
+      </div>
+      <div>
+        <dt>Hardware on the Moon</dt>
+        <dd>≈96 <small>tonnes · and growing</small></dd>
+      </div>
+      <div>
+        <dt>Farthest human object</dt>
+        <dd><span id="heroV1">—</span> <small>Voyager 1 · AU from Earth</small></dd>
+      </div>
+      <div>
+        <dt>Still transmitting</dt>
+        <dd><span class="count" data-to="5">0</span> <small>spacecraft · 2 interstellar</small></dd>
+      </div>
+    </div>
+
+    <div class="herocta">
+      <button class="btn solid" data-scroll="#observatory"><span>Open the Observatory</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button class="btn" data-scroll="#timeline"><span>Play the timeline</span></button>
+      <div class="scrollcue"><span>Scroll</span><i></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BRIEFING ============ -->
+<section id="briefing">
+  <div class="wrap briefgrid">
+    <div class="briefstick" data-reveal>
+      <div class="eyebrow">Mission briefing</div>
+      <h2 class="h2" style="margin-top:20px">
+        <span class="lm"><span>Every mission</span></span>
+        <span class="lm"><span>leaves something</span></span>
+        <span class="lm"><span><em class="serif" style="font-style:italic;color:var(--amberL)">behind.</em></span></span>
+      </h2>
+      <div class="counters">
+        <div><b class="count" data-to="67" data-suffix="">0</b><span>Years of hardware accumulation</span></div>
+        <div><b class="count" data-to="12">0</b><span>Humans who walked on the Moon</span></div>
+        <div><b class="count" data-to="54" data-suffix=" yrs">0</b><span>Since the last crewed landing</span></div>
+        <div><b>3.8<span style="font-size:.5em">cm</span></b><span>How fast the Moon is leaving us</span></div>
+      </div>
+      <p class="mono" style="margin-top:26px;line-height:1.8">Nothing on the Moon rusts. Nothing on the Moon blows away.</p>
+    </div>
+
+    <div class="briefbody" data-reveal>
+      <p>In September 1959 a 390-kilogram Soviet probe called Luna&nbsp;2 fell into the Moon's dust and became the first human-made object to touch another world. It shattered on impact. Sixty-seven years later it is still there — along with everything we have sent since.</p>
+
+      <p>There is no wind on the Moon, no rain, no bacteria, no weather. A bootprint pressed into the grey powder at the Sea of Tranquility in 1969 has not been disturbed since, and will probably not be disturbed for a million years. Around it lie six descent stages, three lunar buggies, nine bags of tools, five laser mirrors, a small aluminium statue of a fallen astronaut, and roughly ninety-six bags of human waste that crews threw out the hatch to save weight on the way home.</p>
+
+      <p>Mars is different. Mars has weather, and Mars is harder. Of everything that has ever reached the Martian surface, only a handful landed softly. The rest are heat shields, backshells, crumpled parachutes and deliberate crash sites scattered across the dust — a slow-motion archaeological record of a century of trying. Beneath the failures sit the survivors: rovers that were designed for ninety days and worked for fifteen years.</p>
+
+      <p>And then there is the deep. Five spacecraft have enough speed to escape the Sun's gravity forever. Two of them — Voyager 1 and Voyager 2 — have already crossed out of the Sun's bubble of plasma and into the space between the stars, carrying golden records of a planet they will never see again.</p>
+
+      <div class="pull">
+        <q>My battery is low and it's getting dark.</q>
+        <cite>A poet's translation of Opportunity's final telemetry · 10 June 2018 · by Jacob Margolis</cite>
+      </div>
+
+      <p>This archive exists because most people only ever hear about the missions that are still working. But the machines that stopped are the ones with the stories. They were built by people, launched on fire, and abandoned on purpose — and every one of them bought us something we did not have before.</p>
+
+      <div class="asides">
+        <article>
+          <h4><i></i>Derelict ≠ useless</h4>
+          <p>Apollo 15's laser mirrors still bounce photons from Earth-based telescopes. The experiment never ended — the crew just went home.</p>
+        </article>
+        <article>
+          <h4><i></i>Failure is data</h4>
+          <p>Mars 3 transmitted for 14.5 seconds. Beagle 2 landed intact but never opened. Both taught engineers exactly what to fix next.</p>
+        </article>
+        <article>
+          <h4><i></i>Leaving things is a choice</h4>
+          <p>Cassini and Galileo were deliberately destroyed inside their planets so that ocean worlds like Enceladus and Europa stay uncontaminated.</p>
+        </article>
+      </div>
+
+      <p class="mono" style="line-height:1.9">Catalogue scope · 1959 – 2026 · Moon, Mars &amp; heliocentric space<br>
+      Primary agencies · NASA, with USSR / ESA / Roscosmos hardware included where it shares a landing site.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OBSERVATORY ============ -->
+<section id="observatory">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div>
+        <div class="eyebrow cold">Surface operations · live model</div>
+        <h2 class="h2" style="margin-top:18px">The Observatory</h2>
+        <p>A procedural, true-to-scale model of the Moon and Mars built from real crater statistics and landing coordinates. Every marker is a real object sitting at a real latitude and longitude. Drag to orbit. Click a marker to open its dossier.</p>
+      </div>
+      <div class="obs-head" style="margin:0">
+        <div class="bodytoggle" role="tablist" aria-label="Celestial body">
+          <button data-b="moon" class="sel" role="tab" aria-selected="true"><i></i>Moon</button>
+          <button data-b="mars" role="tab" aria-selected="false"><i></i>Mars</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="obs" data-reveal>
+      <div class="viewport" id="viewport">
+        <canvas id="globe" aria-label="Interactive 3D globe showing artifact locations"></canvas>
+        <div id="hotspots"></div>
+        <div class="vp-hud tl">
+          <div class="rec"><i></i>LIVE MODEL</div>
+          <div id="hudBody" style="margin-top:7px">BODY · <b>THE MOON</b></div>
+          <div id="hudSite" style="margin-top:3px">MEAN RADIUS · <b>1,737.4 KM</b></div>
+        </div>
+        <div class="vp-hud tr">
+          <div id="hudCount">MARKERS · <b>13</b></div>
+          <div style="margin-top:3px">PROJECTION · <b>EQUIRECT</b></div>
+          <div style="margin-top:3px">SCALE · <b>1:1 SPHERICAL</b></div>
+        </div>
+        <div class="vp-hud bl" id="hudSel">SELECTED · <b>NONE</b></div>
+        <div class="vp-tools">
+          <button id="btnZoomIn" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button id="btnZoomOut" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+          <button id="btnSpin" title="Toggle auto-rotation" aria-label="Toggle auto rotation"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3.2-6.9"/><path d="M21 4v5h-5"/></svg></button>
+          <button id="btnReset" title="Reset view" aria-label="Reset view"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></button>
+        </div>
+        <div class="vp-loading" id="vpLoad">Generating surface model…</div>
+      </div>
+      <div class="sidecol">
+        <div class="sidetop">
+          <h3 id="sideTitle">Artefacts on the Moon</h3>
+          <span class="cnt" id="sideCnt">13 / 13</span>
+        </div>
+        <div class="sidelist" id="sideList" role="listbox" aria-label="Artefact list"></div>
+      </div>
+    </div>
+    <p class="mono" style="margin-top:16px;line-height:1.8" data-reveal>
+      Surface textures are generated in your browser from procedural crater statistics — not photographs. Landing coordinates are real.
+    </p>
+  </div>
+</section>
+
+<!-- ============ LEDGER ============ -->
+<section id="ledger">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div>
+        <div class="eyebrow rusty">Inventory · personal effects</div>
+        <h2 class="h2" style="margin-top:18px">The ledger of small things</h2>
+        <p>Not everything left on the Moon was a spacecraft. Crews jettisoned weight, dropped experiments, buried a statue — and once, hit two golf balls.</p>
+      </div>
+      <p class="mono" style="max-width:250px;margin:0">Source · NASA lunar surface inventory tallies &amp; Apollo mission reports</p>
+    </div>
+    <div class="ledgergrid" id="ledgerGrid" data-reveal></div>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section id="timeline">
+  <div class="wrap sec-head" data-reveal>
+    <div>
+      <div class="eyebrow">Chronology · 1959 – 2026</div>
+      <h2 class="h2" style="margin-top:18px">Sixty-seven years, one direction</h2>
+      <p>Every arrival, in order. Drag the rail, or press playback and let the archive tell itself.</p>
+    </div>
+  </div>
+  <div class="wrap tl-ctrl" data-reveal>
+    <button class="playbtn" id="playBtn" aria-pressed="false">
+      <svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4l13 8-13 8z"/></svg>
+      <span id="playLabel">Playback</span>
+    </button>
+    <div class="chips" id="tlChips">
+      <button class="chip sel" data-tl="all">All</button>
+      <button class="chip" data-tl="moon">Moon</button>
+      <button class="chip" data-tl="mars">Mars</button>
+      <button class="chip cool" data-tl="deep">Deep space</button>
+    </div>
+    <div class="mono" id="tlCount">42 events</div>
+  </div>
+  <div class="rail">
+    <div class="railscroll" id="railScroll" tabindex="0" role="region" aria-label="Scrollable mission timeline">
+      <div class="track" id="track"></div>
+    </div>
+    <div class="tl-caption" id="tlCaption"><b>Standby</b>Choose an event, or press playback to run the chronology.</div>
+  </div>
+</section>
+
+<!-- ============ INTERSTELLAR ============ -->
+<section id="interstellar">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div>
+        <div class="eyebrow cold">Beyond the heliopause</div>
+        <h2 class="h2" style="margin-top:18px">The ones still going</h2>
+        <p>Five spacecraft carry enough speed to leave the Sun forever. Two are already in interstellar space. These counters are calculated live in your browser from real trajectory rates.</p>
+      </div>
+    </div>
+
+    <div class="intgrid">
+      <div data-reveal>
+        <div class="countdown">
+          <div class="lbl"><i></i>Milestone · Voyager 1 reaches one light-day from Earth · 18 Nov 2026, 10:16:07 UTC</div>
+          <div class="cdu">
+            <div><b id="cdD">00</b><span>Days</span></div>
+            <div><b id="cdH">00</b><span>Hours</span></div>
+            <div><b id="cdM">00</b><span>Minutes</span></div>
+            <div><b id="cdS">00</b><span>Seconds</span></div>
+          </div>
+          <p class="mono" style="margin:18px 0 0;line-height:1.8;color:#5f6779">One light-day = <span style="color:var(--ink2)">25,902,068,371 km</span> — the distance light travels in 24 hours. Voyager 1 will have taken 49 years, 2 months and 11 days to cover it.</p>
+        </div>
+
+        <div class="odom" style="margin-top:34px">
+          <div class="row v1">
+            <div class="nm">Voyager 1</div>
+            <div class="val"><span id="v1km">0</span><em>km from Earth</em></div>
+            <div class="au"><span id="v1au">0</span> AU</div>
+          </div>
+          <div class="row v2">
+            <div class="nm">Voyager 2</div>
+            <div class="val"><span id="v2km">0</span><em>km from Earth</em></div>
+            <div class="au"><span id="v2au">0</span> AU</div>
+          </div>
+          <div class="row">
+            <div class="nm">Round trip</div>
+            <div class="val" style="color:var(--ink2);font-size:clamp(16px,2vw,24px)"><span id="rtt">0</span><em>hours for a command &amp; reply</em></div>
+            <div class="au" style="color:var(--muted)">light time</div>
+          </div>
+          <div class="row">
+            <div class="nm">New Horizons</div>
+            <div class="val" style="color:var(--violet);font-size:clamp(16px,2vw,24px)"><span id="nhkm">0</span><em>km · Kuiper Belt</em></div>
+            <div class="au"><span id="nhau">0</span> AU</div>
+          </div>
+        </div>
+
+        <div class="pull" style="margin-top:40px">
+          <q>Look again at that dot. That's here. That's home. That's us.</q>
+          <cite>Carl Sagan · on the Pale Blue Dot image · taken by Voyager 1 at 6.06 billion km · 14 Feb 1990</cite>
+        </div>
+      </div>
+
+      <div class="helio" data-reveal>
+        <div class="mono" style="padding:6px 6px 14px;display:flex;justify-content:space-between">
+          <span>Heliocentric map · top down</span><span style="color:var(--cyan)">log scale</span>
+        </div>
+        <svg viewBox="0 0 420 380" id="helioSvg" role="img" aria-label="Map of the solar system showing the five escaping spacecraft"></svg>
+        <div class="legend">
+          <span><i style="background:#ff9d3d"></i>Voyager 1</span>
+          <span><i style="background:#5fe1ff"></i>Voyager 2</span>
+          <span><i style="background:#e2553b"></i>Pioneer 10</span>
+          <span><i style="background:#a48bff"></i>Pioneer 11</span>
+          <span><i style="background:#8ee6a4"></i>New Horizons</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recordwrap" data-reveal>
+      <div>
+        <svg viewBox="0 0 320 320" id="recordSvg" role="img" aria-label="The Voyager Golden Record cover diagram"></svg>
+      </div>
+      <div>
+        <div class="eyebrow">On board both Voyagers</div>
+        <h3 class="h3" style="margin:16px 0 16px">A phonograph with no needle, thrown into an ocean with no shore.</h3>
+        <p style="color:var(--ink2);font-size:15.5px;line-height:1.78;margin:0 0 12px">Each Voyager carries a 30-centimetre gold-plated copper phonograph record, sealed in an aluminium jacket with a uranium-238 clock so a finder can date it. The cover is etched with instructions: how to build a needle, how fast to spin it, and — because the builders assumed whoever found it would not know where we are — a map.</p>
+        <p style="color:var(--ink2);font-size:15.5px;line-height:1.78;margin:0">Fourteen lines radiate from a point. They are the periods of fourteen pulsars, written in binary, in units of the hydrogen spin-flip transition. Any civilisation that knows pulsars can triangulate the Sun. Below it, the hyperfine transition of hydrogen gives the unit of length and time for everything else.</p>
+        <ul class="tracklist">
+          <li><b>Bach</b> · Brandenburg Concerto No. 2</li>
+          <li><b>Chuck Berry</b> · Johnny B. Goode</li>
+          <li><b>Blind Willie Johnson</b> · Dark Was the Night</li>
+          <li><b>Peruvian panpipes</b> · wedding song</li>
+          <li><b>Greetings</b> · 55 languages</li>
+          <li><b>Earth sounds</b> · wind, thunder, heartbeat</li>
+          <li><b>Mozart</b> · Magic Flute, Queen of the Night</li>
+          <li><b>Navajo</b> · night chant</li>
+          <li><b>115 images</b> · encoded in analogue</li>
+          <li><b>Sagan's</b> · whispered brainwaves</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIELD GUIDE ============ -->
+<section id="fieldguide">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div>
+        <div class="eyebrow">Complete catalogue</div>
+        <h2 class="h2" style="margin-top:18px">Field guide</h2>
+        <p>Search every object in the archive. Filter by world, by fate, by decade. Press <kbd style="font-family:var(--ff-m);border:1px solid var(--line2);padding:2px 6px;border-radius:2px;font-size:11px">/</kbd> to jump to search.</p>
+      </div>
+    </div>
+
+    <div class="filters" data-reveal>
+      <div class="searchbox" id="searchBox">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+        <input id="search" type="search" placeholder="Search artefacts…" aria-label="Search artefacts" autocomplete="off" />
+        <button class="clear" id="clearSearch" aria-label="Clear search">×</button>
+      </div>
+      <div class="chips" id="bodyChips" role="group" aria-label="Filter by celestial body">
+        <button class="chip sel" data-f="body" data-v="all">All worlds</button>
+        <button class="chip" data-f="body" data-v="moon">Moon</button>
+        <button class="chip" data-f="body" data-v="mars">Mars</button>
+        <button class="chip cool" data-f="body" data-v="deep">Deep space</button>
+      </div>
+      <div class="chips" id="statusChips" role="group" aria-label="Filter by status">
+        <button class="chip sel" data-f="status" data-v="all">Any fate</button>
+        <button class="chip" data-f="status" data-v="active">Active</button>
+        <button class="chip" data-f="status" data-v="derelict">Derelict</button>
+        <button class="chip" data-f="status" data-v="silent">Silent</button>
+        <button class="chip" data-f="status" data-v="lost">Lost</button>
+        <button class="chip" data-f="status" data-v="destroyed">Destroyed</button>
+      </div>
+      <div class="selectwrap">
+        <select id="sortSel" aria-label="Sort artefacts">
+          <option value="year-asc">Oldest first</option>
+          <option value="year-desc">Newest first</option>
+          <option value="name">A → Z</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="results" id="results">Showing <b>42</b> of 42 artefacts</div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty">
+      <svg viewBox="0 0 64 64"><circle cx="28" cy="28" r="17"/><path d="M40 40l14 14M20 28h16M28 20v16" stroke-dasharray="3 4"/></svg>
+      <h4>Nothing in the archive matches that.</h4>
+      <p><span data-total>42</span> objects catalogued · try a mission name, a year, or a world</p>
+      <button class="btn" id="resetFilters"><span>Reset filters</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCIENCE ============ -->
+<section id="science">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div>
+        <div class="eyebrow">Return on investment</div>
+        <h2 class="h2" style="margin-top:18px">What they taught us</h2>
+        <p>The hardware is silent. The knowledge it bought is not. Each of these facts exists because a machine went somewhere and did not come back.</p>
+      </div>
+    </div>
+
+    <div class="bigdisc" data-reveal>
+      <article>
+        <div class="n">Discovery 01 · Moon</div>
+        <q>We changed another world's temperature by walking on it.</q>
+        <div class="src">Apollo 15 &amp; 17 heat-flow probes<b>Lost tapes recovered · published 2019</b>
+        Engineers found that the regolith around the landing sites warmed 1–2 °C in the 1970s — because astronaut footprints and rover tracks darkened the surface, lowering its reflectivity. The first measured case of humans altering the climate of another world.</div>
+      </article>
+      <article>
+        <div class="n">Discovery 02 · Mars</div>
+        <q>Mars was once the most Earth-like place in the solar system.</q>
+        <div class="src">Opportunity, Spirit, Curiosity, Perseverance<b>2004 – present</b>
+        Hematite concretions that formed in groundwater. Ninety-percent-pure silica from a hot spring. Mudstone laid down in a neutral-pH freshwater lake with every element life needs. All of it read by wheels.</div>
+      </article>
+      <article>
+        <div class="n">Discovery 03 · Saturn</div>
+        <q>An ocean world is spraying itself into space.</q>
+        <div class="src">Cassini at Enceladus<b>2005 – 2017</b>
+        Cassini flew through geysers erupting from Enceladus' south pole and tasted them: water vapour, salts, silica grains consistent with hydrothermal vents, and simple organics. A moon smaller than Arizona has a global ocean, heat, chemistry and water.</div>
+      </article>
+      <article>
+        <div class="n">Discovery 04 · Deep space</div>
+        <q>The Sun's bubble has an edge, and we crossed it.</q>
+        <div class="src">Voyager 1 &amp; 2<b>2012 &amp; 2018</b>
+        Both spacecraft watched galactic cosmic rays surge and solar particles collapse as they passed through the heliopause — the boundary where the solar wind gives way to interstellar gas. We now have measurements from outside.</div>
+      </article>
+    </div>
+
+    <div class="sciencelist" id="scienceList" data-reveal></div>
+  </div>
+</section>
+
+<!-- ============ EPILOGUE ============ -->
+<section id="epilogue">
+  <canvas id="epiCanvas" aria-hidden="true"></canvas>
+  <div class="epi-in">
+    <div class="eyebrow" style="justify-content:center;margin-bottom:34px">End of transmission</div>
+    <blockquote>
+      Nobody is steering them now.<br>
+      Their batteries are cold, their cameras are dark,<br>
+      and their commands come from a planet<br>
+      they will never see again.<br><br>
+      <em>They are still the farthest thing we have ever done.</em>
+    </blockquote>
+    <div class="sig">Silent Fleet · a student-built archive · 2026</div>
+    <div class="epi-cta">
+      <button class="btn solid" data-scroll="#fieldguide"><span>Browse all <span data-total>42</span> artefacts</span></button>
+      <button class="btn" data-scroll="#observatory"><span>Back to the Observatory</span></button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <div class="brand" style="margin-bottom:18px">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="16" cy="16" r="14.2" fill="none" stroke="rgba(239,234,225,.22)" stroke-width="1"/>
+            <ellipse cx="16" cy="16" rx="14.2" ry="5.4" fill="none" stroke="rgba(255,157,61,.65)" stroke-width="1" transform="rotate(-24 16 16)"/>
+            <circle cx="16" cy="16" r="3.1" fill="#ff9d3d"/>
+          </svg>
+          <span><b>Silent Fleet</b><em>Off-world hardware archive</em></span>
+        </div>
+        <p class="note">Built for the <b style="color:var(--ink2)">2026 NASA Space Apps Challenge</b> — “Tales of hardware lost and found in space.” An interactive, story-driven archive for school-age space enthusiasts about the machines NASA has left on the Moon, on Mars and in deep space since 1959.</p>
+        <p class="note" style="margin-top:16px">Not affiliated with or endorsed by NASA. All facts drawn from public mission documentation.</p>
+      </div>
+      <div>
+        <h5>Sections</h5>
+        <ul>
+          <li><a href="#briefing">Mission briefing</a></li>
+          <li><a href="#observatory">Observatory</a></li>
+          <li><a href="#ledger">Ledger of small things</a></li>
+          <li><a href="#timeline">Timeline 1959–2026</a></li>
+          <li><a href="#interstellar">Beyond the heliopause</a></li>
+          <li><a href="#fieldguide">Field guide</a></li>
+          <li><a href="#science">What they taught us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Still transmitting</h5>
+        <ul>
+          <li>Curiosity · Gale Crater</li>
+          <li>Perseverance · Jezero Crater</li>
+          <li>Voyager 1 · interstellar</li>
+          <li>Voyager 2 · interstellar</li>
+          <li>New Horizons · Kuiper Belt</li>
+          <li>Apollo 11/14/15 retroreflectors</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Data &amp; sources</h5>
+        <ul>
+          <li>NASA Science mission pages</li>
+          <li>JPL mission status &amp; odometers</li>
+          <li>NSSDCA / PDS planetary archives</li>
+          <li>Apollo Lunar Surface Journal</li>
+          <li>Lunar &amp; Planetary Institute</li>
+          <li>The Planetary Society</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fbottom">
+      <span>© 2026 Silent Fleet · Educational project</span>
+      <span>Procedural surfaces · three.js · GSAP · hand-built</span>
+      <span id="fDate">—</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ DOSSIER ============ -->
+<div class="scrim" id="scrim"></div>
+<aside class="dossier" id="dossier" role="dialog" aria-modal="false" aria-labelledby="dTitle" aria-hidden="true">
+  <div class="dhead">
+    <span class="idx" id="dIdx">00 / 42</span>
+    <h2 id="dTitle">—</h2>
+    <button class="dclose" id="dClose" aria-label="Close dossier">
+      <svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+  </div>
+  <div class="dbody" id="dBody"></div>
+  <div class="dnav">
+    <button id="dPrev"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Previous</button>
+    <button id="dNext">Next<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</aside>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
