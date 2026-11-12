@@ -150,4 +150,9 @@ export function buildRecord(): void {
   svg.innerHTML = output;
 }
 
-setInterval(liveNumbers, 1_000);
+/** Start the one telemetry clock and return a disposer for application remounts. */
+export function startLiveNumbers(): () => void {
+  liveNumbers();
+  const intervalId = window.setInterval(liveNumbers, 1_000);
+  return (): void => window.clearInterval(intervalId);
+}

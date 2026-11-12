@@ -25,11 +25,16 @@ export function initLiquidGlassNavbar(root = document.querySelector<HTMLElement>
   const canvas = root.querySelector<HTMLCanvasElement>('.liquid-nav-water');
   const context = canvas?.getContext('2d') || null;
   const mediaQuery = matchMedia('(max-width: 960px)');
+  const listenerController = new AbortController();
+  const { signal } = listenerController;
   const ripples: Ripple[] = [];
   let activeIndex = Math.max(0, items.findIndex((item) => item.getAttribute('aria-current') === 'page'));
   let drawing = false;
   let visible = true;
   let animationFrame: number | null = null;
+  let measureFrame: number | null = null;
+  let initialMeasureFrame: number | null = null;
+  let longJumpTimer: number | null = null;
 
   const resizeCanvas = (): void => {
     if (!canvas || !context) return;
@@ -57,7 +62,11 @@ export function initLiquidGlassNavbar(root = document.querySelector<HTMLElement>
     root.classList.toggle('liquid-nav-no-transition', immediate);
     root.style.setProperty('--liquid-drop-x', `${Math.round(itemBox.left - navigationBox.left)}px`);
     root.style.setProperty('--liquid-drop-width', `${Math.round(itemBox.width)}px`);
-    requestAnimationFrame(() => root.classList.remove('liquid-nav-no-transition'));
+    if (measureFrame !== null) cancelAnimationFrame(measureFrame);
+    measureFrame = requestAnimationFrame(() => {
+      measureFrame = null;
+      root.classList.remove('liquid-nav-no-transition');
+    });
     resizeCanvas();
   };
 
@@ -107,7 +116,7 @@ export function initLiquidGlassNavbar(root = document.querySelector<HTMLElement>
     icon.addEventListener('animationend', () => {
       icon.classList.remove('is-playing');
       delete icon.dataset.playing;
-    }, { once: true });
+    }, { once: true, signal });
   };
 
   const activate = (index: number, options: ActivateOptions = {}): void => {
@@ -122,7 +131,13 @@ export function initLiquidGlassNavbar(root = document.querySelector<HTMLElement>
     });
     const longJump = Math.abs(index - wasActive) > 1;
     root.classList.toggle('liquid-nav-long-jump', longJump);
-    if (longJump) setTimeout(() => root.classList.remove('liquid-nav-long-jump'), 620);
+    if (longJump) {
+      if (longJumpTimer !== null) window.clearTimeout(longJumpTimer);
+      longJumpTimer = window.setTimeout(() => {
+        longJumpTimer = null;
+        root.classList.remove('liquid-nav-long-jump');
+      }, 620);
+    }
     measure(index);
     if (options.event || options.focus) playIconFx(item);
     if (options.event) ripple(options.event, longJump ? 1.25 : .8);
@@ -161,11 +176,11 @@ export function initLiquidGlassNavbar(root = document.querySelector<HTMLElement>
   };
   const onPointerLeave = (): void => root.classList.remove('liquid-nav-pointer');
   const onPointerDown = (event: PointerEvent): void => ripple(event);
-  root.addEventListener('click', onClick);
-  root.addEventListener('keydown', onKeyDown);
-  root.addEventListener('pointerdown', onPointerDown);
-  root.addEventListener('pointermove', onPointerMove);
-  root.addEventListener('pointerleave', onPointerLeave);
+  root.addEventListener('click', onClick, { signal });
+  root.addEventListener('keydown', onKeyDown, { signal });
+  root.addEventListener('pointerdown', onPointerDown, { signal });
+  root.addEventListener('pointermove', onPointerMove, { signal });
+  root.addEventListener('pointerleave', onPointerLeave, { signal });
 
   const sections: NavigationSection[] = items.flatMap((item, index) => {
     const href = item.getAttribute('href');
@@ -192,18 +207,20 @@ export function initLiquidGlassNavbar(root = document.querySelector<HTMLElement>
     }
   });
   visibilityObserver.observe(root);
-  requestAnimationFrame(() => measure(activeIndex, true));
+  initialMeasureFrame = requestAnimationFrame(() => {
+    initialMeasureFrame = null;
+    measure(activeIndex, true);
+  });
 
   return (): void => {
+    listenerController.abort();
     mediaQuery.removeEventListener('change', setCompactState);
-    root.removeEventListener('click', onClick);
-    root.removeEventListener('keydown', onKeyDown);
-    root.removeEventListener('pointerdown', onPointerDown);
-    root.removeEventListener('pointermove', onPointerMove);
-    root.removeEventListener('pointerleave', onPointerLeave);
     sectionObserver.disconnect();
     resizeObserver.disconnect();
     visibilityObserver.disconnect();
-    if (animationFrame) cancelAnimationFrame(animationFrame);
+    if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+    if (measureFrame !== null) cancelAnimationFrame(measureFrame);
+    if (initialMeasureFrame !== null) cancelAnimationFrame(initialMeasureFrame);
+    if (longJumpTimer !== null) window.clearTimeout(longJumpTimer);
   };
 }

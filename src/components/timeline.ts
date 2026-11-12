@@ -14,21 +14,38 @@ function readTimelineFilter(value: string | undefined): TimelineFilter {
 }
 
 /** Initialise the horizontally scrollable mission timeline and its playback controls. */
-export function initTimeline(): void {
+export function initTimeline(): () => void {
+  const controller = new AbortController();
+  const { signal } = controller;
   let timelineFilter: TimelineFilter = 'all';
   let playing = false;
-  let playTween: ReturnType<typeof gsap.to> | null = null;
+  let playTween: gsap.core.Tween | null = null;
+  let playbackTimer: number | null = null;
+  const rail = $<HTMLElement>('#railScroll');
 
-  function setCaption(artifact: Artifact | undefined): void {
+  const stopPlayback = (): void => {
+    playing = false;
+    playTween?.kill();
+    playTween = null;
+    if (playbackTimer !== null) window.clearTimeout(playbackTimer);
+    playbackTimer = null;
+    const button = $<HTMLButtonElement>('#playBtn');
+    button.classList.remove('playing');
+    button.setAttribute('aria-pressed', 'false');
+    $('#playLabel').textContent = 'Playback';
+    $<SVGSVGElement>('#playIcon').innerHTML = '<path d="M7 4l13 8-13 8z"/>';
+  };
+
+  const setCaption = (artifact: Artifact | undefined): void => {
     if (!artifact) return;
     const summary = artifact.verifiedByNASA
       ? artifact.voice.split('.')[0]?.replace(/^I /, 'This machine ').replace(/^My /, 'Its ').replace(/^We /, 'They ') || artifact.one
       : 'We’re still checking this spacecraft’s story with NASA. Open its dossier for the source link.';
     const label = artifact.verifiedByNASA ? `${artifact.y} · ${artifact.m} · ${artifact.ag}` : 'NASA source review';
     $('#tlCaption').innerHTML = `<b>${label}</b>${summary.endsWith('.') ? summary : `${summary}.`}`;
-  }
+  };
 
-  function renderTimeline(): void {
+  const renderTimeline = (): void => {
     const list = order
       .filter((artifact) => isNASARecord(artifact) && (timelineFilter === 'all' || artifact.b === timelineFilter))
       .sort((left, right) => Number(right.verifiedByNASA) - Number(left.verifiedByNASA) || left.y - right.y || left.n.localeCompare(right.n));
@@ -60,37 +77,31 @@ export function initTimeline(): void {
     };
 
     $('#track').innerHTML = `${renderGroup('NASA source-audited records', verified)}${renderGroup('NASA records awaiting claim review', withheld)}`;
-    $$<HTMLButtonElement>('.tlcard').forEach((card) => {
-      card.addEventListener('click', () => {
-        selectArtifact(card.dataset.id, true);
-        setCaption(byId(card.dataset.id));
-      });
-      card.addEventListener('mouseenter', () => setCaption(byId(card.dataset.id)));
-    });
-  }
+  };
 
-  function runPlayback(): void {
-    const rail = $<HTMLElement>('#railScroll');
+  const runPlayback = (): void => {
     const cards = $$<HTMLButtonElement>('.tlcard');
-    if (!cards.length) return;
+    if (!cards.length) {
+      stopPlayback();
+      return;
+    }
     const maximumScroll = rail.scrollWidth - rail.clientWidth;
     let index = 0;
     const next = (): void => {
       if (!playing || index >= cards.length) {
-        if (playing) {
-          playing = false;
-          $('#playBtn').classList.remove('playing');
-          $('#playLabel').textContent = 'Playback';
-          $<SVGSVGElement>('#playIcon').innerHTML = '<path d="M7 4l13 8-13 8z"/>';
-        }
+        if (playing) stopPlayback();
         return;
       }
       const card = cards[index];
-      if (!card) return;
+      if (!card) {
+        stopPlayback();
+        return;
+      }
       cards.forEach((item) => item.classList.remove('act'));
       card.classList.add('act');
       setCaption(byId(card.dataset.id));
       const scrollLeft = Math.min(maximumScroll, card.offsetLeft - rail.clientWidth * .32);
+      playTween?.kill();
       playTween = gsap.to(rail, {
         scrollLeft,
         duration: reducedMotion ? 0 : 1.1,
@@ -98,19 +109,36 @@ export function initTimeline(): void {
         onComplete: () => beep(430 + index * 4, .05, .03),
       });
       index += 1;
-      setTimeout(next, reducedMotion ? 900 : 2200);
+      playbackTimer = window.setTimeout(next, reducedMotion ? 900 : 2200);
     };
     next();
-  }
+  };
+
+  const onTrackClick = (event: MouseEvent): void => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const card = target.closest<HTMLButtonElement>('.tlcard');
+    if (!card?.dataset.id) return;
+    selectArtifact(card.dataset.id, true);
+    setCaption(byId(card.dataset.id));
+  };
+  const onTrackMouseOver = (event: MouseEvent): void => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const card = target.closest<HTMLButtonElement>('.tlcard');
+    if (card?.dataset.id) setCaption(byId(card.dataset.id));
+  };
+  $('#track').addEventListener('click', onTrackClick, { signal });
+  $('#track').addEventListener('mouseover', onTrackMouseOver, { signal });
 
   $$<HTMLButtonElement>('#tlChips .chip').forEach((chip) => chip.addEventListener('click', () => {
+    stopPlayback();
     $$<HTMLButtonElement>('#tlChips .chip').forEach((item) => item.classList.remove('sel'));
     chip.classList.add('sel');
     timelineFilter = readTimelineFilter(chip.dataset.tl);
     renderTimeline();
-  }));
+  }, { signal }));
 
-  const rail = $<HTMLElement>('#railScroll');
   let dragging = false;
   let startX = 0;
   let startScroll = 0;
@@ -121,15 +149,18 @@ export function initTimeline(): void {
     startX = event.clientX;
     startScroll = rail.scrollLeft;
     rail.classList.add('drag');
-  });
-  addEventListener('pointerup', () => {
+    rail.setPointerCapture(event.pointerId);
+  }, { signal });
+  const releaseDrag = (): void => {
     dragging = false;
     rail.classList.remove('drag');
-  });
+  };
+  rail.addEventListener('pointerup', releaseDrag, { signal });
+  rail.addEventListener('pointercancel', releaseDrag, { signal });
   rail.addEventListener('pointermove', (event: PointerEvent) => {
     if (!dragging) return;
     rail.scrollLeft = startScroll - (event.clientX - startX);
-  });
+  }, { signal });
   rail.addEventListener('keydown', (event: KeyboardEvent) => {
     if (event.key === 'ArrowRight') {
       rail.scrollBy({ left: 280, behavior: 'smooth' });
@@ -139,23 +170,30 @@ export function initTimeline(): void {
       rail.scrollBy({ left: -280, behavior: 'smooth' });
       event.preventDefault();
     }
-  });
+  }, { signal });
 
   $<HTMLButtonElement>('#playBtn').addEventListener('click', () => {
-    playing = !playing;
+    if (playing) {
+      stopPlayback();
+      return;
+    }
+    playing = true;
     const button = $<HTMLButtonElement>('#playBtn');
-    button.classList.toggle('playing', playing);
-    button.setAttribute('aria-pressed', String(playing));
-    $('#playLabel').textContent = playing ? 'Pause' : 'Playback';
-    $<SVGSVGElement>('#playIcon').innerHTML = playing
-      ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>'
-      : '<path d="M7 4l13 8-13 8z"/>';
-    if (playing) runPlayback();
-    else playTween?.kill();
-  });
+    button.classList.add('playing');
+    button.setAttribute('aria-pressed', 'true');
+    $('#playLabel').textContent = 'Pause';
+    $<SVGSVGElement>('#playIcon').innerHTML = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+    runPlayback();
+  }, { signal });
 
-  onArtifactSelection(({ id }) => {
+  const disposeSelection = onArtifactSelection(({ id }) => {
     $$<HTMLButtonElement>('.tlcard').forEach((card) => card.classList.toggle('act', card.dataset.id === id));
   });
   renderTimeline();
+
+  return (): void => {
+    stopPlayback();
+    disposeSelection();
+    controller.abort();
+  };
 }

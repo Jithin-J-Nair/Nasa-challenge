@@ -10,6 +10,7 @@
     "build:pages": "npm run typecheck && VITE_BASE_PATH=/Nasa-challenge/ vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test:visual": "tsx scripts/visual-test.ts",
+    "test:lifecycle": "tsx scripts/lifecycle-stress.ts",
     "test:lighthouse": "tsx scripts/lighthouse-mobile.ts",
     "audit:claims": "tsx scripts/generate-claims-audit.ts",
     "catalogue:parse": "tsx scripts/parse-moon-catalogue.ts",

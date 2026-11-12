@@ -19,12 +19,15 @@ export function starCanvas(canvas: HTMLCanvasElement, density: number, drift: nu
   let height = 1;
   let stars: Star[] = [];
   let frameId: number | null = null;
+  let initialSizeFrame: number | null = null;
+  let staticFrame: number | null = null;
   let disposed = false;
   const random = mulberry32(9182);
   let pointerX = 0;
   let pointerY = 0;
 
   const size = (): void => {
+    if (disposed) return;
     const deviceScale = Math.min(devicePixelRatio || 1, 2);
     width = canvas.clientWidth || innerWidth;
     height = canvas.clientHeight || innerHeight;
@@ -50,7 +53,7 @@ export function starCanvas(canvas: HTMLCanvasElement, density: number, drift: nu
     pointerX = event.clientX / innerWidth - .5;
     pointerY = event.clientY / innerHeight - .5;
   };
-  requestAnimationFrame(size);
+  initialSizeFrame = requestAnimationFrame(size);
   addEventListener('resize', size);
   addEventListener('pointermove', onPointerMove, { passive: true });
   let time = 0;
@@ -79,38 +82,48 @@ export function starCanvas(canvas: HTMLCanvasElement, density: number, drift: nu
     frameId = requestAnimationFrame(frame);
   };
   if (!reducedMotion) frame();
-  else requestAnimationFrame(() => {
-    context.clearRect(0, 0, width, height);
-    stars.forEach((star) => {
-      context.globalAlpha = star.a * .7;
-      context.fillStyle = star.hue;
-      context.beginPath();
-      context.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-      context.fill();
+  else {
+    staticFrame = requestAnimationFrame(() => {
+      if (disposed) return;
+      context.clearRect(0, 0, width, height);
+      stars.forEach((star) => {
+        context.globalAlpha = star.a * .7;
+        context.fillStyle = star.hue;
+        context.beginPath();
+        context.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        context.fill();
+      });
+      context.globalAlpha = 1;
     });
-    context.globalAlpha = 1;
-  });
+  }
 
   return (): void => {
     disposed = true;
-    if (frameId) cancelAnimationFrame(frameId);
+    if (frameId !== null) cancelAnimationFrame(frameId);
+    if (initialSizeFrame !== null) cancelAnimationFrame(initialSizeFrame);
+    if (staticFrame !== null) cancelAnimationFrame(staticFrame);
     removeEventListener('resize', size);
     removeEventListener('pointermove', onPointerMove);
+    stars = [];
   };
 }
 
 const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789·—+*/<>[]#%$@';
 
-export function scramble(element: HTMLElement, duration = 1100): void {
+/** Animate a terminal-style text reveal and return a cancellation handle. */
+export function scramble(element: HTMLElement, duration = 1100): () => void {
   const final = element.dataset.final || element.textContent || '';
   element.dataset.final = final;
   if (reducedMotion) {
     element.textContent = final;
-    return;
+    return () => undefined;
   }
   const start = performance.now();
   const length = final.length;
+  let frameId: number | null = null;
+  let cancelled = false;
   const tick = (now: number): void => {
+    if (cancelled) return;
     const progress = clamp((now - start) / duration, 0, 1);
     const reveal = Math.floor(progress * length * 1.25);
     let output = '';
@@ -121,8 +134,13 @@ export function scramble(element: HTMLElement, duration = 1100): void {
       else output += GLYPHS[Math.floor(Math.random() * GLYPHS.length)] || '';
     }
     element.textContent = output;
-    if (progress < 1) requestAnimationFrame(tick);
+    if (progress < 1) frameId = requestAnimationFrame(tick);
     else element.textContent = final;
   };
-  requestAnimationFrame(tick);
+  frameId = requestAnimationFrame(tick);
+  return (): void => {
+    cancelled = true;
+    if (frameId !== null) cancelAnimationFrame(frameId);
+    element.textContent = final;
+  };
 }

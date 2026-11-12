@@ -4,8 +4,10 @@ import { $ } from '../lib/dom';
 let audioContext: AudioContext | null = null;
 let masterGain: GainNode | null = null;
 let droneOn = false;
-let controlsBound = false;
+let activeRelease: (() => void) | null = null;
+let gainTween: gsap.core.Tween | null = null;
 const droneSources: AudioScheduledSourceNode[] = [];
+const droneNodes: AudioNode[] = [];
 
 function audioInit(): void {
   if (audioContext) return;
@@ -23,8 +25,20 @@ function stopDrone(): void {
     } catch {
       // Sources that have already ended cannot be stopped again.
     }
-    source.disconnect();
   });
+  droneNodes.splice(0).forEach((node) => node.disconnect());
+}
+
+function resetAudioGraph(): void {
+  gainTween?.kill();
+  gainTween = null;
+  stopDrone();
+  droneOn = false;
+  masterGain?.disconnect();
+  const context = audioContext;
+  audioContext = null;
+  masterGain = null;
+  if (context && context.state !== 'closed') void context.close();
 }
 
 /** Play a tiny UI tone only after the visitor has enabled sound. */
@@ -69,6 +83,7 @@ function startDrone(): void {
     oscillator.start();
     lfo.start();
     droneSources.push(oscillator, lfo);
+    droneNodes.push(oscillator, gain, lfo, lfoGain);
   });
   const bufferSize = 2 * context.sampleRate;
   const noiseBuffer = context.createBuffer(1, bufferSize, context.sampleRate);
@@ -88,26 +103,37 @@ function startDrone(): void {
   noiseGain.connect(output);
   source.start();
   droneSources.push(source);
+  droneNodes.push(source, bandPass, noiseGain);
 }
 
-/** Bind the opt-in audio control once. Sources are cleaned on every toggle-off. */
-export function initAudioControls(): void {
-  if (controlsBound) return;
-  controlsBound = true;
+/** Bind the opt-in audio control and fully release its graph on host disposal. */
+export function initAudioControls(): () => void {
+  if (activeRelease) return activeRelease;
   const button = $<HTMLButtonElement>('#soundBtn');
-  button.addEventListener('click', () => {
+  const onToggle = (): void => {
     audioInit();
     if (!audioContext || !masterGain) return;
     if (audioContext.state === 'suspended') void audioContext.resume();
     droneOn = !droneOn;
     button.classList.toggle('on', droneOn);
     button.setAttribute('aria-pressed', String(droneOn));
-    gsap.to(masterGain.gain, { value: droneOn ? .6 : 0, duration: 1.2 });
+    gainTween?.kill();
+    gainTween = gsap.to(masterGain.gain, { value: droneOn ? .6 : 0, duration: 1.2 });
     if (droneOn) {
       startDrone();
       beep(880, .08, .06);
     } else {
       stopDrone();
     }
-  });
+  };
+  button.addEventListener('click', onToggle);
+  const release = (): void => {
+    button.removeEventListener('click', onToggle);
+    button.classList.remove('on');
+    button.setAttribute('aria-pressed', 'false');
+    resetAudioGraph();
+    if (activeRelease === release) activeRelease = null;
+  };
+  activeRelease = release;
+  return release;
 }

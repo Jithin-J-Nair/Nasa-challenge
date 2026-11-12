@@ -8,7 +8,7 @@ function escapeHtml(value: string | number): string {
 }
 
 /** Render the parsed NASA Moon catalogue once; filtering never changes its method count. */
-export function initMoonCatalogue(): void {
+export function initMoonCatalogue(): () => void {
   const root = $<HTMLElement>('#moonCatalogue');
   const directRows = MOON_CATALOGUE_ROWS.filter((row) => !row.seeBelow && !row.subItem);
   const renderRows = (query = ''): void => {
@@ -36,7 +36,8 @@ export function initMoonCatalogue(): void {
       <p class="mono">Partial-parse status · ${MOON_CATALOGUE_STATS.directObjectCount} direct object/location rows parsed from the NASA catalogue so far. References such as “see below” and indented sub-items are not counted; the list preserves supplied locations and never adds coordinates. <a href="${MOON_CATALOGUE_SOURCE}" target="_blank" rel="noreferrer">Open NASA PDF ↗</a></p>
     </details>`;
   const search = $<HTMLInputElement>('#moonCatalogueSearch');
-  search.addEventListener('input', () => renderRows(search.value.trim()));
+  const onSearchInput = (): void => renderRows(search.value.trim());
+  search.addEventListener('input', onSearchInput);
   renderRows();
 
   const observatoryStat = document.querySelector<HTMLElement>('#moonCatalogueStat');
@@ -45,4 +46,5 @@ export function initMoonCatalogue(): void {
   if (heroStat) heroStat.textContent = String(MOON_CATALOGUE_STATS.directObjectCount);
   const heroNote = document.querySelector<HTMLElement>('#moonInventoryNote');
   if (heroNote) heroNote.textContent = 'rows parsed from NASA catalogue so far';
+  return (): void => search.removeEventListener('input', onSearchInput);
 }

@@ -7,12 +7,16 @@ const INTERACTIVE_SELECTOR = 'a,button,input,select,textarea,summary,.acard,.tlc
 interface KineticHeading {
   element: HTMLElement;
   characters: HTMLElement[];
+  originalMarkup: string;
+  originalLabel: string | null;
 }
 
 function splitHeading(element: HTMLElement): KineticHeading | null {
   if (element.dataset.kineticReady === 'true') return null;
   const label = element.textContent?.replace(/\s+/g, ' ').trim();
   if (!label) return null;
+  const originalMarkup = element.innerHTML;
+  const originalLabel = element.getAttribute('aria-label');
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
   const nodes: Text[] = [];
   let currentNode = walker.nextNode();
@@ -37,7 +41,7 @@ function splitHeading(element: HTMLElement): KineticHeading | null {
   element.setAttribute('aria-label', label);
   element.dataset.kineticReady = 'true';
   element.classList.add('kinetic-heading');
-  return { element, characters };
+  return { element, characters, originalMarkup, originalLabel };
 }
 
 /** Split visible heading text into accessible character spans for ScrollTrigger reveals. */
@@ -67,6 +71,13 @@ export function initKineticHeadings(): () => void {
     tweens.forEach((tween) => {
       tween.scrollTrigger?.kill();
       tween.kill();
+    });
+    headings.forEach(({ element, originalMarkup, originalLabel }) => {
+      element.innerHTML = originalMarkup;
+      if (originalLabel === null) element.removeAttribute('aria-label');
+      else element.setAttribute('aria-label', originalLabel);
+      delete element.dataset.kineticReady;
+      element.classList.remove('kinetic-heading');
     });
   };
 }
