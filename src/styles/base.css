@@ -117,7 +117,7 @@ header.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:8000;
 /* ---------- TELEMETRY BAR ---------- */
 .telemetry{position:fixed;bottom:0;left:0;right:0;height:var(--tel-h);z-index:8000;
   background:#06070d;border-top:1px solid var(--line);display:flex;align-items:center;overflow:hidden;
-  font-family:var(--ff-m);font-size:10px;letter-spacing:.12em;color:#6a7284}
+  font-family:var(--ff-m);font-size:10px;letter-spacing:.12em;color:#b0b8c7}
 .telwrap{display:flex;gap:44px;white-space:nowrap;animation:telrun 46s linear infinite;padding-left:100%}
 .telemetry:hover .telwrap{animation-play-state:paused}
 @keyframes telrun{to{transform:translateX(-100%)}}

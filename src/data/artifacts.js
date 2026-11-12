@@ -1,5 +1,6 @@
 /** Catalogue records and supporting archive content. */
 import { FEATURED_AUDIT, FEATURED_SOURCES } from './featured-audit.js';
+import { DOSSIER_STORIES } from './dossier-stories.js';
 
 const assetPath = (path) => `${import.meta?.env?.BASE_URL || '/'}${path.replace(/^\//, '')}`;
 export const A = [
@@ -284,6 +285,7 @@ A.forEach((artifact) => {
     sourceLabel: 'NASA mission-specific source',
     verifiedByNASA: Boolean(audit),
     auditStatus: audit ? 'complete' : 'withheld',
+    story: audit ? DOSSIER_STORIES[artifact.id] : '',
     image: image.path,
     imageCredit: image.credit,
     imageSource: image.source,

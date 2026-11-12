@@ -65,7 +65,7 @@ export function initArchive() {
     $('#ledgerGrid').innerHTML = LEDGER.map((item, index) => `
       <article class="lcard"><div class="no">${String(index + 1).padStart(2, '0')} / ${LEDGER.length}</div>
         <div class="icn">${ICO[item.ic] || ICO.plaque}</div>
-        <h4>${item.t}</h4><p class="unverified-copy">Historic detail withheld pending a line-by-line NASA-source audit.</p>
+        <h3>${item.t}</h3><p class="unverified-copy">Historic detail withheld pending a line-by-line NASA-source audit.</p>
       </article>`).join('');
   }
 

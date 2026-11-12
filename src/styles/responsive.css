@@ -21,6 +21,8 @@
 }
 @media (max-width:620px){
   .herometa{grid-template-columns:1fr 1fr}
+  /* Reserve the wrapped mono-label row before its local font is ready. */
+  .herometa div{min-height:112px}
   .cdu{grid-template-columns:repeat(2,1fr)}
   .srow{grid-template-columns:1fr;gap:8px}
   .srow .yr{text-align:left}

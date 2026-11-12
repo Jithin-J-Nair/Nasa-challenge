@@ -50,10 +50,10 @@
 .pull cite{display:block;font-family:var(--ff-m);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:16px;font-style:normal}
 .asides{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:44px 0}
 .asides article{background:#070912;padding:24px 22px}
-.asides h4{margin:0 0 10px;font-size:13.5px;letter-spacing:.02em;font-weight:600;display:flex;gap:9px;align-items:center}
-.asides h4 i{width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0}
-.asides article:nth-child(2) h4 i{background:var(--rust)}
-.asides article:nth-child(3) h4 i{background:var(--cyan)}
+.asides h3{margin:0 0 10px;font-size:13.5px;letter-spacing:.02em;font-weight:600;display:flex;gap:9px;align-items:center}
+.asides h3 i{width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0}
+.asides article:nth-child(2) h3 i{background:var(--rust)}
+.asides article:nth-child(3) h3 i{background:var(--cyan)}
 .asides p{margin:0;font-size:13.5px;line-height:1.68;color:var(--muted)}
 
 /* ---------- MOON CATALOGUE ---------- */
@@ -147,7 +147,7 @@
 .sitem.sel{background:rgba(255,157,61,.07)}
 .sitem .yr{font-family:var(--ff-m);font-size:11px;color:var(--muted);letter-spacing:.06em}
 .sitem .nm{font-size:13.5px;font-weight:500;letter-spacing:-.005em;line-height:1.28;display:block}
-.sitem .ms{font-family:var(--ff-m);font-size:9.5px;color:#5d6474;letter-spacing:.1em;text-transform:uppercase;display:block;margin-top:3px}
+.sitem .ms{font-family:var(--ff-m);font-size:9.5px;color:#a9b1c0;letter-spacing:.1em;text-transform:uppercase;display:block;margin-top:3px}
 .st{font-family:var(--ff-m);font-size:8.5px;letter-spacing:.14em;padding:3px 7px;border-radius:2px;border:1px solid;text-transform:uppercase;white-space:nowrap}
 .st.derelict{color:#8b93a6;border-color:rgba(139,147,166,.35);background:rgba(139,147,166,.08)}
 .st.active{color:var(--moss);border-color:rgba(142,230,164,.35);background:rgba(142,230,164,.09)}
@@ -173,7 +173,15 @@
 .dart .caption{position:absolute;bottom:12px;left:20px;right:20px;z-index:3;display:flex;justify-content:space-between;gap:12px;
   font-family:var(--ff-m);font-size:9px;letter-spacing:.18em;color:#6b7385;text-transform:uppercase}
 .dsec{padding:26px 24px;border-bottom:1px solid rgba(236,231,222,.07)}
-.dsec h4{margin:0 0 14px;font-family:var(--ff-m);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.dsec h3{margin:0 0 14px;font-family:var(--ff-m);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.dossier-story{background:linear-gradient(135deg,rgba(255,157,61,.10),rgba(255,157,61,.025));border-left:2px solid var(--amber)}
+.dossier-story h3{color:var(--amberL)}
+.dossier-story p{margin:0;max-width:42ch;font-family:var(--ff-s);font-size:19px;line-height:1.48;color:var(--ink)}
+.nasa-facts{background:rgba(95,225,255,.025)}
+.nasa-facts > h3{color:var(--cyan)}
+.fact-label{margin:24px 0 10px;font-family:var(--ff-m);font-size:9px;letter-spacing:.19em;text-transform:uppercase;color:var(--cyan)}
+.facts-summary{margin-bottom:0}
+.dossier-tags{margin:24px 0 0;line-height:1.9}
 .dspecs{display:grid;grid-template-columns:1fr;gap:0;margin:0}
 .dspecs div{display:grid;grid-template-columns:132px 1fr;gap:14px;padding:9px 0;border-bottom:1px dashed rgba(236,231,222,.075);align-items:baseline}
 .dspecs div:last-child{border-bottom:0}
@@ -207,7 +215,7 @@
 .lcard:hover{background:#0c1019}
 .lcard:hover::after{transform:scaleX(1)}
 .lcard .no{font-family:var(--ff-m);font-size:9.5px;letter-spacing:.22em;color:#4a5162;margin-bottom:16px}
-.lcard h4{margin:0 0 10px;font-size:16.5px;font-weight:600;letter-spacing:-.012em;line-height:1.24}
+.lcard h3{margin:0 0 10px;font-size:16.5px;font-weight:600;letter-spacing:-.012em;line-height:1.24}
 .lcard p{margin:0;font-size:13px;line-height:1.65;color:var(--muted)}
 .lcard .icn{width:42px;height:42px;margin-bottom:18px;color:var(--amberL);opacity:.85}
 .lcard .icn svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.1}
@@ -240,7 +248,7 @@
 .tlcard .tick::after{content:'';position:absolute;top:-3px;left:-3px;width:7px;height:7px;border-radius:50%;background:#05060c;border:1px solid var(--line2)}
 .tlcard.act .tick::after{background:var(--amber);border-color:var(--amber);box-shadow:0 0 12px rgba(255,157,61,.7)}
 .tlcard .y{font-family:var(--ff-m);font-size:11px;letter-spacing:.16em;color:var(--amber);margin-bottom:9px}
-.tlcard h4{margin:0 0 6px;font-size:15px;font-weight:600;letter-spacing:-.012em;line-height:1.22}
+.tlcard h3{margin:0 0 6px;font-size:15px;font-weight:600;letter-spacing:-.012em;line-height:1.22}
 .tlcard .sub{font-family:var(--ff-m);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#5d6474;margin-bottom:12px}
 .tlcard p{margin:0;font-size:12.5px;line-height:1.6;color:var(--muted)}
 .tlcard .go{margin-top:14px;font-family:var(--ff-m);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);opacity:0;transform:translateX(-6px);transition:.35s}
@@ -331,7 +339,7 @@
 .acard .bodybadge.deep{color:var(--cyan);border-color:rgba(95,225,255,.32);background:rgba(95,225,255,.07)}
 .acard .bd{padding:18px 20px 22px;display:flex;flex-direction:column;flex:1}
 .acard h3{margin:0 0 5px;font-size:16px;font-weight:600;letter-spacing:-.015em;line-height:1.24}
-.acard .ms{font-family:var(--ff-m);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#5d6474;margin-bottom:12px}
+.acard .ms{font-family:var(--ff-m);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#a9b1c0;margin-bottom:12px}
 .acard p{margin:0 0 16px;font-size:12.8px;line-height:1.62;color:var(--muted);flex:1}
 .acard .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid rgba(236,231,222,.06);padding-top:12px}
 .acard .foot .op{font-family:var(--ff-m);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:7px}
@@ -340,7 +348,7 @@
 .empty{display:none;padding:70px 24px;text-align:center;border:1px dashed var(--line2);border-radius:3px;background:#070911}
 .empty.on{display:block}
 .empty svg{width:64px;height:64px;margin:0 auto 22px;stroke:#2f3646;fill:none;stroke-width:1.1}
-.empty h4{margin:0 0 10px;font-family:var(--ff-s);font-style:italic;font-size:24px;font-weight:400;color:var(--ink2)}
+.empty h3{margin:0 0 10px;font-family:var(--ff-s);font-style:italic;font-size:24px;font-weight:400;color:var(--ink2)}
 .empty p{margin:0 0 22px;font-family:var(--ff-m);font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
 
 /* ---------- SCIENCE ---------- */

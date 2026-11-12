@@ -55,6 +55,14 @@ The application intentionally uses framework-free ES modules: interactions are s
 | [NASA SVS CGI Moon Kit](https://svs.gsfc.nasa.gov/4720) and [NASA/USGS Mars map](https://mars.nasa.gov/resources/6435/global-geologic-map-of-mars/) | Local observatory texture maps. |
 | [NASA Image and Video Library](https://images.nasa.gov/) | Locally hosted dossier media with retained NASA credit lines. |
 
-Run `npm run catalogue:parse` to rebuild the searchable catalogue module and [`docs/MOON-CATALOGUE-METHOD.md`](docs/MOON-CATALOGUE-METHOD.md). Pass a downloaded NASA PDF through `MOON_CATALOGUE_PDF=path/to/final-catalogue-of-manmade-material-on-the-moon.pdf` to refresh the text cache with `pdftotext`.
+## Refreshing the Moon catalogue from a local PDF
+
+The checked-in Moon catalogue cache is explicitly partial. To rebuild it from a local copy of NASA’s named PDF, install the command-line **Poppler** tool `pdftotext`, then run:
+
+```bash
+MOON_CATALOGUE_PDF=path/to/final-catalogue-of-manmade-material-on-the-moon.pdf npm run catalogue:parse
+```
+
+Required tools: Node.js/npm for the script and `pdftotext` from Poppler for PDF extraction. The command regenerates the searchable module and [`docs/MOON-CATALOGUE-METHOD.md`](docs/MOON-CATALOGUE-METHOD.md).
 
 The record-level source and claim register is in [`docs/CLAIMS-AUDIT.md`](docs/CLAIMS-AUDIT.md). The media credit table is in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). The project uses NASA data for educational reference and is not produced by, affiliated with, sponsored by, or endorsed by NASA, JPL, Caltech, the U.S. Government, or mission partners.

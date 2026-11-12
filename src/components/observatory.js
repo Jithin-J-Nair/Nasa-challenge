@@ -255,23 +255,26 @@ function openDossier(a, doFly){
       ? '<span class="image-flag">NASA MISSION IMAGE · NOT A PHOTOGRAPH OF THIS ARTEFACT</span>'
       : '<span class="image-flag">PLACEHOLDER · NO ARTEFACT-SPECIFIC NASA IMAGE AUDITED</span>';
   const evidence = a.verifiedByNASA
-    ? `<div class="dsec"><h4>First-person log</h4><p class="voice">${a.voice}</p></div>
-       <div class="dsec"><h4>Technical record</h4><dl class="dspecs">${specRows}</dl></div>
-       <div class="dsec"><h4>What it made possible</h4><ol class="disc">${discoveryRows}</ol></div>
-       <div class="dsec"><h4>Final transmission</h4><div class="lasttx" id="lastTx"></div></div>
-       <div class="dsec" style="border:0"><p class="mono" style="line-height:1.9">${a.tags || ''}</p></div>`
-    : `<div class="dsec unverified-record"><h4>Verification status</h4><p>We’re still checking this spacecraft’s story with NASA — explore the source link above while we do.</p></div>`;
+    ? `<section class="dsec dossier-story"><h3>The story</h3><p>${a.story}</p></section>
+       <section class="dsec nasa-facts"><h3>NASA-checked facts</h3>
+         <p class="voice facts-summary">${a.voice}</p>
+         <p class="fact-label">Technical record</p><dl class="dspecs">${specRows}</dl>
+         <p class="fact-label">What this record documents</p><ol class="disc">${discoveryRows}</ol>
+         <p class="fact-label">Record close</p><div class="lasttx" id="lastTx"></div>
+         <p class="mono dossier-tags">${a.tags || ''}</p>
+       </section>`
+    : `<section class="dsec unverified-record"><h3>Verification status</h3><p>We’re still checking this spacecraft’s story with NASA — explore the source link above while we do.</p></section>`;
 
   $('#dBody').innerHTML = `
     <figure class="dossier-media">
       <img src="${a.image}" alt="${a.imageAlt}" width="${a.imageWidth}" height="${a.imageHeight}" loading="lazy" decoding="async" />
       <figcaption>${imageFlag}<span>${a.imageCredit}</span>${a.imageSource ? `<a href="${a.imageSource}" target="_blank" rel="noreferrer">Image source ↗</a>` : ''}</figcaption>
     </figure>
-    <div class="dsec dossier-source"><h4>Sources</h4><a href="${a.source}" target="_blank" rel="noreferrer">Open ${a.sourceLabel} <span aria-hidden="true">↗</span></a><p>${a.verifiedByNASA ? 'Every visible factual claim below was checked against this opened NASA source.' : 'NASA’s page is ready to explore; this dossier will grow after its full fact-check.'}</p></div>
+    <div class="dsec dossier-source"><h3>Sources</h3><a href="${a.source}" target="_blank" rel="noreferrer">Open ${a.sourceLabel} <span aria-hidden="true">↗</span></a><p>${a.verifiedByNASA ? 'Every visible factual claim below was checked against this opened NASA source.' : 'NASA’s page is ready to explore; this dossier will grow after its full fact-check.'}</p></div>
     <div class="dart"><div class="plate"></div>${SCHEM[a.sch] || SCHEM.probe}
       <div class="caption"><span>${a.b === 'moon' ? 'LUNAR ARTEFACT' : a.b === 'mars' ? 'MARTIAN ARTEFACT' : 'DEEP SPACE VEHICLE'}</span><span>${a.ag}</span></div>
     </div>
-    <div class="dsec"><h4>Designation</h4><dl class="dspecs">${a.verifiedByNASA ? `
+    <div class="dsec"><h3>Designation</h3><dl class="dspecs">${a.verifiedByNASA ? `
       <div><dt>Object</dt><dd>${a.n}</dd></div><div><dt>Mission</dt><dd>${a.m}</dd></div>
       <div><dt>Agency</dt><dd>${a.ag}</dd></div><div><dt>Year</dt><dd>${a.y}</dd></div>
       <div><dt>Status</dt><dd><span class="st ${a.st}">${statusLabel(a.st)}</span></dd></div>

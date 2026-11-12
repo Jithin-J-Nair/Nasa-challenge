@@ -43,7 +43,7 @@ export function initTimeline() {
       const mission = artifact.verifiedByNASA ? artifact.m : 'NASA source link in dossier';
       return `
         <button class="tlcard${artifact.id === archiveState.selectedArtifactId ? ' act' : ''}" data-id="${artifact.id}">
-          <span class="tick"></span><div class="y">${year}</div><h4>${artifact.n}</h4>
+          <span class="tick"></span><div class="y">${year}</div><h3>${artifact.n}</h3>
           <div class="sub">${mission}</div><p>${summary}</p><div class="go">Open dossier →</div>
         </button>`;
     };
