@@ -26,6 +26,7 @@ src/
 │   ├── planet-textures.js    # Procedural bump maps for local NASA color textures
 │   ├── telemetry.js          # Dated NASA Voyager status snapshot and SVG diagrams
 │   ├── visual-effects.js     # Starfields and text effects
+│   ├── ui/liquid-glass-navbar.js # Framework-native Liquid Glass navigation
 │   ├── audio.js              # Optional ambient telemetry audio
 │   └── boot.js               # Instant, non-blocking acquisition preference
 ├── data/             # Catalogue records and reusable SVG artwork
@@ -35,7 +36,21 @@ src/
 └── main.js           # Application composition root
 ```
 
-The application intentionally uses framework-free ES modules: interactions are separated by responsibility without adding a heavyweight client framework.
+The application intentionally uses framework-free ES modules: interactions are separated by responsibility without adding a heavyweight client framework. The Liquid Glass navigation is therefore implemented in `src/components/ui/` as a native adapter, rather than adding an unused React runtime.
+
+### React, Tailwind, and shadcn alternative
+
+This repository is not a React, TypeScript, Tailwind, or shadcn project. If a future migration needs the original TSX component, create a React TypeScript Vite application, install Tailwind, then initialise shadcn:
+
+```bash
+npm create vite@latest silent-fleet-react -- --template react-ts
+cd silent-fleet-react && npm install
+npm install tailwindcss @tailwindcss/vite
+npx shadcn@latest init
+mkdir -p src/components/ui
+```
+
+`src/components/ui` is the important equivalent of a shadcn `/components/ui` directory in a Vite source tree: it keeps reusable UI code inside the compiled source root and matches the import path that shadcn-generated components expect. Copy the supplied `liquid-glass-navbar.tsx` there only after that React/TypeScript setup is in place.
 
 ## Assets and verification
 

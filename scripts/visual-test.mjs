@@ -41,6 +41,9 @@ try {
     // it can paint; repeat visits and reduced motion use the same instant path.
     await page.waitForSelector('#boot.done', { state: 'attached', timeout: 12_000 });
     await page.waitForTimeout(250);
+    const liquidItems = page.locator('#liquidNav .liquid-nav-item');
+    if (await liquidItems.count() !== 8) failures.push(`${viewport.name}: expected eight Liquid Glass primary-nav items`);
+    if ((await page.locator('#liquidNav [aria-current="page"]').textContent())?.trim() !== 'Home') failures.push(`${viewport.name}: Liquid Glass nav did not initialise on Home`);
     await page.screenshot({ path: `${outputDirectory}/${viewport.name}.png`, fullPage: false });
 
     // Enter the WebGL section so locally hosted map textures and the render loop

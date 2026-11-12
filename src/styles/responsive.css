@@ -10,11 +10,6 @@
 @media (max-width:960px){
   .briefgrid{grid-template-columns:1fr;gap:40px}
   .briefstick{position:static}
-  .navlinks{display:none}
-  .navlinks.open{display:flex;position:absolute;top:var(--nav-h);left:0;right:0;flex-direction:column;background:#070911;
-    border-bottom:1px solid var(--line);padding:10px 0;gap:0}
-  .navlinks.open a{padding:14px var(--pad);font-size:12px}
-  #burger{display:grid}
   .hero-tag{display:none}
   .tracklist{columns:1}
   .utc{display:none}

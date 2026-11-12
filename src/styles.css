@@ -1,6 +1,7 @@
 /* Application stylesheet entry point. Keep visual layers independently maintainable. */
 @import './styles/fonts.css';
 @import './styles/base.css';
+@import './styles/liquid-navbar.css';
 @import './styles/sections.css';
 @import './styles/dossier-media.css';
 @import './styles/verification.css';

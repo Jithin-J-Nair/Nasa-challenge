@@ -16,13 +16,16 @@
       #boot[hidden] { display: none !important; }
       .grain, .vig { position: fixed; inset: 0; }
       #reticle { position: fixed; top: 0; left: 0; width: 34px; height: 34px; margin: -17px 0 0 -17px; }
-      header.nav { position: fixed; inset: 0 0 auto; z-index: 8000; display: flex; align-items: center; height: 66px; gap: 26px; padding: 0 18px; }
+      header.nav { position: fixed; inset: 0 0 auto; z-index: 8000; display: flex; align-items: center; height: var(--nav-h, 66px); gap: 26px; padding: 0 18px; }
       .brand { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
-      .brand svg { width: 26px; height: 26px; } .brand b { font-size: 14px; letter-spacing: .24em; } .brand em { display: block; margin-top: -3px; font-size: 9px; letter-spacing: .2em; } .navlinks, .utc { display: none; }
-      .navright { display: flex; align-items: center; gap: 14px; margin-left: auto; }
-      .iconbtn { width: 34px; height: 34px; display: grid; place-items: center; } #burger { display: grid; }
+      .brand svg { width: 26px; height: 26px; } .brand b { font-size: 14px; letter-spacing: .24em; } .brand em { display: block; margin-top: -3px; font-size: 9px; letter-spacing: .2em; }
+      .liquid-navbar { position: relative; display: inline-flex; align-items: center; gap: 2px; margin-left: auto; padding: 6px; border-radius: 999px; }
+      .liquid-nav-item { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 14px; border-radius: 999px; white-space: nowrap; }
+      .liquid-nav-icon { display: inline-flex; } .liquid-nav-icon svg { width: 17px; height: 17px; }
+      .navright { display: flex; align-items: center; gap: 14px; margin-left: 14px; }
+      .iconbtn { width: 34px; height: 34px; display: grid; place-items: center; }
       .telemetry { position: fixed; inset: auto 0 0; z-index: 8000; height: 30px; }
-      #hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; padding-top: 66px; }
+      #hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; padding-top: var(--nav-h, 66px); }
       #stars, .herograd { position: absolute; inset: 0; width: 100%; height: 100%; }
       .heroinner { position: relative; z-index: 3; padding: 0 18px clamp(40px, 7vh, 86px); }
       .eyebrow { display: flex; align-items: center; gap: 12px; font-size: 10.5px; line-height: 16.275px; letter-spacing: .3em; text-transform: uppercase; } .eyebrow::before { content: ''; width: 26px; height: 1px; flex: 0 0 26px; }
@@ -33,6 +36,15 @@
       .btn { display: inline-flex; align-items: center; gap: 11px; padding: 14px 24px; border: 1px solid rgba(236,231,222,.2); background: rgba(255,255,255,.02); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; } .btn svg { width: 13px; height: 13px; } .btn.solid { background: #ff9d3d; color: #08090d; border-color: #ff9d3d; }
       .scrollcue { display: flex; align-items: center; gap: 12px; margin-left: auto; font-size: 10px; letter-spacing: .24em; } .scrollcue i { display: block; width: 1px; height: 44px; }
       .hero-tag { display: none; }
+      @media (max-width:960px) {
+        :root { --nav-h: 118px; }
+        header.nav { height: var(--nav-h); align-content: flex-start; flex-wrap: wrap; gap: 0; padding: 9px 14px; }
+        .brand em { display: none; }
+        .liquid-navbar { order: 3; width: 100%; justify-content: center; margin-top: 7px; }
+        .liquid-nav-item { height: 38px; padding: 0 clamp(7px, 2.1vw, 11px); }
+        .liquid-nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+        .navright { margin-left: auto; }
+      }
     </style>
     <link rel="canonical" href="https://jithin-j-nair.github.io/Nasa-challenge/" />
     <meta property="og:type" content="website" />
@@ -161,22 +173,21 @@
     </svg>
     <span><b>Silent&nbsp;Fleet</b><em>Off-world hardware archive</em></span>
   </a>
-  <nav class="navlinks" id="navlinks" aria-label="Primary">
-    <a href="#briefing">Briefing</a>
-    <a href="#observatory">Observatory</a>
-    <a href="#ledger">Ledger</a>
-    <a href="#timeline">Timeline</a>
-    <a href="#interstellar">Beyond</a>
-    <a href="#fieldguide">Archive</a>
-    <a href="#science">Science</a>
+  <nav class="liquid-navbar" id="liquidNav" aria-label="Primary navigation">
+    <span class="liquid-nav-glass" aria-hidden="true"></span><canvas class="liquid-nav-water" aria-hidden="true"></canvas><span class="liquid-nav-drop" aria-hidden="true"></span>
+    <a class="liquid-nav-item" href="#hero" data-fx="glow" aria-current="page"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M6 9.6V20h12V9.6"/><path d="M10 20v-5h4v5Z"/></svg></span><span class="liquid-nav-label">Home</span></a>
+    <a class="liquid-nav-item" href="#briefing" data-fx="spin"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 2.6 14.6 0 17M12 3.5c-2.6 2.4-2.6 14.6 0 17"/></svg></span><span class="liquid-nav-label">Briefing</span></a>
+    <a class="liquid-nav-item" href="#observatory" data-fx="plane"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12.2 3.6 5.4l2.7 6.8-2.7 6.4L21 12.2Z"/><path d="M6.3 12.2H13"/></svg></span><span class="liquid-nav-label">Observatory</span></a>
+    <a class="liquid-nav-item" href="#ledger" data-fx="drop"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4.5h14v15H5z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg></span><span class="liquid-nav-label">Ledger</span></a>
+    <a class="liquid-nav-item" href="#timeline" data-fx="wave"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4v16M19 4v16M8.5 8h7M8.5 16h7"/><path d="M10 12h4"/></svg></span><span class="liquid-nav-label">Timeline</span></a>
+    <a class="liquid-nav-item" href="#interstellar" data-fx="plane"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 13 16-9-5 16-3-6z"/><path d="m12 14 3-3"/></svg></span><span class="liquid-nav-label">Beyond</span></a>
+    <a class="liquid-nav-item" href="#fieldguide" data-fx="pop"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 7.5h15v12h-15z"/><path d="M8 7.5V5h8v2.5M9 12h6"/></svg></span><span class="liquid-nav-label">Archive</span></a>
+    <a class="liquid-nav-item" href="#science" data-fx="spin"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-4.5 8.1A2.6 2.6 0 0 0 7.8 21h8.4a2.6 2.6 0 0 0 2.3-3.9L14 9V3"/><path d="M8.7 16h6.6"/></svg></span><span class="liquid-nav-label">Science</span></a>
   </nav>
   <div class="navright">
     <div class="utc">UTC <b id="clock">--:--:--</b></div>
     <button class="iconbtn" id="soundBtn" aria-pressed="false" title="Toggle ambient telemetry audio">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 8.5a5 5 0 0 1 0 7" class="wave"/><path d="M20 6a8.5 8.5 0 0 1 0 12" class="wave"/></svg>
-    </button>
-    <button class="iconbtn" id="burger" aria-label="Menu" aria-expanded="false">
-      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
   </div>
 </header>
