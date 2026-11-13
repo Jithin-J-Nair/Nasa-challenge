@@ -77,6 +77,35 @@ export function initInterface(): () => void {
   $$<HTMLElement>('[data-scramble]').forEach((element) => scrambleObserver.observe(element));
 
   if (!reducedMotion) {
+    const evidencePlate = document.querySelector<HTMLElement>('[data-evidence-tilt]');
+    if (evidencePlate && window.matchMedia('(pointer:fine)').matches) {
+      let evidenceFrame: number | null = null;
+      let evidencePointer: { x: number; y: number } | null = null;
+      const updateEvidenceTilt = (): void => {
+        evidenceFrame = null;
+        if (!evidencePointer) return;
+        const bounds = evidencePlate.getBoundingClientRect();
+        const horizontal = ((evidencePointer.x - bounds.left) / bounds.width - .5) * 2;
+        const vertical = ((evidencePointer.y - bounds.top) / bounds.height - .5) * 2;
+        evidencePlate.style.setProperty('--evidence-rotate-x', `${(-vertical * 2.6).toFixed(2)}deg`);
+        evidencePlate.style.setProperty('--evidence-rotate-y', `${(horizontal * 3.2).toFixed(2)}deg`);
+      };
+      const onEvidencePointerMove = (event: PointerEvent): void => {
+        evidencePointer = { x: event.clientX, y: event.clientY };
+        if (evidenceFrame === null) evidenceFrame = requestAnimationFrame(updateEvidenceTilt);
+      };
+      const resetEvidenceTilt = (): void => {
+        evidencePointer = null;
+        evidencePlate.style.setProperty('--evidence-rotate-x', '0deg');
+        evidencePlate.style.setProperty('--evidence-rotate-y', '0deg');
+      };
+      evidencePlate.addEventListener('pointermove', onEvidencePointerMove, { passive: true, signal });
+      evidencePlate.addEventListener('pointerleave', resetEvidenceTilt, { signal });
+      signal.addEventListener('abort', () => {
+        if (evidenceFrame !== null) cancelAnimationFrame(evidenceFrame);
+      }, { once: true });
+    }
+
     const stars = document.querySelector<HTMLElement>('#stars');
     const hero = document.querySelector<HTMLElement>('#hero');
     if (stars && hero) {
