@@ -77,7 +77,21 @@ header.nav{
 .story-route a.is-active{background:linear-gradient(90deg,rgba(255,157,61,.11),transparent 72%)}
 .story-route a.is-active b{color:var(--amberL)}
 .story-chapter::after{background:linear-gradient(90deg,transparent,rgba(220,229,240,.2),transparent)}
+.story-chapter{isolation:isolate}
+.story-chapter::before{content:'';position:absolute;z-index:-1;inset:7% 4% 7% auto;width:min(55%,700px);opacity:0;background:radial-gradient(circle at 50% 42%,rgba(95,225,255,.09),transparent 66%);transition:opacity .8s ease}
+.story-chapter:nth-child(even)::before{right:auto;left:4%;background:radial-gradient(circle at 50% 42%,rgba(255,157,61,.09),transparent 66%)}
+.story-chapter.is-active::before{opacity:1}
+.story-watermark{position:absolute;z-index:-1;right:calc(var(--pad) + 1vw);bottom:4%;font-size:clamp(170px,25vw,420px);font-weight:650;line-height:.7;letter-spacing:-.12em;color:transparent;-webkit-text-stroke:1px rgba(240,236,227,.035);user-select:none}
+.story-chapter:nth-child(even) .story-watermark{right:auto;left:calc(var(--pad) + 1vw)}
+.story-copy{padding:46px 0 34px;border-top:1px solid transparent;transition:border-color .5s ease,transform .5s ease}
+.story-chapter.is-active .story-copy{border-top-color:rgba(255,177,93,.36)}
+.story-legacy{border-radius:0;background:linear-gradient(90deg,rgba(255,177,93,.12),transparent);border-inline:0;border-top:1px solid rgba(255,177,93,.3);border-bottom:1px solid rgba(255,177,93,.3);padding:7px 9px}
+.story-copy h3{max-width:9ch}
+.story-evidence{padding-block:3px 2px}
+.story-open{padding:9px 0 8px}.story-open::after{content:'';width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:var(--moss);box-shadow:0 0 0 4px rgba(142,230,164,.09)}
 .story-media-frame{box-shadow:0 28px 90px rgba(0,0,0,.34),inset 0 0 0 1px rgba(255,255,255,.05)}
+.story-media-frame::after{inset:18px;border-color:rgba(240,236,227,.26)}
+.story-media figcaption{padding-top:15px;border-top:1px solid rgba(240,236,227,.12)}
 
 #briefing,.catalogue-section,#observatory,#ledger,#timeline,#fieldguide,#science,#interstellar,#epilogue{
   border-top-color:var(--atlas-rule);
@@ -98,6 +112,8 @@ header.nav{
 
 @media (max-width:960px){
   body::before{background:none}
+  .story-watermark{right:var(--pad);font-size:clamp(150px,38vw,280px)}
+  .story-chapter:nth-child(even) .story-watermark{left:auto;right:var(--pad)}
   .hero-evidence{width:min(100%,560px)}
   .hero-evidence-image{aspect-ratio:16/10}
 }

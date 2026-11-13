@@ -57,6 +57,7 @@ function renderChapter(chapter: StoryChapter): string {
 
   return `
     <article class="story-chapter story-chapter--${chapter.body}" id="story-${artifact.id}" data-story-chapter data-id="${artifact.id}" tabindex="-1">
+      <span class="story-watermark" aria-hidden="true">${String(chapter.order).padStart(2, '0')}</span>
       <div class="story-index" aria-hidden="true"><span>${String(chapter.order).padStart(2, '0')}</span><i></i></div>
       <div class="story-copy">
         <p class="story-eyebrow">${escapeHtml(chapter.eyebrow)}</p>
@@ -133,6 +134,8 @@ export function initStoryJourney(): () => void {
       const copy = card.querySelector<HTMLElement>('.story-copy');
       const media = card.querySelector<HTMLElement>('.story-media');
       const indexMark = card.querySelector<HTMLElement>('.story-index');
+      const watermark = card.querySelector<HTMLElement>('.story-watermark');
+      const image = card.querySelector<HTMLImageElement>('.story-media img');
       if (!copy || !media || !indexMark) return;
 
       gsap.set([copy, media, indexMark], { willChange: 'transform,opacity' });
@@ -169,6 +172,29 @@ export function initStoryJourney(): () => void {
           scrollTrigger: { trigger: card, start: 'top 74%', once: true },
         },
       );
+
+      if (watermark)
+        gsap.fromTo(
+          watermark,
+          { xPercent: index % 2 === 0 ? 8 : -8, autoAlpha: .15 },
+          {
+            xPercent: index % 2 === 0 ? -8 : 8,
+            autoAlpha: .75,
+            ease: 'none',
+            scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: .7 },
+          },
+        );
+      if (image)
+        gsap.fromTo(
+          image,
+          { scale: 1.08, yPercent: -3 },
+          {
+            scale: 1.01,
+            yPercent: 3,
+            ease: 'none',
+            scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: .8 },
+          },
+        );
 
       ScrollTrigger.create({
         trigger: card,
