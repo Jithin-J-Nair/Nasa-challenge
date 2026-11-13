@@ -2,716 +2,123 @@
 <html lang="en" data-type="product">
   <head>
     <meta charset="UTF-8" />
-    <meta name="page-type" content="product" />
-    <meta name="site-kind" content="tech" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A NASA-first interactive learning archive of discarded and enduring spacecraft hardware on the Moon, Mars, and beyond." />
+    <meta name="description" content="Silent Fleet is a source-aware interactive archive of NASA hardware left on the Moon, Mars, and in deep space." />
     <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#02040d" />
     <style>
-      /* Critical geometry: Vite injects the complete stylesheet through the
-         entry module. These first-viewport rules prevent an unstyled hero from
-         reflowing before it arrives. */
-      *, *::before, *::after { box-sizing: border-box; }
-      html, body { margin: 0; padding: 0; background: #04050a; color: #efeae1; font: 16px/1.55 system-ui, sans-serif; }
-      button { font: inherit; color: inherit; }
-      a { color: inherit; text-decoration: none; }
+      /* Fail-safe first paint: a transient dev-style reload must never expose
+         the ambient WebGL canvas on an unstyled white document. */
+      html, body { margin: 0; min-height: 100%; background: #02040d; color: #e8edf7; }
+      #webgl-shell { position: fixed; inset: 0; z-index: 0; opacity: 0; pointer-events: none; }
       #boot[hidden] { display: none !important; }
-      .grain, .vig { position: fixed; inset: 0; }
-      #reticle { position: fixed; top: 0; left: 0; width: 34px; height: 34px; margin: -17px 0 0 -17px; }
-      header.nav { position: fixed; inset: 0 0 auto; z-index: 8000; display: flex; align-items: center; height: var(--nav-h, 66px); gap: 26px; padding: 0 18px; }
-      .brand { display: flex; align-items: center; gap: 11px; flex-shrink: 0; }
-      .brand svg { width: 26px; height: 26px; } .brand b { font-size: 14px; letter-spacing: .24em; } .brand em { display: block; margin-top: -3px; font-size: 9px; letter-spacing: .2em; }
-      .liquid-navbar { position: relative; display: inline-flex; align-items: center; gap: 2px; margin-left: auto; padding: 6px; border-radius: 999px; }
-      .liquid-nav-item { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 14px; border-radius: 999px; white-space: nowrap; }
-      .liquid-nav-icon { display: inline-flex; } .liquid-nav-icon svg { width: 17px; height: 17px; }
-      .navright { display: flex; align-items: center; gap: 14px; margin-left: 14px; }
-      .iconbtn { width: 34px; height: 34px; display: grid; place-items: center; }
-      .telemetry { position: fixed; inset: auto 0 0; z-index: 8000; height: 30px; }
-      #hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; padding-top: var(--nav-h, 66px); }
-      #stars, .herograd { position: absolute; inset: 0; width: 100%; height: 100%; }
-      .heroinner { position: relative; z-index: 3; padding: 0 18px clamp(40px, 7vh, 86px); }
-      .eyebrow { display: flex; align-items: center; gap: 12px; font-size: 10.5px; line-height: 16.275px; letter-spacing: .3em; text-transform: uppercase; } .eyebrow::before { content: ''; width: 26px; height: 1px; flex: 0 0 26px; }
-      .herotitle { margin: 20px 0 0; line-height: .82; } .herotitle img { display: block; width: min(100%, 1280px); height: auto; }
-      .herometa { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin: clamp(28px, 4.4vw, 54px) 0 0; border: 1px solid rgba(236,231,222,.1); overflow: hidden; }
-      .herometa div { padding: 16px 18px; } .herometa dt { margin: 0 0 7px; font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; } .herometa dd { margin: 0; font-size: 16px; line-height: 1.15; font-weight: 600; } .herometa dd small { display: block; margin-top: 5px; font-size: 10px; font-weight: 400; letter-spacing: .08em; } @media (max-width:620px) { .herometa div { min-height: 112px; } }
-      .herocta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: clamp(24px, 3.4vw, 42px); align-items: center; }
-      .btn { display: inline-flex; align-items: center; gap: 11px; padding: 14px 24px; border: 1px solid rgba(236,231,222,.2); background: rgba(255,255,255,.02); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; } .btn svg { width: 13px; height: 13px; } .btn.solid { background: #ff9d3d; color: #08090d; border-color: #ff9d3d; }
-      .scrollcue { display: flex; align-items: center; gap: 12px; margin-left: auto; font-size: 10px; letter-spacing: .24em; } .scrollcue i { display: block; width: 1px; height: 44px; }
-      .hero-tag { display: none; }
-      @media (max-width:960px) {
-        :root { --nav-h: 118px; }
-        header.nav { height: var(--nav-h); align-content: flex-start; flex-wrap: wrap; gap: 0; padding: 9px 14px; }
-        .brand em { display: none; }
-        .liquid-navbar { order: 3; width: 100%; justify-content: center; margin-top: 7px; }
-        .liquid-nav-item { height: 38px; padding: 0 clamp(7px, 2.1vw, 11px); }
-        .liquid-nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-        .navright { margin-left: auto; }
-      }
     </style>
     <link rel="canonical" href="https://jithin-j-nair.github.io/Nasa-challenge/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Silent Fleet" />
-    <meta property="og:title" content="Silent Fleet — NASA's discarded equipment archive" />
-    <meta property="og:description" content="A NASA-first interactive learning archive of hardware left on the Moon, Mars, and in deep space." />
-    <meta property="og:url" content="https://jithin-j-nair.github.io/Nasa-challenge/" />
+    <meta property="og:title" content="Silent Fleet — a record of what remains" />
+    <meta property="og:description" content="A NASA-first interactive learning archive about hardware left beyond Earth." />
     <meta property="og:image" content="https://jithin-j-nair.github.io/Nasa-challenge/assets/social/silent-fleet-og.jpg" />
     <meta property="og:image:alt" content="Silent Fleet title over a NASA Lunar Reconnaissance Orbiter color map of the Moon." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Silent Fleet — NASA's discarded equipment archive" />
-    <meta name="twitter:description" content="A NASA-first interactive learning archive of hardware left on the Moon, Mars, and in deep space." />
-    <meta name="twitter:image" content="https://jithin-j-nair.github.io/Nasa-challenge/assets/social/silent-fleet-og.jpg" />
-    <title>SILENT FLEET — NASA Hardware Archive</title>
+    <title>Silent Fleet — a record of what remains</title>
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Article",
-            "headline": "Silent Fleet — NASA's Discarded Equipment Archive",
-            "description": "A NASA-first interactive archive of spacecraft hardware left on the Moon, Mars, and in deep space.",
-            "image": "https://jithin-j-nair.github.io/Nasa-challenge/assets/social/silent-fleet-og.jpg",
-            "inLanguage": "en",
-            "about": ["NASA", "Moon", "Mars", "Space exploration"],
-            "isAccessibleForFree": true
-          },
-          {
-            "@type": "LearningResource",
-            "name": "Silent Fleet",
-            "description": "An interactive learning resource about NASA equipment left beyond Earth.",
-            "learningResourceType": "Interactive archive",
-            "educationalLevel": "Secondary education",
-            "inLanguage": "en",
-            "isAccessibleForFree": true
-          }
-        ]
-      }
+      {"@context":"https://schema.org","@graph":[
+        {"@type":"Article","headline":"Silent Fleet — a record of what remains","description":"A NASA-first interactive archive of spacecraft hardware left on the Moon, Mars, and in deep space.","inLanguage":"en","about":["NASA","Moon","Mars","Space exploration"],"isAccessibleForFree":true},
+        {"@type":"LearningResource","name":"Silent Fleet","description":"An interactive learning resource about NASA hardware beyond Earth.","learningResourceType":"Interactive archive","educationalLevel":"Secondary education","inLanguage":"en","isAccessibleForFree":true}
+      ]}
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to stories and archive</a>
+    <a class="skip-link" href="#main-content">Skip to the archive</a>
     <noscript>
-      <style>
-        #boot { display: none !important; }
-        body { margin: 0; padding: 24px; background: #04050a; color: #ece7de; font: 16px/1.6 system-ui, sans-serif; }
-        .noscript-summary { max-width: 960px; margin: 36px auto; padding: 28px; border: 1px solid #31394b; background: #0c0f18; }
-        .noscript-summary h1, .noscript-summary h2 { color: #fffaf0; line-height: 1.15; }
-        .noscript-summary h1 { font-size: clamp(28px, 5vw, 48px); margin-top: 0; }
-        .noscript-summary ol { columns: 2; gap: 32px; padding-left: 22px; }
-        .noscript-summary li { break-inside: avoid; margin-bottom: 9px; }
-        @media (max-width: 620px) { body { padding: 16px; } .noscript-summary { margin: 20px 0; padding: 20px; } .noscript-summary ol { columns: 1; } }
-      </style>
-      <section class="noscript-summary" aria-label="Silent Fleet story summary">
-        <h1>Silent Fleet: NASA hardware left beyond Earth</h1>
-        <p>Silent Fleet is a NASA-first learning archive about hardware beyond Earth. It begins with the source-audited Apollo 11 Eagle descent-stage record and places NASA mission records first. Contextual records from other agencies are identified separately.</p>
-        <p>This interactive requires JavaScript for the 3D observatory and dossiers. The complete static artefact list follows.</p>
-        <h2>Artefact list</h2>
+      <style>#staggeredMenu{display:none!important}</style>
+      <section class="noscript-summary" aria-label="Silent Fleet archive without JavaScript">
+        <nav class="noscript-nav" aria-label="Archive chapters without JavaScript"><a href="#hero">Arrival</a><a href="#stories">Traces</a><a href="#observatory">Places</a><a href="#fieldguide">Index</a><a href="#science">Evidence</a></nav>
+        <p>Silent Fleet is a NASA-first learning archive. JavaScript adds the interactive globe, records, and filters; the source-linked object list remains available here.</p>
+        <h1>Silent Fleet: hardware that remains beyond Earth</h1>
         <ol>
-      <li><strong>Luna 2</strong></li>
-      <li><strong>Surveyor 3</strong></li>
-      <li><strong>Eagle — descent stage</strong></li>
-      <li><strong>Intrepid — descent stage</strong></li>
-      <li><strong>Antares — descent stage</strong></li>
-      <li><strong>Falcon descent stage &amp; LRV-1</strong></li>
-      <li><strong>Orion descent stage &amp; LRV-2</strong></li>
-      <li><strong>Challenger descent stage &amp; LRV-3</strong></li>
-      <li><strong>Lunokhod 1</strong></li>
-      <li><strong>Lunokhod 2</strong></li>
-      <li><strong>The Fallen Astronaut</strong></li>
-      <li><strong>Lunar Laser Ranging retroreflectors</strong></li>
-      <li><strong>Odysseus (IM-1)</strong></li>
-      <li><strong>Mariner 9</strong></li>
-      <li><strong>Mars 3 lander</strong></li>
-      <li><strong>Viking 1 lander “Mutch Station”</strong></li>
-      <li><strong>Viking 2 lander</strong></li>
-      <li><strong>Beagle 2</strong></li>
-      <li><strong>Sojourner &amp; Pathfinder</strong></li>
-      <li><strong>Spirit (MER-A)</strong></li>
-      <li><strong>Opportunity (MER-B)</strong></li>
-      <li><strong>Phoenix</strong></li>
-      <li><strong>Curiosity (MSL)</strong></li>
-      <li><strong>InSight</strong></li>
-      <li><strong>Perseverance</strong></li>
-      <li><strong>Ingenuity</strong></li>
-      <li><strong>Three Forks sample depot</strong></li>
-      <li><strong>Mariner 4</strong></li>
-      <li><strong>Pioneer 10</strong></li>
-      <li><strong>Pioneer 11</strong></li>
-      <li><strong>Voyager 1</strong></li>
-      <li><strong>Voyager 2</strong></li>
-      <li><strong>Galileo</strong></li>
-      <li><strong>NEAR Shoemaker</strong></li>
-      <li><strong>Stardust</strong></li>
-      <li><strong>Deep Impact</strong></li>
-      <li><strong>Cassini</strong></li>
-      <li><strong>MESSENGER</strong></li>
-      <li><strong>Dawn</strong></li>
-      <li><strong>New Horizons</strong></li>
-      <li><strong>DART</strong></li>
-      <li><strong>Apollo 13 S-IVB stage</strong></li>
+          <li>Luna 2</li><li>Surveyor 3</li><li>Eagle — descent stage</li><li>Intrepid — descent stage</li><li>Antares — descent stage</li><li>Falcon descent stage &amp; LRV-1</li><li>Orion descent stage &amp; LRV-2</li><li>Challenger descent stage &amp; LRV-3</li><li>Lunokhod 1</li><li>Lunokhod 2</li><li>The Fallen Astronaut</li><li>Lunar Laser Ranging retroreflectors</li><li>Odysseus (IM-1)</li><li>Mariner 9</li><li>Mars 3 lander</li><li>Viking 1 lander “Mutch Station”</li><li>Viking 2 lander</li><li>Beagle 2</li><li>Sojourner &amp; Pathfinder</li><li>Spirit (MER-A)</li><li>Opportunity (MER-B)</li><li>Phoenix</li><li>Curiosity (MSL)</li><li>InSight</li><li>Perseverance</li><li>Ingenuity</li><li>Three Forks sample depot</li><li>Mariner 4</li><li>Pioneer 10</li><li>Pioneer 11</li><li>Voyager 1</li><li>Voyager 2</li><li>Galileo</li><li>NEAR Shoemaker</li><li>Stardust</li><li>Deep Impact</li><li>Cassini</li><li>MESSENGER</li><li>Dawn</li><li>New Horizons</li><li>DART</li><li>Apollo 13 S-IVB stage</li>
         </ol>
       </section>
     </noscript>
-<!-- ============ BOOT ============ -->
-<div id="boot" role="status" aria-live="polite" hidden>
-  <div class="bootmark"><span></span><span></span><span></span></div>
-  <div id="bootlog"></div>
-  <div class="bootbar"><i id="bootfill"></i></div>
-  <button id="bootskip">SKIP ACQUISITION</button>
-</div>
 
-<div id="webgl-shell" aria-hidden="true"></div>
-<div class="grain" aria-hidden="true"></div>
-<div class="vig" aria-hidden="true"></div>
-<div id="reticle" aria-hidden="true">
-  <svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="9"/><path d="M17 0v7M17 27v7M0 17h7M27 17h7"/></svg>
-</div>
+    <div id="boot" role="status" aria-live="polite" hidden><span>Opening signal archive</span></div>
+    <div id="webgl-shell" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div id="reticle" aria-hidden="true"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="8"/><path d="M17 0v6M17 28v6M0 17h6M28 17h6"/></svg></div>
 
-<!-- ============ NAV ============ -->
-<header class="nav">
-  <a class="brand" href="#hero">
-    <svg viewBox="0 0 32 32" aria-hidden="true">
-      <circle cx="16" cy="16" r="14.2" fill="none" stroke="rgba(239,234,225,.22)" stroke-width="1"/>
-      <ellipse cx="16" cy="16" rx="14.2" ry="5.4" fill="none" stroke="rgba(255,157,61,.65)" stroke-width="1" transform="rotate(-24 16 16)"/>
-      <circle cx="16" cy="16" r="3.1" fill="#ff9d3d"/>
-      <circle cx="27.4" cy="10.6" r="1.5" fill="#5fe1ff"/>
-    </svg>
-    <span><b>Silent&nbsp;Fleet</b><em>A field edition of what remains</em></span>
-  </a>
-  <nav class="liquid-navbar" id="liquidNav" aria-label="Primary navigation">
-    <span class="liquid-nav-glass" aria-hidden="true"></span><canvas class="liquid-nav-water" aria-hidden="true"></canvas><span class="liquid-nav-drop" aria-hidden="true"></span>
-    <a class="liquid-nav-item" href="#hero" data-fx="glow" aria-current="page"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M6 9.6V20h12V9.6"/><path d="M10 20v-5h4v5Z"/></svg></span><span class="liquid-nav-label">Begin</span></a>
-    <a class="liquid-nav-item" href="#stories" data-fx="plane"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 4.5h17v15h-17z"/><path d="M7 8h10M7 12h7M7 16h9"/></svg></span><span class="liquid-nav-label">Read</span></a>
-    <a class="liquid-nav-item" href="#observatory" data-fx="spin"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 2.6 14.6 0 17M12 3.5c-2.6 2.4-2.6 14.6 0 17"/></svg></span><span class="liquid-nav-label">Locate</span></a>
-    <a class="liquid-nav-item" href="#fieldguide" data-fx="pop"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 7.5h15v12h-15z"/><path d="M8 7.5V5h8v2.5M9 12h6"/></svg></span><span class="liquid-nav-label">Index</span></a>
-    <a class="liquid-nav-item" href="#science" data-fx="wave"><span class="liquid-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-4.5 8.1A2.6 2.6 0 0 0 7.8 21h8.4a2.6 2.6 0 0 0 2.3-3.9L14 9V3"/><path d="M8.7 16h6.6"/></svg></span><span class="liquid-nav-label">Verify</span></a>
-  </nav>
-  <div class="navright">
-    <div class="utc">UTC <b id="clock">--:--:--</b></div>
-    <button class="iconbtn" id="soundBtn" aria-pressed="false" title="Toggle ambient telemetry audio">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 8.5a5 5 0 0 1 0 7" class="wave"/><path d="M20 6a8.5 8.5 0 0 1 0 12" class="wave"/></svg>
-    </button>
-  </div>
-</header>
-
-<!-- ============ TELEMETRY BAR ============ -->
-<div class="telemetry" aria-hidden="true">
-  <div class="telwrap" id="telwrap"></div>
-</div>
-
-<main id="main-content" tabindex="-1">
-
-<!-- ============ HERO ============ -->
-<section id="hero" aria-labelledby="heroTitle">
-  <canvas id="stars" width="780" height="1688" style="position:absolute;inset:0;display:block;width:100%;height:100%" aria-hidden="true"></canvas>
-  <div class="herograd" aria-hidden="true"></div>
-  <div class="hero-atlas-key" aria-hidden="true">
-    <span>Signal atlas / edition 01</span><i></i><span>read the trace, not the myth</span>
-  </div>
-  <div class="hero-orbit-key" aria-hidden="true"><i></i><i></i><i></i><b>42</b><span>objects / one archive</span></div>
-
-  <div class="wrap hero-layout">
-    <div class="hero-copy">
-      <div class="eyebrow" data-scramble>Signal atlas · a NASA-source learning edition</div>
-      <p class="hero-kicker">When a mission ends, a trace remains.</p>
-      <h1 class="hero-title" id="heroTitle">Nothing is <em>gone.</em> It is <span>waiting.</span></h1>
-      <p class="hero-lede">Follow the hardware that stayed on the Moon, Mars, and beyond—and learn how to tell a source-backed record from a story we tell about it.</p>
-      <div class="herocta">
-        <button class="btn solid" data-scroll="#stories"><span>Open the first trace</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-        <button class="btn" data-scroll="#observatory"><span>Locate an object</span></button>
-      </div>
-      <p class="hero-disclaimer"><i></i><span><b>Independent educational project.</b> Uses public NASA mission resources; not produced by or endorsed by NASA.</span></p>
+    <div class="staggered-menu-wrapper fixed-wrapper" id="staggeredMenu" data-position="right">
+      <button class="sm-backdrop" id="smBackdrop" type="button" aria-label="Close navigation" tabindex="-1" data-metal-ignore></button>
+      <div class="sm-prelayers" aria-hidden="true"><i class="sm-prelayer sm-prelayer--one"></i><i class="sm-prelayer sm-prelayer--two"></i><i class="sm-prelayer sm-prelayer--three"></i></div>
+      <header class="staggered-menu-header" aria-label="Archive navigation">
+        <a class="sm-logo" href="#hero" data-menu-scroll aria-label="Silent Fleet home">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13.5"/><path d="M3 18c7-9 19-9 26-4"/><circle cx="16" cy="16" r="2.5"/></svg>
+          <span><b>Silent Fleet</b><em>NASA hardware after arrival</em></span>
+        </a>
+        <div class="sm-header-actions"><span class="sm-utc">UTC <b id="clock">--:--:--</b></span><button class="sm-sound" id="soundBtn" aria-pressed="false" aria-label="Toggle ambient telemetry audio"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9a4 4 0 0 1 0 6"/></svg></button><button class="sm-toggle" id="smToggle" aria-label="Open archive navigation" aria-expanded="false" aria-controls="staggeredMenuPanel" type="button"><span class="sm-toggle-textWrap" aria-hidden="true"><span class="sm-toggle-textInner"><span>Menu</span><span>Close</span></span></span><span class="sm-icon" aria-hidden="true"><i></i><i></i></span></button></div>
+      </header>
+      <aside class="staggered-menu-panel" id="staggeredMenuPanel" aria-label="Archive menu" aria-hidden="true" inert>
+        <div class="sm-panel-inner"><p class="sm-panel-kicker">Silent Fleet / chapters</p><nav aria-label="Archive chapters"><ol class="sm-panel-list"><li><a class="sm-panel-item" href="#hero" data-menu-scroll><span class="sm-panel-itemLabel">Arrival</span><small>01</small></a></li><li><a class="sm-panel-item" href="#stories" data-menu-scroll><span class="sm-panel-itemLabel">Traces</span><small>02</small></a></li><li><a class="sm-panel-item" href="#observatory" data-menu-scroll><span class="sm-panel-itemLabel">Places</span><small>03</small></a></li><li><a class="sm-panel-item" href="#fieldguide" data-menu-scroll><span class="sm-panel-itemLabel">Index</span><small>04</small></a></li><li><a class="sm-panel-item" href="#science" data-menu-scroll><span class="sm-panel-itemLabel">Evidence</span><small>05</small></a></li></ol></nav><div class="sm-panel-footer"><p>Source practice</p><a href="https://images.nasa.gov/" target="_blank" rel="noreferrer">NASA Image Library <span>↗</span></a><a href="https://www.nasa.gov/missions/" target="_blank" rel="noreferrer">NASA missions <span>↗</span></a><span>Independent educational archive / 2026</span></div></div>
+      </aside>
     </div>
+    <div class="telemetry" aria-hidden="true"><div class="telwrap" id="telwrap"></div></div>
 
-    <figure class="hero-evidence" data-reveal data-evidence-tilt>
-      <div class="hero-evidence-image">
-        <div class="hero-specimen-bar"><span>Specimen 01</span><span>evidence plate</span></div>
-        <img src="/assets/dossiers/eagle.jpg" width="720" height="720" alt="Apollo 11 lunar module Eagle at the Sea of Tranquility." fetchpriority="high" decoding="sync" />
-        <span class="hero-target" aria-hidden="true"></span>
-        <span class="hero-measure hero-measure--vertical" aria-hidden="true"></span>
-        <span class="hero-measure hero-measure--horizontal" aria-hidden="true"></span>
-      </div>
-      <figcaption>
-        <span>Begin with an evidence-bearing object</span>
-        <b>NASA artefact-specific image · Eagle descent stage</b>
-        <a href="https://images.nasa.gov/details-as11-40-5927" target="_blank" rel="noreferrer">NASA image source <span aria-hidden="true">↗</span></a>
-      </figcaption>
-    </figure>
-  </div>
-
-  <div class="wrap hero-proof" aria-label="Archive scope">
-    <div><b>06</b><span>guided starting stories</span></div>
-    <div><b>24</b><span>NASA-checked dossier records</span></div>
-    <div><b id="heroCount">42</b><span>source-linked archive records</span></div>
-  </div>
-</section>
-
-<!-- ============ GUIDED STORIES ============ -->
-<section id="stories" aria-labelledby="storiesTitle">
-  <div class="wrap story-intro">
-    <div>
-      <div class="eyebrow cold">Chapter one · read the trace</div>
-      <h2 id="storiesTitle">Six machines.<br /><em>Six thresholds.</em></h2>
-    </div>
-    <div>
-      <p>Start with one trace at a time. Each chapter separates an imaginative invitation from the NASA-checked record that can support it.</p>
-      <div class="story-disclaimer">
-        <i aria-hidden="true"></i>
-        <div><b>How to read this</b><span>Story moments are interpretation. NASA-checked records link to the mission source used for visible facts.</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="story-route-shell wrap">
-    <p class="story-route-label">Choose a question, then follow the trail</p>
-    <nav class="story-route" aria-label="Story chapter route"><ol id="storyRoute"></ol></nav>
-  </div>
-  <div class="story-progress" aria-live="polite"><div><b id="storyCurrent">01</b><small>/</small><b id="storyTotal">06</b><small>chapter</small></div></div>
-  <div id="storyRail" class="story-rail"></div>
-</section>
-
-<!-- ============ BRIEFING ============ -->
-<section id="briefing" aria-labelledby="methodTitle">
-  <div class="wrap briefgrid">
-    <div class="briefstick" data-reveal>
-      <div class="eyebrow">The method is the magic</div>
-      <h2 class="h2" id="methodTitle" style="margin-top:20px">
-        <span class="lm"><span>Wonder starts</span></span>
-        <span class="lm"><span>where a source</span></span>
-        <span class="lm"><span><em class="serif" style="font-style:italic;color:var(--amberL)">can be opened.</em></span></span>
-      </h2>
-      <div class="counters" aria-label="Evidence summary">
-        <div><b>42</b><span>record-level NASA reading links</span></div>
-        <div><b>24</b><span>fact-checked limited records</span></div>
-        <div><b>22</b><span>expanded evidence dossiers</span></div>
-        <div><b>18</b><span>records held back for review</span></div>
-      </div>
-      <p class="mono" style="margin-top:26px;line-height:1.8">A source link is a beginning, not a permission slip.</p>
-    </div>
-
-    <div class="briefbody" data-reveal>
-      <p>Silent Fleet separates a story moment from a factual record. The warm story voice invites a reader in; the NASA-checked section below it carries the facts, specifications, image treatment, and reading link.</p>
-
-      <p>The project uses NASA’s <a href="https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf" target="_blank" rel="noreferrer">Catalogue of Manmade Material on the Moon</a>, mission pages, image records, and dated status pages. It keeps the Moon catalogue’s rows, quantities, and locations separate rather than converting them into a made-up grand total.</p>
-
-      <p>NASA records appear first in the Field Guide. Other-agency context records stay available through an explicit filter, but a NASA-related page does not automatically make every detail on those records verified.</p>
-
-      <p>Some records are intentionally short. Their source link remains open to readers while the archive withholds extra details until the evidence review is complete.</p>
-
-      <div class="pull">
-        <q>Wonder is welcome here. Guesswork is not.</q>
-        <cite>Silent Fleet evidence rule</cite>
-      </div>
-
-      <div class="asides">
-        <article><h3><i></i>Story moment</h3><p>Interpretive copy is clearly labeled and avoids factual dates, quantities, locations, rankings, and science claims.</p></article>
-        <article><h3><i></i>NASA-checked record</h3><p>Visible facts stay tied to the record-level NASA source linked from each dossier.</p></article>
-        <article><h3><i></i>Image treatment</h3><p>Every image is marked as artefact-specific, mission context, or a source-audited placeholder.</p></article>
-      </div>
-
-      <section class="state-key" aria-labelledby="stateKeyTitle">
-        <div><p class="state-key-kicker">Archive reading key</p><h3 id="stateKeyTitle">A state describes what we can responsibly say about an object—not its worth.</h3></div>
-        <dl>
-          <div><dt>Left behind</dt><dd>Hardware that remains at a recorded destination.</dd></div>
-          <div><dt>Silent</dt><dd>A mission record with no current signal claim shown here.</dd></div>
-          <div><dt>Living legacy</dt><dd>An enduring experiment or record with a source-backed continuing role.</dd></div>
-          <div><dt>Far traveller</dt><dd>A source-linked mission on a deep-space path.</dd></div>
-          <div><dt>Destroyed</dt><dd>A record whose audited source describes an intentional or mission-ending loss.</dd></div>
-          <div><dt>Unknown</dt><dd>A record kept discoverable while its claim review is still incomplete.</dd></div>
-        </dl>
+    <main id="main-content" tabindex="-1">
+      <section id="hero" aria-labelledby="heroTitle">
+        <canvas id="stars" aria-hidden="true"></canvas>
+        <div class="hero-rings" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="hero-coordinate hero-coordinate--one" aria-hidden="true">N 00° 41′ 15″ / FIELD OF VIEW 01</div>
+        <div class="hero-coordinate hero-coordinate--two" aria-hidden="true">42 OBJECTS / 24 CHECKED RECORDS</div>
+        <div class="wrap hero-layout">
+          <div class="hero-copy">
+            <p class="eyebrow" data-scramble>Silent Fleet / an evidence-led space journey</p>
+            <p class="hero-kicker">The signal stopped. The object did not.</p>
+            <h1 class="hero-title" id="heroTitle">What remains <em>still speaks.</em></h1>
+            <p class="hero-lede">Enter a living map of hardware left on the Moon, Mars, and the long dark beyond—then follow every claim back to its source.</p>
+            <div class="herocta"><button class="btn solid" data-scroll="#stories"><span>Enter the field</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><button class="btn" data-scroll="#observatory"><span>Open the star map</span></button></div>
+            <p class="hero-disclaimer"><i></i><span><b>Independent educational project.</b> Built from public NASA resources; not produced by or endorsed by NASA.</span></p>
+          </div>
+          <figure class="hero-evidence" data-reveal data-evidence-tilt>
+            <div class="hero-evidence-image"><img src="/assets/dossiers/eagle.jpg" width="720" height="720" alt="Apollo 11 lunar module Eagle at the Sea of Tranquility." fetchpriority="high" decoding="sync" /><span class="evidence-grid" aria-hidden="true"></span><span class="evidence-target" aria-hidden="true"></span><span class="evidence-code">EAGLE / AS11-40-5927</span></div>
+            <figcaption><span>NASA artefact-specific image</span><b>Apollo 11 / Eagle descent stage</b><a href="https://images.nasa.gov/details-as11-40-5927" target="_blank" rel="noreferrer">Open source ↗</a></figcaption>
+          </figure>
+        </div>
+        <div class="wrap hero-proof" aria-label="Archive scope"><div><b>06</b><span>guided questions</span></div><div><b>24</b><span>checked records</span></div><div><b id="heroCount">42</b><span>source-linked objects</span></div></div>
       </section>
 
-      <p class="mono" style="line-height:1.9">Independent educational project · public NASA mission resources · not NASA endorsed</p>
-    </div>
-  </div>
-</section>
+      <section id="stories" aria-labelledby="storiesTitle">
+        <div class="wrap story-intro"><div><p class="eyebrow">01 / traces in the field</p><h2 id="storiesTitle">Start with a question.<br><em>Stay for the record.</em></h2></div><div class="story-intro-copy"><p>Each chapter puts an imaginative invitation beside the source-aware NASA record. Nothing is hidden behind spectacle.</p><p class="story-disclaimer"><i></i><span>Story moments are interpretation. Facts belong to the cited record.</span></p></div></div>
+        <div class="wrap story-route-shell"><p>Choose a trace</p><nav class="story-route" aria-label="Guided story route"><ol id="storyRoute"></ol></nav></div>
+        <div class="story-progress" aria-live="polite"><span>CHAPTER</span><b id="storyCurrent">01</b><small>/</small><b id="storyTotal">06</b></div>
+        <div id="storyRail" class="story-rail"></div>
+      </section>
 
-<!-- ============ OBSERVATORY ============ -->
-<section id="moon-inventory" class="catalogue-section">
-  <div class="wrap">
-    <div class="sec-head" data-reveal>
-      <div>
-        <div class="eyebrow cold">A source table with its uncertainty intact</div>
-        <h2 class="h2" style="margin-top:18px">The Moon is not an empty page.</h2>
-        <p>This searchable list is a <b>partial parse so far</b> of NASA’s 2012 <a href="https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf" target="_blank" rel="noreferrer">Catalogue of Manmade Material on the Moon</a>. Its three counting methods stay separate: the displayed number is a filtered object/location-row count, never a mass estimate or an invented total.</p>
-      </div>
-    </div>
-    <div id="moonCatalogue" aria-live="polite"></div>
-  </div>
-</section>
+      <section id="briefing" aria-labelledby="methodTitle">
+        <div class="wrap briefing-layout"><div class="briefing-statement"><p class="eyebrow">02 / the source rule</p><h2 class="h2" id="methodTitle">A story is an invitation.<br><em>A source is a way back.</em></h2><div class="counters"><div><b>42</b><span>record links</span></div><div><b>24</b><span>checked dossiers</span></div><div><b>22</b><span>expanded records</span></div><div><b>18</b><span>held for review</span></div></div></div><div class="briefing-copy"><p>Silent Fleet separates a human story moment from the NASA-checked record. The distinction is visible because the reader deserves to know which words are evidence and which words are reflection.</p><p>NASA mission pages, catalogue records, image records, and dated status pages are the path back. When a record is incomplete, the archive says so rather than filling the silence.</p><div class="principle-list"><article><span>01</span><h3>Stories invite.</h3><p>Interpretation carries no unmarked technical claims.</p></article><article><span>02</span><h3>Records answer.</h3><p>Visible facts carry a mission-specific NASA path.</p></article><article><span>03</span><h3>Images identify.</h3><p>Every image is marked as object, context, or placeholder.</p></article></div></div></div>
+      </section>
 
-<!-- ============ OBSERVATORY ============ -->
-<section id="observatory">
-  <div class="wrap">
-    <div class="sec-head" data-reveal>
-      <div>
-        <div class="eyebrow cold">Coordinates, not a command centre</div>
-        <h2 class="h2" style="margin-top:18px">Locate what stayed.</h2>
-          <p>An interactive Moon and Mars globe, not a real-time mission feed. Marker locations appear only when an audited NASA source supports the visible record. Drag to orbit, then open a dossier for the story and evidence.</p>
-      </div>
-      <div class="obs-head" style="margin:0">
-        <span class="catalogue-stat" id="moonCatalogueStat">Loading parsed Moon rows…</span>
-        <div class="bodytoggle" role="group" aria-label="Choose a celestial body">
-          <button data-b="moon" class="sel" aria-pressed="true"><i></i>Moon</button>
-          <button data-b="mars" aria-pressed="false"><i></i>Mars</button>
-        </div>
-      </div>
-    </div>
+      <section id="moon-inventory" class="catalogue-section"><div class="wrap"><div class="section-head"><p class="eyebrow">03 / lunar material register</p><h2 class="h2">The Moon keeps the ledger.</h2><p>Explore a partial source-preserving parse of NASA’s Catalogue of Manmade Material on the Moon. It reports rows, not invented mass totals.</p></div><div id="moonCatalogue" aria-live="polite"></div></div></section>
 
-    <div class="obs" data-reveal>
-      <div class="viewport" id="viewport">
-        <canvas id="globe" aria-label="Interactive 3D globe showing artifact locations"></canvas>
-        <div id="hotspots"></div>
-        <div class="vp-hud tl">
-          <div class="rec"><i></i>INTERACTIVE GLOBE</div>
-          <div id="hudBody" style="margin-top:7px">BODY · <b>THE MOON</b></div>
-          <div id="hudSite" style="margin-top:3px">MEAN RADIUS · <b>1,737.4 KM</b></div>
-          <div id="hudTexture" style="margin-top:3px">COLOR MAP · <b>NASA LRO / SVS</b></div>
-        </div>
-        <div class="vp-hud tr">
-          <div id="hudCount">MARKERS · <b>13</b></div>
-          <div style="margin-top:3px">PROJECTION · <b>EQUIRECT</b></div>
-          <div style="margin-top:3px">SCALE · <b>1:1 SPHERICAL</b></div>
-        </div>
-        <div class="vp-hud bl" id="hudSel">SELECTED · <b>NONE</b></div>
-        <div class="vp-tools">
-          <button id="btnZoomIn" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-          <button id="btnZoomOut" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
-          <button id="btnSpin" title="Toggle auto-rotation" aria-label="Toggle auto rotation"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3.2-6.9"/><path d="M21 4v5h-5"/></svg></button>
-          <button id="btnReset" title="Reset view" aria-label="Reset view"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></button>
-        </div>
-        <div class="vp-loading" id="vpLoad">Generating surface model…</div>
-      </div>
-      <div class="sidecol">
-        <div class="sidetop">
-          <h3 id="sideTitle">Artefacts on the Moon</h3>
-          <span class="cnt" id="sideCnt">13 / 13</span>
-        </div>
-        <div class="sidelist" id="sideList" role="region" aria-label="Artefacts on the selected body"></div>
-      </div>
-    </div>
-    <p class="mono" style="margin-top:16px;line-height:1.8" data-reveal>
-      Surface geometry is procedurally generated. Color textures are local, credited NASA LRO and NASA/USGS map assets. Landing coordinates are documented mission data.
-    </p>
-  </div>
-</section>
+      <section id="observatory"><div class="wrap"><div class="section-head observatory-head"><div><p class="eyebrow">04 / spatial evidence</p><h2 class="h2">Find a trace<br><em>on its world.</em></h2><p>Drag the Moon or Mars. Markers appear only when the visible record has an audited supporting source.</p></div><div class="bodytoggle" role="group" aria-label="Choose a celestial body"><button data-b="moon" class="sel" aria-pressed="true"><i></i>Moon</button><button data-b="mars" aria-pressed="false"><i></i>Mars</button></div></div><div class="obs"><div class="viewport" id="viewport"><canvas id="globe" aria-label="Interactive 3D globe showing artefact locations"></canvas><div id="hotspots"></div><div class="vp-hud tl">FIELD / <b id="hudBody">THE MOON</b><br><span id="hudSite">MEAN RADIUS · 1,737.4 KM</span><br><span id="hudTexture">NASA LRO / SVS MAP</span></div><div class="vp-hud tr"><span id="hudCount">MARKERS · 13</span><br>PROJECTION · EQUIRECT</div><div class="vp-hud bl" id="hudSel">SELECTED · <b>NONE</b></div><div class="vp-tools"><button id="btnZoomIn" aria-label="Zoom in">+</button><button id="btnZoomOut" aria-label="Zoom out">−</button><button id="btnSpin" aria-label="Toggle auto rotation">↻</button><button id="btnReset" aria-label="Reset view">⌁</button></div><div class="vp-loading" id="vpLoad">Mapping surface…</div></div><aside class="sidecol"><div class="sidetop"><h3 id="sideTitle">Traces on the Moon</h3><span class="cnt" id="sideCnt">13 / 13</span></div><div class="sidelist" id="sideList" role="region" aria-label="Artefacts on the selected body"></div></aside></div><p class="section-note">Surface geometry is procedural. Local map textures are credited NASA LRO and NASA/USGS assets. Coordinates are mission records, not live telemetry.</p></div></section>
 
-<!-- ============ LEDGER ============ -->
-<section id="ledger">
-  <div class="wrap">
-    <div class="sec-head" data-reveal>
-      <div>
-        <div class="eyebrow rusty">The things that travelled too</div>
-        <h2 class="h2" style="margin-top:18px">Small objects. Long shadows.</h2>
-        <p>Not everything left on the Moon was a spacecraft. Crews jettisoned weight, dropped experiments, buried a statue — and once, hit two golf balls.</p>
-      </div>
-      <p class="mono" style="max-width:250px;margin:0">Source · NASA lunar surface inventory tallies &amp; Apollo mission reports</p>
-    </div>
-    <div class="ledgergrid" id="ledgerGrid" data-reveal></div>
-  </div>
-</section>
+      <section id="ledger"><div class="wrap"><div class="section-head"><p class="eyebrow">05 / the carried and discarded</p><h2 class="h2">Not every trace<br>was a machine.</h2><p>Small objects can hold the scale of an expedition: experiments, mementos, tools, and things left because weight mattered.</p></div><div class="ledgergrid" id="ledgerGrid"></div></div></section>
 
-<!-- ============ TIMELINE ============ -->
-<section id="timeline">
-  <div class="wrap sec-head" data-reveal>
-    <div>
-      <div class="eyebrow">A field record of arrivals</div>
-      <h2 class="h2" style="margin-top:18px">Every landing leaves a line.</h2>
-      <p>Every arrival, in order. Drag the rail, or press playback and let the archive tell itself.</p>
-    </div>
-  </div>
-  <div class="wrap tl-ctrl" data-reveal>
-    <button class="playbtn" id="playBtn" aria-pressed="false">
-      <svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4l13 8-13 8z"/></svg>
-      <span id="playLabel">Playback</span>
-    </button>
-    <div class="chips" id="tlChips">
-      <button class="chip sel" data-tl="all">All</button>
-      <button class="chip" data-tl="moon">Moon</button>
-      <button class="chip" data-tl="mars">Mars</button>
-      <button class="chip cool" data-tl="deep">Deep space</button>
-    </div>
-    <div class="mono" id="tlCount">42 events</div>
-  </div>
-  <div class="rail">
-    <div class="railscroll" id="railScroll" tabindex="0" role="region" aria-label="Scrollable mission timeline">
-      <div class="track" id="track"></div>
-    </div>
-    <div class="tl-caption" id="tlCaption"><b>Standby</b>Choose an event, or press playback to run the chronology.</div>
-  </div>
-</section>
+      <section id="timeline"><div class="wrap"><div class="section-head"><p class="eyebrow">06 / arrival sequence</p><h2 class="h2">A line through<br><em>the dark.</em></h2><p>Browse the source-aware chronology or let it advance one object at a time.</p></div><div class="tl-ctrl"><button class="playbtn" id="playBtn" aria-pressed="false"><span id="playIcon">▶</span><span id="playLabel">Play chronology</span></button><div class="chips" id="tlChips"><button class="chip sel" data-tl="all">All fields</button><button class="chip" data-tl="moon">Moon</button><button class="chip" data-tl="mars">Mars</button><button class="chip" data-tl="deep">Deep space</button></div><span class="mono" id="tlCount">42 events</span></div></div><div class="rail"><div class="railscroll" id="railScroll" tabindex="0" role="region" aria-label="Scrollable mission timeline"><div class="track" id="track"></div></div><p class="tl-caption" id="tlCaption"><b>Choose a trace</b>The record will appear here.</p></div></section>
 
-<!-- ============ INTERSTELLAR ============ -->
-<section id="interstellar">
-  <div class="wrap">
-    <div class="sec-head" data-reveal>
-      <div>
-        <div class="eyebrow cold">After the map runs out</div>
-        <h2 class="h2" style="margin-top:18px">They kept moving.</h2>
-        <p>Two NASA Voyagers are operating in interstellar space. Their distances below are rounded, dated snapshots from NASA/JPL's Voyager status page — not live extrapolations.</p>
-      </div>
-    </div>
+      <section id="interstellar"><div class="wrap"><div class="section-head"><p class="eyebrow">07 / beyond the heliopause</p><h2 class="h2">The archive keeps<br><em>travelling.</em></h2><p>Voyager distances are dated NASA/JPL snapshots, not live extrapolations. The scale is real enough without pretending it updates every second.</p></div><div class="intgrid"><div><div class="countdown"><p>Next recorded threshold</p><div class="cdu"><div><b id="cdD">00</b><span>days</span></div><div><b id="cdH">00</b><span>hours</span></div><div><b id="cdM">00</b><span>minutes</span></div></div></div><div class="odom"><div class="row"><span class="nm">Voyager 1</span><span class="val" id="v1km">—</span><span class="au" id="v1au">— AU</span></div><div class="row"><span class="nm">Voyager 2</span><span class="val" id="v2km">—</span><span class="au" id="v2au">— AU</span></div><div class="row"><span class="nm">Round trip</span><span class="val" id="rtt">—</span><span class="au">light time</span></div><p class="mono" id="voyagerAsOf">NASA/JPL status · as of —</p></div></div><div class="helio"><p class="mono">Heliocentric paths / log scale</p><svg viewBox="0 0 420 380" id="helioSvg" role="img" aria-label="Map of the solar system showing escaping spacecraft"></svg></div></div><div class="recordwrap"><div><svg viewBox="0 0 320 320" id="recordSvg" role="img" aria-label="The Voyager Golden Record cover diagram"></svg></div><div><p class="eyebrow">A message in motion</p><h3 class="h3">A record designed for a listener we may never meet.</h3><p>The Voyager Golden Record carries sounds, images, music, and instructions encoded in analogue. It is an artefact of curiosity as much as a spacecraft component.</p></div></div></div></section>
 
-    <div class="intgrid">
-      <div data-reveal>
-        <div class="countdown">
-          <div class="lbl"><i></i>Milestone · Voyager 1 reaches one light-day from Earth · Wednesday, Nov. 18, 2026, 2:16:07 a.m. PST</div>
-          <div class="cdu">
-            <div><b id="cdD">00</b><span>Days</span></div>
-            <div><b id="cdH">00</b><span>Hours</span></div>
-            <div><b id="cdM">00</b><span>Minutes</span></div>
-          </div>
-          <p class="mono" style="margin:18px 0 0;line-height:1.8;color:#5f6779">One light-day is <span style="color:var(--ink2)">approximately 25.902 billion km</span>. Countdown is shown to the minute; the milestone date is stated by NASA/JPL.</p>
-        </div>
+      <section id="fieldguide"><div class="wrap"><div class="section-head"><p class="eyebrow">08 / object index</p><h2 class="h2">Search the field.</h2><p>Every source-linked object in one index. Filter by world, status, agency, or date.</p></div><div class="filters"><label class="searchbox" id="searchBox"><span>⌕</span><input id="search" type="search" placeholder="Search a mission, world, or trace" aria-label="Search artefacts" autocomplete="off"><button class="clear" id="clearSearch" aria-label="Clear search">×</button></label><div class="chips" role="group" aria-label="Filter by celestial body"><button class="chip sel" data-f="body" data-v="all">All worlds</button><button class="chip" data-f="body" data-v="moon">Moon</button><button class="chip" data-f="body" data-v="mars">Mars</button><button class="chip" data-f="body" data-v="deep">Deep space</button></div><div class="chips" id="agencyChips" role="group" aria-label="Filter by agency"><button class="chip sel" data-f="agency" data-v="nasa">NASA records</button><button class="chip" data-f="agency" data-v="other">Context</button></div><div class="chips" role="group" aria-label="Filter by status"><button class="chip sel" data-f="status" data-v="all">Any state</button><button class="chip" data-f="status" data-v="active">Active</button><button class="chip" data-f="status" data-v="silent">Silent</button><button class="chip" data-f="status" data-v="lost">Lost</button><button class="chip" data-f="status" data-v="destroyed">Destroyed</button></div><select id="sortSel" aria-label="Sort artefacts"><option value="verified-first" selected>Checked first</option><option value="year-asc">Oldest first</option><option value="year-desc">Newest first</option><option value="name">A–Z</option></select></div><p class="results" id="results">Loading object index…</p><div class="grid" id="grid"></div><div class="empty" id="empty"><h3>No trace matches that search.</h3><button class="btn" id="resetFilters"><span>Reset the index</span></button></div></div></section>
 
-        <div class="odom" style="margin-top:34px">
-          <div class="row v1">
-            <div class="nm">Voyager 1</div>
-            <div class="val"><span id="v1km">—</span><em>km from Earth · approx.</em></div>
-            <div class="au"><span id="v1au">—</span> AU</div>
-          </div>
-          <div class="row v2">
-            <div class="nm">Voyager 2</div>
-            <div class="val"><span id="v2km">—</span><em>km from Earth · approx.</em></div>
-            <div class="au"><span id="v2au">—</span> AU</div>
-          </div>
-          <div class="row">
-            <div class="nm">Round trip</div>
-            <div class="val" style="color:var(--ink2);font-size:clamp(16px,2vw,24px)"><span id="rtt">—</span><em>command &amp; reply · approx.</em></div>
-            <div class="au" style="color:var(--muted)">light time</div>
-          </div>
-          <div class="row">
-            <div class="nm">New Horizons</div>
-            <div class="val" style="color:var(--violet);font-size:clamp(16px,2vw,24px)">NASA mission context<em>not included in the NASA Voyager status table</em></div>
-            <div class="au" style="color:var(--muted)">no shared counter</div>
-          </div>
-          <p class="mono" id="voyagerAsOf" style="margin:12px 0 0;color:var(--muted)">NASA/JPL status · as of —</p>
-        </div>
+      <section id="science"><div class="wrap"><div class="section-head"><p class="eyebrow">09 / evidence protocol</p><h2 class="h2">Wonder needs<br><em>an audit trail.</em></h2><p>The archive’s usefulness depends on keeping confidence and uncertainty visible at the same time.</p></div><div class="bigdisc"><article><span>01</span><q>Agency affiliation is not claim verification.</q><p>Every visible statement needs its own source path.</p></article><article><span>02</span><q>A related image is not an object image.</q><p>Each image is labelled as artefact, mission context, or placeholder.</p></article><article><span>03</span><q>A catalogue row is not a total mass.</q><p>The Moon inventory preserves NASA’s own method.</p></article><article><span>04</span><q>Uncertainty remains part of the record.</q><p>Withheld detail is more honest than a confident guess.</p></article></div><div class="sciencelist" id="scienceList"></div></div></section>
 
-        <div class="pull" style="margin-top:40px">
-          <q>Look again at that dot. That's here. That's home. That's us.</q>
-          <cite>Carl Sagan · on the Pale Blue Dot image · taken by Voyager 1 at 6.06 billion km · 14 Feb 1990</cite>
-        </div>
-      </div>
+      <section id="epilogue"><canvas id="epiCanvas" aria-hidden="true"></canvas><div class="epi-in"><p class="eyebrow">10 / end of this signal</p><blockquote>They are not silent because they have nothing left to say.<br><em>We are still learning how to listen.</em></blockquote><p class="sig">Silent Fleet / independent NASA-source learning archive</p><div class="epi-cta"><button class="btn solid" data-scroll="#fieldguide"><span>Return to the index</span></button><button class="btn" data-scroll="#hero"><span>Begin again</span></button></div></div></section>
+    </main>
 
-      <div class="helio" data-reveal>
-        <div class="mono" style="padding:6px 6px 14px;display:flex;justify-content:space-between">
-          <span>Heliocentric map · top down</span><span style="color:var(--cyan)">log scale</span>
-        </div>
-        <svg viewBox="0 0 420 380" id="helioSvg" role="img" aria-label="Map of the solar system showing the five escaping spacecraft"></svg>
-        <div class="legend">
-          <span><i style="background:#ff9d3d"></i>Voyager 1</span>
-          <span><i style="background:#5fe1ff"></i>Voyager 2</span>
-          <span><i style="background:#e2553b"></i>Pioneer 10</span>
-          <span><i style="background:#a48bff"></i>Pioneer 11</span>
-          <span><i style="background:#8ee6a4"></i>New Horizons · contextual</span>
-        </div>
-      </div>
-    </div>
+    <footer><div class="wrap fgrid"><div><a class="brand" href="#hero"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13.5"/><path d="M3 18c7-9 19-9 26-4"/></svg><span><b>Silent Fleet</b><em>NASA hardware after arrival</em></span></a><p>Independent educational project for NASA Space Apps. Built from public mission resources and explicit source paths.</p></div><div><p class="footer-title">Navigate</p><a href="#stories">Traces</a><a href="#observatory">Places</a><a href="#fieldguide">Index</a><a href="#science">Evidence</a></div><div><p class="footer-title">Source practice</p><p>NASA mission pages<br>NASA image records<br>NASA lunar material catalogue<br>JPL status records</p></div></div><div class="fbottom"><span>© 2026 Silent Fleet</span><span id="fDate">—</span></div></footer>
 
-    <div class="recordwrap" data-reveal>
-      <div>
-        <svg viewBox="0 0 320 320" id="recordSvg" role="img" aria-label="The Voyager Golden Record cover diagram"></svg>
-      </div>
-      <div>
-        <div class="eyebrow">On board both Voyagers</div>
-        <h3 class="h3" style="margin:16px 0 16px">A phonograph with no needle, thrown into an ocean with no shore.</h3>
-        <p style="color:var(--ink2);font-size:15.5px;line-height:1.78;margin:0 0 12px">Each Voyager carries a 30-centimetre gold-plated copper phonograph record, sealed in an aluminium jacket with a uranium-238 clock so a finder can date it. The cover is etched with instructions: how to build a needle, how fast to spin it, and — because the builders assumed whoever found it would not know where we are — a map.</p>
-        <p style="color:var(--ink2);font-size:15.5px;line-height:1.78;margin:0">Fourteen lines radiate from a point. They are the periods of fourteen pulsars, written in binary, in units of the hydrogen spin-flip transition. Any civilisation that knows pulsars can triangulate the Sun. Below it, the hyperfine transition of hydrogen gives the unit of length and time for everything else.</p>
-        <ul class="tracklist">
-          <li><b>Bach</b> · Brandenburg Concerto No. 2</li>
-          <li><b>Chuck Berry</b> · Johnny B. Goode</li>
-          <li><b>Blind Willie Johnson</b> · Dark Was the Night</li>
-          <li><b>Peruvian panpipes</b> · wedding song</li>
-          <li><b>Greetings</b> · 55 languages</li>
-          <li><b>Earth sounds</b> · wind, thunder, heartbeat</li>
-          <li><b>Mozart</b> · Magic Flute, Queen of the Night</li>
-          <li><b>Navajo</b> · night chant</li>
-          <li><b>115 images</b> · encoded in analogue</li>
-          <li><b>Sagan's</b> · whispered brainwaves</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FIELD GUIDE ============ -->
-<section id="fieldguide">
-  <div class="wrap">
-    <div class="sec-head" data-reveal>
-      <div>
-        <div class="eyebrow">The open object index</div>
-        <h2 class="h2" style="margin-top:18px">Find a trace.</h2>
-        <p>Search every object in the archive. Filter by world, by fate, by decade. Press <kbd style="font-family:var(--ff-m);border:1px solid var(--line2);padding:2px 6px;border-radius:2px;font-size:11px">/</kbd> to jump to search.</p>
-      </div>
-    </div>
-
-    <div class="filters" data-reveal>
-      <div class="searchbox" id="searchBox">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
-        <input id="search" type="search" placeholder="Search artefacts…" aria-label="Search artefacts" autocomplete="off" />
-        <button class="clear" id="clearSearch" aria-label="Clear search">×</button>
-      </div>
-      <div class="chips" id="bodyChips" role="group" aria-label="Filter by celestial body">
-        <button class="chip sel" data-f="body" data-v="all">All worlds</button>
-        <button class="chip" data-f="body" data-v="moon">Moon</button>
-        <button class="chip" data-f="body" data-v="mars">Mars</button>
-        <button class="chip cool" data-f="body" data-v="deep">Deep space</button>
-      </div>
-      <div class="chips" id="agencyChips" role="group" aria-label="Filter by agency">
-        <button class="chip sel" data-f="agency" data-v="nasa">NASA records</button>
-        <button class="chip cool" data-f="agency" data-v="other">Other agencies</button>
-      </div>
-      <div class="chips" id="statusChips" role="group" aria-label="Filter by status">
-        <button class="chip sel" data-f="status" data-v="all">Any fate</button>
-        <button class="chip" data-f="status" data-v="active">Active</button>
-        <button class="chip" data-f="status" data-v="derelict">Derelict</button>
-        <button class="chip" data-f="status" data-v="silent">Silent</button>
-        <button class="chip" data-f="status" data-v="lost">Lost</button>
-        <button class="chip" data-f="status" data-v="destroyed">Destroyed</button>
-      </div>
-      <div class="selectwrap">
-        <select id="sortSel" aria-label="Sort artefacts">
-          <option value="verified-first" selected>NASA-checked first</option>
-          <option value="year-asc">Oldest first</option>
-          <option value="year-desc">Newest first</option>
-          <option value="name">A → Z</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="results" id="results">Showing <b>42</b> of 42 artefacts</div>
-    <div class="grid" id="grid"></div>
-    <div class="empty" id="empty">
-      <svg viewBox="0 0 64 64"><circle cx="28" cy="28" r="17"/><path d="M40 40l14 14M20 28h16M28 20v16" stroke-dasharray="3 4"/></svg>
-      <h3>Nothing in the archive matches that.</h3>
-      <p><span data-total>42</span> objects catalogued · try a mission name, a year, or a world</p>
-      <button class="btn" id="resetFilters"><span>Reset filters</span></button>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SCIENCE ============ -->
-<section id="science">
-  <div class="wrap">
-    <div class="sec-head" data-reveal>
-      <div>
-        <div class="eyebrow">The rules that keep wonder honest</div>
-        <h2 class="h2" style="margin-top:18px">How we know.</h2>
-        <p>This section now renders only dossier summaries whose visible claims have been checked against an opened NASA source. The remaining historic copy is withheld rather than inferred from an agency label.</p>
-      </div>
-    </div>
-
-    <div class="bigdisc" data-reveal>
-      <article><div class="n">Audit rule 01</div><q>Agency affiliation is not claim verification.</q><div class="src">Record-level review<b>Visible copy must cite an opened NASA source</b>Mission narratives and technical figures remain hidden until every displayed claim in that record has been checked.</div></article>
-      <article><div class="n">Audit rule 02</div><q>A related image is not an artefact image.</q><div class="src">Image-level review<b>Artefact-specific NASA image or labelled placeholder</b>Each dossier identifies the image source or explicitly says that no artefact-specific image has been audited.</div></article>
-      <article><div class="n">Audit rule 03</div><q>A catalogue row is not a total mass.</q><div class="src">Moon inventory method<b>Top-level object/location rows only</b>The Moon inventory section preserves NASA’s own location text and states the counting method instead of estimating an unsupported mass.</div></article>
-      <article><div class="n">Audit rule 04</div><q>Uncertainty stays visible.</q><div class="src">Source path<b>Every dossier has a mission-specific NASA reference</b>Readers can open the NASA page from the dossier and distinguish checked claims from withheld material.</div></article>
-    </div>
-
-    <div class="sciencelist" id="scienceList" data-reveal></div>
-  </div>
-</section>
-
-<!-- ============ EPILOGUE ============ -->
-<section id="epilogue">
-  <canvas id="epiCanvas" aria-hidden="true"></canvas>
-  <div class="epi-in">
-    <div class="eyebrow" style="justify-content:center;margin-bottom:34px">End of transmission</div>
-    <blockquote>
-      Nobody is steering them now.<br>
-      Their batteries are cold, their cameras are dark,<br>
-      and their commands come from a planet<br>
-      they will never see again.<br><br>
-      <em>They are still the farthest thing we have ever done.</em>
-    </blockquote>
-    <div class="sig">Silent Fleet · educational archive · 2026</div>
-    <div class="epi-cta">
-      <button class="btn solid" data-scroll="#fieldguide"><span>Browse all <span data-total>42</span> artefacts</span></button>
-      <button class="btn" data-scroll="#observatory"><span>Back to the Observatory</span></button>
-    </div>
-  </div>
-</section>
-
-</main>
-
-<!-- ============ FOOTER ============ -->
-<footer>
-  <div class="wrap">
-    <div class="fgrid">
-      <div>
-        <div class="brand" style="margin-bottom:18px">
-          <svg viewBox="0 0 32 32" aria-hidden="true">
-            <circle cx="16" cy="16" r="14.2" fill="none" stroke="rgba(239,234,225,.22)" stroke-width="1"/>
-            <ellipse cx="16" cy="16" rx="14.2" ry="5.4" fill="none" stroke="rgba(255,157,61,.65)" stroke-width="1" transform="rotate(-24 16 16)"/>
-            <circle cx="16" cy="16" r="3.1" fill="#ff9d3d"/>
-          </svg>
-          <span><b>Silent Fleet</b><em>Off-world hardware archive</em></span>
-        </div>
-        <p class="note">Built for the <b style="color:var(--ink2)">2026 NASA Space Apps Challenge</b> — “Abandoned but not Forgotten: Storytelling about NASA's Discarded Equipment on the Moon and Mars.” An interactive, story-driven archive for school-age space enthusiasts about NASA hardware left on the Moon, on Mars and in deep space.</p>
-        <p class="note" style="margin-top:16px">Not affiliated with or endorsed by NASA. All facts drawn from public mission documentation.</p>
-      </div>
-      <div>
-        <p class="footer-title">Sections</p>
-        <ul>
-          <li><a href="#briefing">Mission briefing</a></li>
-          <li><a href="#observatory">Observatory</a></li>
-          <li><a href="#ledger">Ledger of small things</a></li>
-          <li><a href="#timeline">Timeline 1959–2026</a></li>
-          <li><a href="#interstellar">Beyond the heliopause</a></li>
-          <li><a href="#fieldguide">Field guide</a></li>
-          <li><a href="#science">What they taught us</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="footer-title">Still transmitting</p>
-        <ul>
-          <li>Curiosity · Gale Crater</li>
-          <li>Perseverance · Jezero Crater</li>
-          <li>Voyager 1 · interstellar</li>
-          <li>Voyager 2 · interstellar</li>
-          <li>New Horizons · Kuiper Belt</li>
-          <li>Apollo 11/14/15 retroreflectors</li>
-        </ul>
-      </div>
-      <div>
-        <p class="footer-title">Data &amp; sources</p>
-        <ul>
-          <li>NASA Science mission pages</li>
-          <li>JPL mission status &amp; odometers</li>
-          <li>NSSDCA / PDS planetary archives</li>
-          <li>Apollo Lunar Surface Journal</li>
-          <li>Lunar &amp; Planetary Institute</li>
-          <li><a href="https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf" target="_blank" rel="noreferrer">NASA Catalogue of Manmade Material on the Moon</a></li>
-          <li><a href="https://svs.gsfc.nasa.gov/4720" target="_blank" rel="noreferrer">Moon color map · NASA SVS / LRO</a></li>
-          <li><a href="https://mars.nasa.gov/resources/6435/global-geologic-map-of-mars/" target="_blank" rel="noreferrer">Mars map · NASA/USGS</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="fbottom">
-      <span>© 2026 Silent Fleet · Educational project</span>
-      <span>Procedural surfaces · three.js · GSAP · hand-built</span>
-      <span id="fDate">—</span>
-    </div>
-  </div>
-</footer>
-
-<!-- ============ DOSSIER ============ -->
-<div class="scrim" id="scrim"></div>
-<aside class="dossier" id="dossier" role="dialog" aria-modal="true" aria-labelledby="dTitle" aria-hidden="true" inert>
-  <div class="dhead">
-    <span class="idx" id="dIdx">00 / 42</span>
-    <h2 id="dTitle">—</h2>
-    <button class="dclose" id="dClose" aria-label="Close dossier">
-      <svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg>
-    </button>
-  </div>
-  <div class="dbody" id="dBody"></div>
-  <div class="dnav">
-    <button id="dPrev"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Previous</button>
-    <button id="dNext">Next<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-  </div>
-</aside>
-
+    <div class="scrim" id="scrim"></div>
+    <aside class="dossier" id="dossier" role="dialog" aria-modal="true" aria-labelledby="dTitle" aria-hidden="true" inert><div class="dhead"><span class="idx" id="dIdx">00 / 42</span><h2 id="dTitle">—</h2><button class="dclose" id="dClose" aria-label="Close dossier">×</button></div><div class="dbody" id="dBody"></div><div class="dnav"><button id="dPrev">← Previous</button><button id="dNext">Next →</button></div></aside>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

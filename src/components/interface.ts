@@ -2,7 +2,6 @@ import { gsap } from 'gsap';
 import { $, $$ } from '../lib/dom';
 import { formatNumber, reducedMotion } from '../lib/utils';
 import { scramble, starCanvas } from './visual-effects';
-import { initLiquidGlassNavbar } from './ui/liquid-glass-navbar';
 import { initSpatialUi } from './spatial-ui';
 import { buildHelio, buildRecord, buildTicker, startLiveNumbers } from './telemetry';
 
@@ -18,6 +17,17 @@ export function initInterface(): () => void {
   const scrambleDisposers: Array<() => void> = [];
   const countObservers: IntersectionObserver[] = [];
   let heroScrollFrame: number | null = null;
+
+  // The arrival is intentionally quiet. Telemetry enters only after visitors
+  // leave the opening scene, where it becomes a directional reading aid rather
+  // than dashboard noise competing with the evidence image.
+  const arrivalSection = document.querySelector<HTMLElement>('#hero');
+  const updateArrivalStage = (): void => {
+    if (!arrivalSection) return;
+    document.body.classList.toggle('past-arrival', window.scrollY > arrivalSection.offsetHeight * .72);
+  };
+  updateArrivalStage();
+  window.addEventListener('scroll', updateArrivalStage, { passive: true, signal });
 
   if (!reducedMotion) {
     const hero = document.querySelector<HTMLElement>('#hero');
@@ -155,12 +165,14 @@ export function initInterface(): () => void {
       if (!selector) return;
       const target = document.querySelector<HTMLElement>(selector);
       if (!target) return;
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 40, behavior: reducedMotion ? 'auto' : 'smooth' });
+      window.scrollTo({
+        top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - 62),
+        behavior: reducedMotion ? 'auto' : 'smooth',
+      });
     };
     button.addEventListener('click', onScrollToSection, { signal });
   });
 
-  const disposeNavbar = initLiquidGlassNavbar();
   const disposeSpatialUi = initSpatialUi();
   buildTicker();
   buildHelio();
@@ -179,7 +191,6 @@ export function initInterface(): () => void {
     if (heroScrollFrame !== null) cancelAnimationFrame(heroScrollFrame);
     disposeLiveNumbers();
     disposeSpatialUi();
-    disposeNavbar();
     disposeEpisodeCanvas();
     disposeStarCanvas();
   };

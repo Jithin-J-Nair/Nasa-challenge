@@ -10,6 +10,8 @@ import { initEditorialSystem } from "./components/editorial-system";
 import { startBoot } from "./components/boot";
 import { initInterface } from "./components/interface";
 import { initMoonCatalogue } from "./components/moon-catalogue";
+import { initMetalControls } from "./components/metal-controls";
+import { initStaggeredMenu } from "./components/staggered-menu";
 import { initStoryJourney } from "./components/story-journey";
 import { initTimeline } from "./components/timeline";
 import { initLenisScroll } from "./experience/LenisScrollWrapper";
@@ -54,6 +56,8 @@ export function bootArchive(): void {
   let disposeMoonCatalogue: Disposer = () => undefined;
   let disposeStoryJourney: Disposer = () => undefined;
   let disposeEditorialSystem: Disposer = () => undefined;
+  let disposeStaggeredMenu: Disposer = () => undefined;
+  let disposeMetalControls: Disposer = () => undefined;
   let disposeScroll: Disposer = () => undefined;
 
   const dispose = (): void => {
@@ -67,6 +71,8 @@ export function bootArchive(): void {
     disposeObservatory();
     disposeDossier();
     disposeInterface();
+    disposeMetalControls();
+    disposeStaggeredMenu();
     disposeStoryJourney();
     disposeEditorialSystem();
     disposeScroll();
@@ -91,6 +97,8 @@ export function bootArchive(): void {
   disposeMoonCatalogue = initMoonCatalogue();
   disposeStoryJourney = initStoryJourney();
   disposeEditorialSystem = initEditorialSystem();
+  disposeStaggeredMenu = initStaggeredMenu();
+  disposeMetalControls = initMetalControls();
   // The ambient layer is deliberately desktop/fine-pointer art direction. CSS
   // already hides it on compact or coarse devices, so avoid allocating a WebGL
   // renderer there in the first place.

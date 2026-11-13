@@ -57,19 +57,51 @@ try {
       timeout: 12_000,
     });
     await page.waitForTimeout(250);
-    const liquidItems = page.locator("#liquidNav .liquid-nav-item");
-    if ((await liquidItems.count()) !== 5)
-      failures.push(
-        `${viewport.name}: expected five story-first primary-nav items`,
+    const menuItems = page.locator("#staggeredMenuPanel .sm-panel-item");
+    if ((await menuItems.count()) !== 5)
+      failures.push(`${viewport.name}: expected five archive menu chapters`);
+    const menuState = await page.locator('#smToggle').getAttribute('aria-expanded');
+    if (menuState !== 'false')
+      failures.push(`${viewport.name}: staggered menu did not initialise closed`);
+
+    // The replacement header is a real disclosure, not a cosmetic drawer.
+    // Exercise pointer opening, visible panel state, and Escape restoration at
+    // every layout size before the chapter-by-chapter regression begins.
+    const menuToggleBox = await page.locator('#smToggle').boundingBox();
+    if (!menuToggleBox) {
+      failures.push(`${viewport.name}: staggered menu toggle has no clickable box`);
+    } else {
+      // Drive the actual pointer sequence directly. The menu intentionally
+      // reacts on pointerdown so its semantic state closes before the outgoing
+      // panel can capture a deferred click during motion.
+      await page.mouse.click(
+        menuToggleBox.x + menuToggleBox.width / 2,
+        menuToggleBox.y + menuToggleBox.height / 2,
       );
-    if (
-      (
-        await page.locator('#liquidNav [aria-current="page"]').textContent()
-      )?.trim() !== "Begin"
-    )
-      failures.push(
-        `${viewport.name}: primary navigation did not initialise on Begin`,
-      );
+    }
+    await page.waitForFunction(
+      () => document.querySelector('#smToggle')?.getAttribute('aria-expanded') === 'true',
+      undefined,
+      { timeout: 4_000 },
+    );
+    await page.waitForTimeout(1_250);
+    const openMenuState = await page.evaluate(() => ({
+      hidden: document.querySelector('#staggeredMenuPanel')?.getAttribute('aria-hidden'),
+      firstLabelVisible: (() => {
+        const label = document.querySelector<HTMLElement>('.sm-panel-itemLabel');
+        return !!label && label.getBoundingClientRect().height > 0 && getComputedStyle(label).opacity !== '0';
+      })(),
+    }));
+    if (openMenuState.hidden !== 'false' || !openMenuState.firstLabelVisible)
+      failures.push(`${viewport.name}: staggered menu did not expose its chapter panel`);
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(
+      () => document.querySelector('#smToggle')?.getAttribute('aria-expanded') === 'false',
+      undefined,
+      { timeout: 4_000 },
+    );
+    if (!(await page.locator('#smToggle').evaluate((button) => document.activeElement === button)))
+      failures.push(`${viewport.name}: staggered menu did not restore focus after Escape`);
     await page.screenshot({
       path: `${outputDirectory}/${viewport.name}.png`,
       fullPage: false,
@@ -122,7 +154,7 @@ try {
         !reticleState ||
         !reticleState.active ||
         !reticleState.magnetic ||
-        reticleState.scale !== "1.45"
+        reticleState.scale !== "1.35"
       )
         failures.push(
           `${viewport.name}: magnetic cursor reticle did not lock to an interactive control`,
@@ -355,6 +387,11 @@ try {
   if (staticItemCount !== 42)
     failures.push(
       `no-JS fallback: expected 42 artefacts, found ${staticItemCount}`,
+    );
+  const staticChapterCount = await staticPage.locator('.noscript-nav a').count();
+  if (staticChapterCount !== 5)
+    failures.push(
+      `no-JS fallback: expected five chapter links, found ${staticChapterCount}`,
     );
   await staticContext.close();
 } finally {
