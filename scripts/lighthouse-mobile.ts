@@ -113,7 +113,7 @@ const measureLcpElement = async (): Promise<LcpObservation> => {
     await page.goto(url, { waitUntil: 'networkidle', timeout: 30_000 });
     await page.waitForTimeout(2_500);
     const observed = await page.evaluate(() => window.__silentFleetLcp);
-    return observed || { node: '<img.hero-title-image>', time: null, text: 'Hero title image (observer element was unavailable in this run)' };
+    return observed || { node: '<h1#heroTitle>', time: null, text: 'Hero story heading (observer element was unavailable in this run)' };
   } finally {
     await browser.close();
   }

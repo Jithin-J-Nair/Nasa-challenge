@@ -9,6 +9,7 @@ import { initDossierController } from "./components/dossier";
 import { startBoot } from "./components/boot";
 import { initInterface } from "./components/interface";
 import { initMoonCatalogue } from "./components/moon-catalogue";
+import { initStoryJourney } from "./components/story-journey";
 import { initTimeline } from "./components/timeline";
 import { $, $$ } from "./lib/dom";
 import { reducedMotion } from "./lib/utils";
@@ -49,6 +50,7 @@ export function bootArchive(): void {
   let disposeTimeline: Disposer = () => undefined;
   let disposeArchive: Disposer = () => undefined;
   let disposeMoonCatalogue: Disposer = () => undefined;
+  let disposeStoryJourney: Disposer = () => undefined;
 
   const dispose = (): void => {
     if (disposed) return;
@@ -61,6 +63,7 @@ export function bootArchive(): void {
     disposeObservatory();
     disposeDossier();
     disposeInterface();
+    disposeStoryJourney();
     disposeMoonCatalogue();
     disposeArchive();
     disposeTimeline();
@@ -79,6 +82,7 @@ export function bootArchive(): void {
   disposeTimeline = initTimeline();
   disposeArchive = initArchive();
   disposeMoonCatalogue = initMoonCatalogue();
+  disposeStoryJourney = initStoryJourney();
   if (!reducedMotion) {
     const loadAmbientCanvas = (): void => {
       void import("./experience/mount")

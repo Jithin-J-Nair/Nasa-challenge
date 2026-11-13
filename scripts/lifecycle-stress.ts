@@ -10,6 +10,7 @@ interface ArchiveTreeState {
   sideCards: number;
   ambientCanvases: number;
   headingCharacters: number;
+  storyChapters: number;
 }
 
 const browser = await chromium.launch({
@@ -30,10 +31,12 @@ const archiveTreeState = (): Promise<ArchiveTreeState> => page.evaluate(() => ({
   sideCards: document.querySelectorAll('#sideList .sitem').length,
   ambientCanvases: document.querySelectorAll('#webgl-shell canvas').length,
   headingCharacters: document.querySelectorAll('.spatial-char').length,
+  storyChapters: document.querySelectorAll('#storyRail [data-story-chapter]').length,
 }));
 
 try {
   await page.goto('http://127.0.0.1:5173/', { waitUntil: 'networkidle', timeout: 30_000 });
+  await page.waitForSelector('#storyRail [data-story-chapter]', { timeout: 15_000 });
   await page.locator('#observatory').scrollIntoViewIfNeeded();
   await page.waitForFunction(() => document.querySelectorAll('#sideList [data-id]').length > 0, undefined, { timeout: 15_000 });
   const baseline = await archiveTreeState();
@@ -44,6 +47,7 @@ try {
       app.bootArchive();
     })`);
     await page.waitForSelector('#grid .acard', { timeout: 15_000 });
+    await page.waitForSelector('#storyRail [data-story-chapter]', { timeout: 15_000 });
     await page.waitForFunction(() => document.querySelectorAll('#sideList [data-id]').length > 0, undefined, { timeout: 15_000 });
     await page.waitForFunction(() => document.querySelectorAll('#webgl-shell canvas').length <= 1, undefined, { timeout: 15_000 });
     const state = await archiveTreeState();
@@ -53,6 +57,7 @@ try {
       || state.sideCards !== baseline.sideCards
       || state.ambientCanvases > 1
       || state.headingCharacters !== baseline.headingCharacters
+      || state.storyChapters !== baseline.storyChapters
     ) failures.push(`cycle ${cycle}: remount mismatch ${JSON.stringify({ baseline, state })}`);
   }
 } finally {

@@ -47,7 +47,10 @@ export function initInterface(): () => void {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       const spans = Array.from(entry.target.querySelectorAll<HTMLElement>('.lm>span'));
-      if (spans.length === 0) return;
+      if (spans.length === 0) {
+        headingObserver.unobserve(entry.target);
+        return;
+      }
       if (reducedMotion) spans.forEach((span) => { span.style.transform = 'none'; span.style.opacity = '1'; });
       else spans.forEach((span, index) => animations.push(gsap.to(span, { y: 0, opacity: 1, duration: 1.05, delay: index * .11, ease: 'expo.out' })));
       headingObserver.unobserve(entry.target);

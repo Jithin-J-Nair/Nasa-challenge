@@ -303,7 +303,7 @@ function setBodyToggle(body: SurfaceBody): void {
   $$<HTMLButtonElement>(".bodytoggle button").forEach((button) => {
     const selected = button.dataset.b === body;
     button.classList.toggle("sel", selected);
-    button.setAttribute("aria-selected", String(selected));
+    button.setAttribute("aria-pressed", String(selected));
   });
 }
 
@@ -528,7 +528,7 @@ function buildSide(): void {
       const status = artifact.verifiedByNASA
         ? `<span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>`
         : '<span class="unverified-chip">Audit pending</span>';
-      return `<button class="sitem${artifact.id === archiveState.selectedArtifactId ? " sel" : ""}" data-id="${artifact.id}" role="option" aria-selected="false">
+      return `<button class="sitem${artifact.id === archiveState.selectedArtifactId ? " sel" : ""}" data-id="${artifact.id}">
       <span class="yr">${year}</span><span><span class="nm">${artifact.n}</span><span class="ms">${mission}</span></span>${status}
     </button>`;
     })

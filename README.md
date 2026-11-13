@@ -1,83 +1,100 @@
 # Silent Fleet
 
-A NASA-first interactive learning archive of hardware left on the Moon, Mars, and in deep space. NASA records are the default catalogue scope; contextual records from other agencies are available through the explicit **Other agencies** filter. It is a Vite-powered, dependency-managed static web application.
+**Silent Fleet** is an independent, NASA-resource-based educational experience about hardware left on the Moon, Mars, and beyond. It opens with six source-aware guided stories, then offers an interactive Observatory, a searchable Field Guide, a Moon catalogue parse, a mission timeline, and a visible evidence trail.
+
+> Independent educational project. Silent Fleet is not produced by, affiliated with, sponsored by, or endorsed by NASA, JPL, Caltech, the U.S. Government, or mission partners.
 
 ## Run locally
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Create a production build with:
+Build and preview the production site:
 
 ```bash
 npm run build
+npm run preview
 ```
 
-## Project structure
+## Experience model
+
+1. **Start with a story** — six curated, image-bearing, NASA-checked dossiers introduce a single machine and a large question.
+2. **Explore locations** — a locally rendered Moon/Mars globe exposes only source-audited marker locations. It is not a real-time mission feed.
+3. **Browse the archive** — all 42 records remain searchable. NASA records are the default; other-agency context records require an explicit filter choice.
+4. **Inspect the evidence** — every dossier exposes its record-level NASA reading link, image treatment, and fact-check state.
+
+The story copy is intentionally labeled as interpretation and does not introduce dates, quantities, locations, rankings, or scientific outcomes. NASA-checked facts and specifications are displayed separately.
+
+## Architecture
 
 ```text
 src/
-├── components/       # Focused UI and experience modules
-│   ├── archive.js            # Field Guide, ledger, science index
-│   ├── observatory.js        # Three.js globe, markers, dossier panel
-│   ├── timeline.js           # Interactive mission chronology
-│   ├── planet-textures.js    # Procedural bump maps for local NASA color textures
-│   ├── telemetry.js          # Dated NASA Voyager status snapshot and SVG diagrams
-│   ├── visual-effects.js     # Starfields and text effects
-│   ├── ui/liquid-glass-navbar.js # Framework-native Liquid Glass navigation
-│   ├── audio.js              # Optional ambient telemetry audio
-│   └── boot.js               # Instant, non-blocking acquisition preference
-├── data/             # Catalogue records and reusable SVG artwork
-├── lib/              # DOM helpers, shared state, events, utility functions
-├── styles/           # Fonts, shared tokens, sections, footer, responsive rules
-├── styles.css        # Stylesheet entry point
-└── main.js           # Application composition root
+├── components/
+│   ├── archive.ts             # Field Guide, ledger, and science index
+│   ├── dossier.ts             # Modal evidence dossier, focus management, sources
+│   ├── observatory.ts         # Native Three.js Moon/Mars globe and markers
+│   ├── story-journey.ts       # Guided story route and GSAP choreography
+│   ├── timeline.ts            # Interactive mission chronology
+│   ├── telemetry.ts           # Dated Voyager snapshot and SVG diagrams
+│   ├── ui/liquid-glass-navbar.ts
+│   └── visual-effects.ts
+├── data/
+│   ├── artifacts.ts           # Archive records, source mapping, image metadata
+│   ├── featured-audit.ts      # Expanded source-bounded dossier copy
+│   ├── dossier-stories.ts     # Separately labeled non-factual story moments
+│   └── story-path.ts          # Six-chapter starter route
+├── experience/                # Persistent React Three Fiber ambient layer
+├── lib/                       # DOM helpers, events, state, and utilities
+├── styles/                    # Design system, story journey, responsive CSS
+├── styles.css                 # Stylesheet entry point
+└── main.ts                    # Strict-TypeScript composition root
 ```
 
-The application intentionally uses framework-free ES modules: interactions are separated by responsibility without adding a heavyweight client framework. The Liquid Glass navigation is therefore implemented in `src/components/ui/` as a native adapter, rather than adding an unused React runtime.
+The application uses **TypeScript**, **React 18 / React Three Fiber** for the optional ambient renderer, native **Three.js** for the Observatory, **GSAP / ScrollTrigger**, and **Lenis**. There are no runtime CDN imports or backend/API dependencies.
 
-### React, Tailwind, and shadcn alternative
+## Commands
 
-This repository is not a React, TypeScript, Tailwind, or shadcn project. If a future migration needs the original TSX component, create a React TypeScript Vite application, install Tailwind, then initialise shadcn:
+| command | purpose |
+| --- | --- |
+| `npm run typecheck` | Strict TypeScript validation. |
+| `npm run build` | Typecheck and production Vite build. |
+| `npm run test:visual` | Desktop/mobile browser smoke checks, story route, context recovery, accessibility modal behavior, no-JS fallback, and WebGL fallback. Start `npm run dev` first. |
+| `npm run test:lifecycle` | Repeated dispose/remount stress test. Start `npm run dev` first. |
+| `npm run test:lighthouse` | Three mobile Lighthouse runs and a documented LCP observation. Run against a production preview. |
+| `npm run audit:claims` | Regenerate the row-level claim audit. |
+| `npm run catalogue:parse` | Rebuild the partial Moon catalogue cache from a local NASA PDF using Poppler. |
 
-```bash
-npm create vite@latest silent-fleet-react -- --template react-ts
-cd silent-fleet-react && npm install
-npm install tailwindcss @tailwindcss/vite
-npx shadcn@latest init
-mkdir -p src/components/ui
-```
+## Evidence model
 
-`src/components/ui` is the important equivalent of a shadcn `/components/ui` directory in a Vite source tree: it keeps reusable UI code inside the compiled source root and matches the import path that shadcn-generated components expect. Copy the supplied `liquid-glass-navbar.tsx` there only after that React/TypeScript setup is in place.
+Read [`docs/SOURCE-MAP.md`](docs/SOURCE-MAP.md) for the shared source definitions and current counts. In brief:
 
-## Assets and verification
+- **42** records have a record-level NASA source URL.
+- **24** records are fact checked for their visible limited copy.
+- **22** of those meet the expanded dossier standard: 2–3 supported factual sentences, 3–5 supported specs, a labeled story moment, and source treatment.
+- **18** remain available with their NASA reading link but intentionally withhold unsupported historical detail.
 
-- Runtime dependencies, including Three.js, GSAP, ScrollTrigger, and fonts, are installed locally through npm; there are no CDN runtime imports.
-- Planet maps, the Voyager image, and the share card are hosted in `public/assets/`. Their source credits and usage notes are in `public/assets/CREDITS.md`.
-- Each dossier exposes a NASA source link. Context records that are not verified against NASA documentation withhold narrative and technical detail.
-- `npm run test:visual` runs the responsive browser smoke test at 1280×720, 1440×900, and 390×844, validates NASA-first filtering, dossier evidence treatment, locally hosted texture credits, zero console errors, and the 42-entry no-JavaScript fallback.
-
-## NASA data and source table
+## NASA data and local media
 
 | source | project use |
 | --- | --- |
-| [Catalogue of Manmade Material on the Moon](https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf) | Programmatic Moon-catalogue parse, its separately reported line/direct-row/bracket-quantity counts, and audited lunar record locations. |
-| [NASA Voyager status](https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/) | Dated Voyager snapshot and one-light-day milestone. |
+| [Catalogue of Manmade Material on the Moon](https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf) | Programmatic Moon-catalogue parse; separate line, direct-row, and bracket-quantity counts; audited lunar locations. |
+| [NASA Voyager status](https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/) | Dated Voyager distance snapshot and one-light-day milestone. |
 | [NASA LRO Odysseus record](https://www.nasa.gov/missions/lro/nasas-lro-images-intuitive-machines-odysseus-lander/) | Audited Odysseus location. |
-| [NASA/JPL Mars 3 record](https://www.jpl.nasa.gov/news/nasa-mars-orbiter-images-may-show-1971-soviet-lander/) | Audited Mars 3 soft-landing and 14.5-second transmission statement. |
-| [NASA SVS CGI Moon Kit](https://svs.gsfc.nasa.gov/4720) and [NASA/USGS Mars map](https://mars.nasa.gov/resources/6435/global-geologic-map-of-mars/) | Local observatory texture maps. |
-| [NASA Image and Video Library](https://images.nasa.gov/) | Locally hosted dossier media with retained NASA credit lines. |
+| [NASA/JPL Mars 3 record](https://www.jpl.nasa.gov/news/nasa-mars-orbiter-images-may-show-1971-soviet-lander/) | Audited Mars 3 landing/transmission statement. |
+| [NASA SVS CGI Moon Kit](https://svs.gsfc.nasa.gov/4720) | Local Moon colour map used by the Observatory. |
+| [NASA/USGS Mars map](https://mars.nasa.gov/resources/6435/global-geologic-map-of-mars/) | Local Mars map used by the Observatory. |
+| [NASA Image and Video Library](https://images.nasa.gov/) | Locally hosted dossier media with retained credits and source links. |
 
-## Refreshing the Moon catalogue from a local PDF
+Image credits and dimensions are listed in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). A related mission image is always labeled as context; it is never represented as a photograph of the record unless it is artefact-specific.
 
-The checked-in Moon catalogue cache is explicitly partial. To rebuild it from a local copy of NASA’s named PDF, install the command-line **Poppler** tool `pdftotext`, then run:
+## Refresh the Moon catalogue
+
+The checked-in cache is explicitly a partial parse. To regenerate it from a local copy of NASA’s named PDF, install Poppler’s `pdftotext`, then run:
 
 ```bash
 MOON_CATALOGUE_PDF=path/to/final-catalogue-of-manmade-material-on-the-moon.pdf npm run catalogue:parse
 ```
 
-Required tools: Node.js/npm for the script and `pdftotext` from Poppler for PDF extraction. The command regenerates the searchable module and [`docs/MOON-CATALOGUE-METHOD.md`](docs/MOON-CATALOGUE-METHOD.md).
-
-The record-level source and claim register is in [`docs/CLAIMS-AUDIT.md`](docs/CLAIMS-AUDIT.md). The media credit table is in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). The project uses NASA data for educational reference and is not produced by, affiliated with, sponsored by, or endorsed by NASA, JPL, Caltech, the U.S. Government, or mission partners.
+The parser reports table lines, direct object/location rows, and bracket quantities separately. It does not estimate a total mass or invent coordinates.

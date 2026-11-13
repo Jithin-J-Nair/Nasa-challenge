@@ -58,17 +58,17 @@ try {
     });
     await page.waitForTimeout(250);
     const liquidItems = page.locator("#liquidNav .liquid-nav-item");
-    if ((await liquidItems.count()) !== 8)
+    if ((await liquidItems.count()) !== 5)
       failures.push(
-        `${viewport.name}: expected eight Liquid Glass primary-nav items`,
+        `${viewport.name}: expected five story-first primary-nav items`,
       );
     if (
       (
         await page.locator('#liquidNav [aria-current="page"]').textContent()
-      )?.trim() !== "Home"
+      )?.trim() !== "Start"
     )
       failures.push(
-        `${viewport.name}: Liquid Glass nav did not initialise on Home`,
+        `${viewport.name}: Liquid Glass nav did not initialise on Start`,
       );
     await page.screenshot({
       path: `${outputDirectory}/${viewport.name}.png`,
@@ -151,6 +151,57 @@ try {
         { timeout: 6_000 },
       );
     }
+
+    // The guided route is the first-time product path: it must show source-aware
+    // stories before users reach the full archive or observatory tools.
+    await page.locator("#stories").scrollIntoViewIfNeeded();
+    await page.waitForSelector("#storyRail [data-story-chapter]", {
+      timeout: 12_000,
+    });
+    const storyState = await page.evaluate(() => ({
+      chapters: document.querySelectorAll("#storyRail [data-story-chapter]").length,
+      storyLabels: document.querySelectorAll("#storyRail .story-story").length,
+      evidenceLinks: document.querySelectorAll("#storyRail .story-evidence a").length,
+    }));
+    if (
+      storyState.chapters !== 6 ||
+      storyState.storyLabels !== 6 ||
+      storyState.evidenceLinks !== 6
+    )
+      failures.push(
+        `${viewport.name}: guided story route is incomplete or missing evidence labels`,
+      );
+    await page.screenshot({
+      path: `${outputDirectory}/${viewport.name}-stories.png`,
+      fullPage: false,
+    });
+    const eagleStoryButton = page.locator('#storyRail [data-story-open="eagle"]');
+    await eagleStoryButton.scrollIntoViewIfNeeded();
+    await eagleStoryButton.click();
+    await page.waitForSelector("#dossier.open");
+    await page.waitForFunction(
+      () => document.activeElement?.id === "dClose",
+      undefined,
+      { timeout: 6_000 },
+    );
+    const dialogState = await page.locator("#dossier").evaluate((dialog) => ({
+      modal: dialog.getAttribute("aria-modal"),
+      hidden: dialog.getAttribute("aria-hidden"),
+    }));
+    if (dialogState.modal !== "true" || dialogState.hidden !== "false")
+      failures.push(`${viewport.name}: dossier did not enter accessible modal state`);
+    await page.locator("#dClose").press("Escape");
+    await page.waitForFunction(
+      () => !document.querySelector("#dossier")?.classList.contains("open"),
+      undefined,
+      { timeout: 6_000 },
+    );
+    if (
+      !(await page.locator('#storyRail [data-story-open="eagle"]').evaluate(
+        (button) => document.activeElement === button,
+      ))
+    )
+      failures.push(`${viewport.name}: dossier did not restore focus to its opener`);
 
     // Enter the WebGL section so locally hosted map textures and the render loop
     // are exercised at every viewport as well.

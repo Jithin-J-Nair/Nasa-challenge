@@ -381,19 +381,21 @@
   }
   .liquid-nav-item {
     height: 38px;
-    padding: 0 clamp(7px, 2.1vw, 11px);
+    gap: 5px;
+    padding: 0 clamp(5px, 1.55vw, 9px);
+    font-size:clamp(8px,2vw,10px);
   }
   .liquid-nav-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
+    position:static;
+    width:auto;
+    height:auto;
+    overflow:visible;
+    clip:auto;
+    white-space:nowrap;
   }
   .liquid-nav-icon svg {
-    width: 16px;
-    height: 16px;
+    width:14px;
+    height:14px;
   }
   .navright {
     margin-left: auto;
@@ -405,7 +407,8 @@
 
 @media (max-width: 390px) {
   .liquid-nav-item {
-    padding: 0 7px;
+    padding: 0 4px;
+    letter-spacing:.03em;
   }
 }
 

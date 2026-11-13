@@ -19,6 +19,23 @@ let disposeSelection: (() => void) | null = null;
 let flyHandler: DossierFlyHandler | null = null;
 let typewriteTimer: number | null = null;
 let pulseTimer: number | null = null;
+let lastFocusedElement: HTMLElement | null = null;
+
+function focusableDossierElements(): HTMLElement[] {
+  const dossier = $("#dossier");
+  return Array.from(
+    dossier.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((element) => element.getClientRects().length > 0);
+}
+
+function moveFocusIntoDossier(): void {
+  window.requestAnimationFrame(() => {
+    if (!$("#dossier").classList.contains("open")) return;
+    $<HTMLButtonElement>("#dClose").focus({ preventScroll: true });
+  });
+}
 
 function clearDossierTimers(): void {
   if (typewriteTimer !== null) window.clearTimeout(typewriteTimer);
@@ -35,7 +52,16 @@ function typewrite(
   if (typewriteTimer !== null) window.clearTimeout(typewriteTimer);
   typewriteTimer = null;
   if (reducedMotion) {
-    element.innerHTML = `${text.replace(/\n/g, "<br>")}<span class="meta">End of record</span>`;
+    const lines = text.split("\n");
+    element.replaceChildren();
+    lines.forEach((line, index) => {
+      element.append(document.createTextNode(line));
+      if (index < lines.length - 1) element.append(document.createElement("br"));
+    });
+    const endOfRecord = document.createElement("span");
+    endOfRecord.className = "meta";
+    endOfRecord.textContent = "End of record";
+    element.append(endOfRecord);
     return;
   }
   element.textContent = "";
@@ -72,6 +98,14 @@ function typewrite(
 function openDossier(artifact: Artifact, shouldFly: boolean): void {
   archiveState.selectedArtifactId = artifact.id;
   const dossier = $("#dossier");
+  const wasOpen = dossier.classList.contains("open");
+  const activeElement = document.activeElement;
+  if (
+    !wasOpen &&
+    activeElement instanceof HTMLElement &&
+    !dossier.contains(activeElement)
+  )
+    lastFocusedElement = activeElement;
   const index = idxOf(artifact.id);
   $("#dIdx").textContent =
     `${String(index + 1).padStart(2, "0")} / ${order.length}`;
@@ -81,9 +115,6 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
   const specificationRows = artifact.spec
     .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
     .join("");
-  const discoveryRows = artifact.disc
-    .map((item) => `<li>${item}</li>`)
-    .join("");
   const coordinates = hasCoordinates(artifact)
     ? `${Math.abs(artifact.lat).toFixed(2)}° ${artifact.lat >= 0 ? "N" : "S"} · ${Math.abs(artifact.lon).toFixed(2)}° ${artifact.lon >= 0 ? "E" : "W"}`
     : artifact.orbit || "—";
@@ -92,22 +123,26 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
     : artifact.imageMission
       ? '<span class="image-flag">NASA MISSION IMAGE · NOT A PHOTOGRAPH OF THIS ARTEFACT</span>'
       : '<span class="image-flag">PLACEHOLDER · NO ARTEFACT-SPECIFIC NASA IMAGE AUDITED</span>';
-  const evidence = artifact.verifiedByNASA
-    ? `<section class="dsec dossier-story"><h3>The story</h3><p>${artifact.story}</p></section>
-       <section class="dsec nasa-facts"><h3>NASA-checked facts</h3>
-         <p class="voice facts-summary">${artifact.voice}</p>
+  const opening = artifact.verifiedByNASA
+    ? `<section class="dsec dossier-story dossier-opening"><h3>Story moment · interpretation</h3><p>${artifact.story}</p></section>
+       <section class="dsec dossier-record"><h3>NASA-checked record</h3><p>${artifact.one}</p></section>`
+    : '';
+  const science = artifact.verifiedByNASA
+    ? `<section class="dsec nasa-facts dossier-science"><h3>NASA-checked science</h3>
          <p class="fact-label">Technical record</p><dl class="dspecs">${specificationRows}</dl>
-         <p class="fact-label">What this record documents</p><ol class="disc">${discoveryRows}</ol>
-         <p class="fact-label">Record close</p><div class="lasttx" id="lastTx"></div>
-         <p class="mono dossier-tags">${artifact.tags}</p>
        </section>`
-    : `<section class="dsec unverified-record"><h3>Verification status</h3><p>We’re still checking this spacecraft’s story with NASA — explore the source link above while we do.</p></section>`;
+    : `<section class="dsec unverified-record"><h3>Verification status</h3><p>We’re still checking this spacecraft’s story with NASA — explore the source link below while we do.</p></section>`;
+  const sourceReview = artifact.verifiedByNASA
+    ? `<section class="dsec dossier-review"><h3>Source-review note</h3><div class="lasttx" id="lastTx"></div></section>`
+    : "";
   $("#dBody").innerHTML = `
+    ${opening}
+    ${science}
+    <div class="dsec dossier-source"><h3>Sources</h3><a href="${artifact.source}" target="_blank" rel="noreferrer">Open ${artifact.sourceLabel} <span aria-hidden="true">↗</span></a><p>${artifact.verifiedByNASA ? "The story, record, and technical details above were checked against this opened NASA source." : "NASA’s page is ready to explore; this dossier will grow after its full fact-check."}</p></div>
     <figure class="dossier-media" data-webgl-plane="dossier-media">
       <img src="${artifact.image}" alt="${artifact.imageAlt}" width="${artifact.imageWidth}" height="${artifact.imageHeight}" loading="lazy" decoding="async" />
       <figcaption>${imageFlag}<span>${artifact.imageCredit}</span>${artifact.imageSource ? `<a href="${artifact.imageSource}" target="_blank" rel="noreferrer">Image source ↗</a>` : ""}</figcaption>
     </figure>
-    <div class="dsec dossier-source"><h3>Sources</h3><a href="${artifact.source}" target="_blank" rel="noreferrer">Open ${artifact.sourceLabel} <span aria-hidden="true">↗</span></a><p>${artifact.verifiedByNASA ? "Every visible factual claim below was checked against this opened NASA source." : "NASA’s page is ready to explore; this dossier will grow after its full fact-check."}</p></div>
     <div class="dart"><div class="plate"></div>${SCHEM[artifact.sch] || SCHEM.probe}
       <div class="caption"><span>${artifact.b === "moon" ? "LUNAR ARTEFACT" : artifact.b === "mars" ? "MARTIAN ARTEFACT" : "DEEP SPACE VEHICLE"}</span><span>${artifact.ag}</span></div>
     </div>
@@ -123,7 +158,7 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
       <div><dt>Object</dt><dd>${artifact.n}</dd></div><div><dt>Audit</dt><dd>Claim review in progress</dd></div>`
     }
     </dl></div>
-    ${evidence}`;
+    ${sourceReview}`;
   const dossierImage = document.querySelector<HTMLImageElement>(
     "#dBody .dossier-media img",
   );
@@ -146,6 +181,7 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
   dossier.classList.add("open");
   dossier.setAttribute("aria-hidden", "false");
   $("#scrim").classList.add("on");
+  if (!wasOpen) moveFocusIntoDossier();
   if (artifact.verifiedByNASA)
     typewrite($<HTMLElement>("#lastTx"), artifact.last, artifact.st);
   $$<HTMLButtonElement>(".hot").forEach((hotspot) =>
@@ -181,9 +217,11 @@ function hasCoordinates(
 }
 
 function closeDossier(): void {
-  $("#dossier").classList.remove("open");
-  $("#dossier").setAttribute("aria-hidden", "true");
-  $("#dossier").setAttribute("inert", "");
+  const dossier = $("#dossier");
+  const focusTarget = lastFocusedElement;
+  dossier.classList.remove("open");
+  dossier.setAttribute("aria-hidden", "true");
+  dossier.setAttribute("inert", "");
   $("#scrim").classList.remove("on");
   archiveState.selectedArtifactId = null;
   $$<HTMLButtonElement>(".hot").forEach((hotspot) =>
@@ -193,6 +231,8 @@ function closeDossier(): void {
     item.classList.remove("sel"),
   );
   $("#hudSel").innerHTML = "SELECTED · <b>NONE</b>";
+  lastFocusedElement = null;
+  if (focusTarget?.isConnected) focusTarget.focus({ preventScroll: true });
 }
 
 function bindControls(signal: AbortSignal): void {
@@ -221,12 +261,42 @@ function bindControls(signal: AbortSignal): void {
   window.addEventListener(
     "keydown",
     (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeDossier();
-      if ($("#dossier").classList.contains("open")) {
-        if (event.key === "ArrowLeft") $<HTMLButtonElement>("#dPrev").click();
-        if (event.key === "ArrowRight") $<HTMLButtonElement>("#dNext").click();
+      const dossier = $("#dossier");
+      const dialogOpen = dossier.classList.contains("open");
+      if (dialogOpen && event.key === "Escape") {
+        event.preventDefault();
+        closeDossier();
+        return;
+      }
+      if (dialogOpen && event.key === "Tab") {
+        const focusable = focusableDossierElements();
+        if (focusable.length === 0) {
+          event.preventDefault();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+      if (dialogOpen && event.key === "ArrowLeft") {
+        event.preventDefault();
+        $<HTMLButtonElement>("#dPrev").click();
+        return;
+      }
+      if (dialogOpen && event.key === "ArrowRight") {
+        event.preventDefault();
+        $<HTMLButtonElement>("#dNext").click();
+        return;
       }
       if (
+        !dialogOpen &&
         event.key === "/" &&
         document.activeElement !== document.querySelector("#search")
       ) {
@@ -296,5 +366,6 @@ export function disposeDossierController(): void {
   disposeSelection = null;
   clearDossierTimers();
   flyHandler = null;
+  lastFocusedElement = null;
   closeDossier();
 }

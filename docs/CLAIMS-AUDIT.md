@@ -1,6 +1,6 @@
 # Claims audit
 
-**Final state:** 24 of 42 records are fully verified for the deliberately limited copy now visible in the site. The remaining 18 records display a claim-audit notice instead of narrative, dates, status, coordinates, or technical figures.
+**Final state:** 24 of 42 records are fact checked for the deliberately limited copy now visible in the site. Of those, 22 meet the expanded dossier standard of 2–3 supported factual sentences and 3–5 supported specification rows; two remain deliberately minimal, source-bounded records. The remaining 18 records display a claim-audit notice instead of narrative, dates, status, coordinates, or technical figures. See [`SOURCE-MAP.md`](./SOURCE-MAP.md) for the shared definitions and counts.
 
 A NASA affiliation is not treated as verification. A record is marked complete only when every visible claim is bounded to a NASA page opened during the correction pass. This register preserves the prior summary and specification rows so that withheld copy is reviewable without being shown to site visitors as fact.
 
