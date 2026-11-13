@@ -67,7 +67,7 @@ This is the first pass in this branch that changes the visible product system ac
 - `src/components/archive.ts` changes Field Guide cards from schematic-only tiles to record-associated NASA imagery with the existing schematic retained as an overlay. The image has empty alt text because the button title/metadata provides the accessible name; provenance remains in the dossier.
 - `src/assets/signal-atlas.jpg` is an original abstract cartography texture used only as a decorative mission-cover background; it is not presented as a NASA photograph or evidence.
 - `src/components/editorial-system.ts` creates, observes, and disposes a ten-section edition index. The visible markers encode the actual reading sequence and are not decorative fake numbers.
-- `index.html`, `src/main.ts`, and `src/styles/complete-rebuild.css` add and style the custom signal-atlas key, orbital object index, and edition system across desktop and mobile.
+- `index.html`, `src/main.ts`, and `src/styles/complete-rebuild.css` add and style the custom signal-atlas key, orbital object index, and edition system across desktop and mobile. The shell copy, hero proposition/CTAs, navigation vocabulary, and every primary section title were also reauthored as a single field-edition reading path rather than retaining the former dashboard labels.
 - `src/components/interface.ts` explicitly defines the final hero-evidence state in the GSAP timeline. This fixes a production-only startup ordering conflict between the shared reveal observer and the hero arrival, which previously could leave the evidence plate hidden after the page settled.
 - `docs/FRONTEND-DESIGN-DIRECTION.md` now documents the reconstructed visual system and its acceptance gate.
 

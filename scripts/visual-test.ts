@@ -65,10 +65,10 @@ try {
     if (
       (
         await page.locator('#liquidNav [aria-current="page"]').textContent()
-      )?.trim() !== "Start"
+      )?.trim() !== "Begin"
     )
       failures.push(
-        `${viewport.name}: Liquid Glass nav did not initialise on Start`,
+        `${viewport.name}: primary navigation did not initialise on Begin`,
       );
     await page.screenshot({
       path: `${outputDirectory}/${viewport.name}.png`,
