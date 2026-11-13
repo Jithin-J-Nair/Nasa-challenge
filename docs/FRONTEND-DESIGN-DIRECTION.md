@@ -23,7 +23,8 @@ The design should make a visitor feel like they have opened a rare planetary fie
 2. **Stories are full editorial spreads.** One question and one source-marked image occupy a plate. The warm narrative and NASA-checked record are visibly separate, but neither is hidden behind interaction.
 3. **Tools have their own material.** The Observatory is midnight-blue. The catalogue is a photographic contact sheet. The small-things ledger is a coloured accession tray. The timeline is a dark rail. Evidence rules sit on chartreuse review stock.
 4. **Every image retains provenance.** Artefact image status and NASA source links remain readable. Archive cards now use record imagery with a schematic overlay, so the visual change does not invent historical media.
-5. **There is one choreographed arrival, not motion everywhere.** Scroll motion carries a reader between story plates; hover response is limited to direct actions; input and keyboard paths stay immediate.
+5. **The abstract signal atlas is clearly non-evidentiary.** `signal-atlas.jpg` is an original decorative cartography texture, never labelled as NASA imagery or used to support a factual claim.
+6. **There is one choreographed arrival, not motion everywhere.** Scroll motion carries a reader between story plates; hover response is limited to direct actions; input and keyboard paths stay immediate.
 
 ## Experience requirements
 

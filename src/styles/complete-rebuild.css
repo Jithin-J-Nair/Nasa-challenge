@@ -208,3 +208,39 @@ footer{color:var(--paper);background:#050c19;border-top-color:rgba(241,238,230,.
   .acard,.btn,.liquid-nav-item,.story-route a{transition:none}
   .hero-evidence-image{transform:none!important}
 }
+
+/* ---------- second edition pass: bespoke atlas graphics and reading index ---------- */
+#hero{
+  background-image:
+    linear-gradient(90deg,rgba(4,12,27,.96) 0%,rgba(4,12,27,.84) 42%,rgba(4,12,27,.22) 100%),
+    linear-gradient(0deg,rgba(4,12,27,.72),rgba(4,12,27,.08) 52%),
+    url('../assets/signal-atlas.jpg');
+  background-size:cover,cover,cover;
+  background-position:center,center,center;
+}
+#hero::before{mix-blend-mode:screen;color:rgba(157,189,255,.09)}
+#hero .hero-atlas-key{position:absolute;z-index:2;right:var(--pad);bottom:clamp(110px,10vw,170px);display:flex;align-items:center;gap:12px;width:min(370px,30vw);color:rgba(241,238,230,.58);font:8px/1.3 var(--ff-m);letter-spacing:.13em;text-transform:uppercase}.hero-atlas-key i{display:block;flex:1;height:1px;background:rgba(217,255,101,.65)}
+.hero-orbit-key{position:absolute;z-index:2;right:clamp(7vw,14vw,19vw);top:clamp(160px,23vw,330px);width:180px;height:180px;pointer-events:none;color:var(--acid);opacity:.72}.hero-orbit-key i{position:absolute;border:1px solid currentColor;border-radius:50%;inset:0;transform:rotate(-24deg)}.hero-orbit-key i:nth-child(2){inset:27px -25px;transform:rotate(49deg);color:var(--solar-light)}.hero-orbit-key i:nth-child(3){inset:60px 0;transform:none;color:rgba(241,238,230,.45)}.hero-orbit-key b{position:absolute;left:50%;top:50%;font:500 39px/.8 var(--ff-d);transform:translate(-50%,-58%)}.hero-orbit-key span{position:absolute;top:calc(50% + 23px);left:50%;width:120px;text-align:center;transform:translateX(-50%);font:7px/1.35 var(--ff-m);letter-spacing:.12em;text-transform:uppercase;color:var(--paper)}
+
+/* Section markers express the journey's actual sequence and double as a visual rail. */
+.edition-marker{position:absolute;z-index:4;top:32px;left:var(--pad);display:flex;align-items:center;gap:9px;color:currentColor;opacity:.5;pointer-events:none;font-family:var(--ff-m);font-size:8px;letter-spacing:.15em;text-transform:uppercase;transition:opacity .35s ease,transform .35s var(--ease-out)}.edition-marker span{font-size:11px;font-weight:600}.edition-marker i{width:38px;height:1px;background:currentColor}.edition-marker b{font-weight:400}.is-edition-active .edition-marker{opacity:1;transform:translateX(4px)}
+#stories>.edition-marker{color:var(--signal)}#briefing>.edition-marker,#observatory>.edition-marker,#timeline>.edition-marker,#fieldguide>.edition-marker,#epilogue>.edition-marker{color:var(--acid)}#ledger>.edition-marker{color:#fff}#science>.edition-marker{color:var(--solar)}
+
+/* Give utilitarian parts a strong editorial edge instead of a generic component grid. */
+#moon-inventory .sec-head::after,#fieldguide .sec-head::after,#science .sec-head::after{content:'SOURCE / FORM / CONTEXT';position:absolute;right:0;bottom:4px;color:currentColor;font:8px var(--ff-m);letter-spacing:.16em;opacity:.45}
+#ledger .sec-head::after{content:'OBJECTS TOO SMALL FOR THE HISTORY BOOK';position:absolute;right:0;bottom:4px;color:#fff;font:8px var(--ff-m);letter-spacing:.16em;opacity:.7}
+#timeline .sec-head::after{content:'1959 — NOW';position:absolute;right:0;bottom:4px;color:var(--acid);font:8px var(--ff-m);letter-spacing:.16em}
+#interstellar .sec-head::after{content:'OUTBOUND / NO RETURN ADDRESS';position:absolute;right:0;bottom:4px;color:var(--signal);font:8px var(--ff-m);letter-spacing:.16em}
+
+/* Image cards receive a measured contact-sheet identity instead of merely a dark card skin. */
+.acard .top::before{content:'NASA SOURCE IMAGE';position:absolute;z-index:3;right:13px;bottom:11px;color:rgba(241,238,230,.78);font:7px var(--ff-m);letter-spacing:.16em;text-shadow:0 1px 4px #000}.acard:nth-child(3n+2) .top::before{content:'MISSION CONTEXT'}.acard:nth-child(4n) .top::before{content:'RECORD PLATE'}.acard:focus-visible{outline-color:var(--acid);outline-offset:5px}
+
+/* New responsive layouts preserve the same edition cues without consuming reading space. */
+@media (max-width:960px){
+  .hero-orbit-key{right:6%;top:30%;transform:scale(.72);transform-origin:top right}.hero-atlas-key{right:var(--pad);bottom:100px;width:min(330px,50vw)}
+  .edition-marker{top:22px}.sec-head::after{display:none}
+}
+@media (max-width:620px){
+  #hero{background-position:62% center}.hero-orbit-key{right:-38px;top:242px;transform:scale(.55);opacity:.52}.hero-atlas-key{display:none}.edition-marker{top:16px;left:var(--pad);font-size:7px}.edition-marker i{width:24px}.edition-marker span{font-size:9px}
+  #stories>.edition-marker{top:17px}.acard .top::before{font-size:6px}
+}

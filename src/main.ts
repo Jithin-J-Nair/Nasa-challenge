@@ -6,6 +6,7 @@ import { A } from "./data/artifacts";
 import { initArchive } from "./components/archive";
 import { initAudioControls } from "./components/audio";
 import { initDossierController } from "./components/dossier";
+import { initEditorialSystem } from "./components/editorial-system";
 import { startBoot } from "./components/boot";
 import { initInterface } from "./components/interface";
 import { initMoonCatalogue } from "./components/moon-catalogue";
@@ -52,6 +53,7 @@ export function bootArchive(): void {
   let disposeArchive: Disposer = () => undefined;
   let disposeMoonCatalogue: Disposer = () => undefined;
   let disposeStoryJourney: Disposer = () => undefined;
+  let disposeEditorialSystem: Disposer = () => undefined;
   let disposeScroll: Disposer = () => undefined;
 
   const dispose = (): void => {
@@ -66,6 +68,7 @@ export function bootArchive(): void {
     disposeDossier();
     disposeInterface();
     disposeStoryJourney();
+    disposeEditorialSystem();
     disposeScroll();
     disposeMoonCatalogue();
     disposeArchive();
@@ -87,6 +90,7 @@ export function bootArchive(): void {
   disposeArchive = initArchive();
   disposeMoonCatalogue = initMoonCatalogue();
   disposeStoryJourney = initStoryJourney();
+  disposeEditorialSystem = initEditorialSystem();
   // The ambient layer is deliberately desktop/fine-pointer art direction. CSS
   // already hides it on compact or coarse devices, so avoid allocating a WebGL
   // renderer there in the first place.
