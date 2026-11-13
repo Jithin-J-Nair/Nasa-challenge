@@ -82,7 +82,9 @@ export function initArchive(): () => void {
       const state = artifact.verifiedByNASA ? `<span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>` : verificationFlag;
       return `
         <button class="acard" data-id="${artifact.id}">
-          <div class="top" data-webgl-plane="archive-card-media"><div class="glow"></div><span class="yrbadge">${year}</span>
+          <div class="top" data-webgl-plane="archive-card-media">
+            <img src="${artifact.image}" alt="" width="${artifact.imageWidth}" height="${artifact.imageHeight}" loading="lazy" decoding="async" aria-hidden="true" />
+            <div class="glow"></div><span class="yrbadge">${year}</span>
             <span class="bodybadge ${artifact.b}">${artifact.b === 'moon' ? 'Moon' : artifact.b === 'mars' ? 'Mars' : 'Deep space'}</span>
             ${SCHEM[artifact.sch] || SCHEM.probe}
           </div>

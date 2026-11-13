@@ -1,6 +1,8 @@
 # Skill execution audit
 
-_Status: specialist implementation and verification pass complete. This is an evidence log for this repository, not a claim that every installed skill was applied._
+_Status: continuing evidence log. This document records work that actually exists in the repository; it is not a completion certificate._
+
+> **Correction to the prior report:** the `7396fa0` pass added real runtime, motion, test, and accessibility work, but it did **not** constitute a comprehensive visible redesign. It should not have been presented as one. The full visual reconstruction is recorded separately below and must be judged from its browser captures, not from build or lifecycle checks.
 
 ## Discovery and installation record
 
@@ -46,11 +48,35 @@ The pass intentionally improved working boundaries instead of replacing the appl
 - `scripts/visual-test.ts` — records the compact-renderer contract so the mobile performance safeguard is regression-tested.
 - `skills-lock.json` — records the valid installed skill package sources and hashes.
 
+## Full visual reconstruction — current patch
+
+This is the first pass in this branch that changes the visible product system across the route, rather than only its runtime behavior.
+
+| skill guidance used | visible implementation | files |
+| --- | --- | --- |
+| `frontend-design` | Replaced the previous evidence-atlas treatment with a **lunar survey atelier**: night-blue transmission surfaces, pale catalogue paper, registration red, chartreuse source state, image plates, and an explicit typography hierarchy. Each major destination now has its own material surface rather than inheriting one dashboard panel style. | `docs/FRONTEND-DESIGN-DIRECTION.md`, `src/styles/complete-rebuild.css` |
+| `animate`, `choreograph`, `gsap-timeline` | Kept one orienting hero arrival and existing story progression; the new design intentionally does not add repetitive card entrance effects or decorative control animation. | existing `src/components/interface.ts`, `src/components/story-journey.ts`, visual CSS |
+| `gestures`, `animation-performance` | Kept direct mobile controls and fine-pointer-only ambient behavior. New hover states use only transform/color/filter response on direct actions; reduced motion removes nonessential movement. | `src/styles/complete-rebuild.css`, existing motion boundaries |
+| `r3f-best-practices` | The reconstructed observatory is framed as a distinct transmission tool while retaining its progressive WebGL/fallback boundary and the compact-device renderer skip. | `src/styles/complete-rebuild.css`, existing R3F implementation |
+| `webapp-testing` | Captured the rebuilt desktop/mobile opening, story spread, contact-sheet archive, and Observatory before running the full regression suite. | `artifacts/review/rebuild-*.png`, `artifacts/visual-regression/` |
+
+### Concrete visible changes
+
+- `src/styles/complete-rebuild.css` is a new end-of-cascade visual system covering navigation, hero, guided stories, evidence briefing, source catalogue, Observatory, ledger, timeline, deep-space reading, contact-sheet Field Guide, science rules, epilogue, footer, dossier, desktop, and mobile.
+- `src/styles.css` imports that new visual system last so it replaces the former section treatment without breaking component selectors or source-safe DOM structure.
+- `src/components/archive.ts` changes Field Guide cards from schematic-only tiles to record-associated NASA imagery with the existing schematic retained as an overlay. The image has empty alt text because the button title/metadata provides the accessible name; provenance remains in the dossier.
+- `src/components/interface.ts` explicitly defines the final hero-evidence state in the GSAP timeline. This fixes a production-only startup ordering conflict between the shared reveal observer and the hero arrival, which previously could leave the evidence plate hidden after the page settled.
+- `docs/FRONTEND-DESIGN-DIRECTION.md` now documents the reconstructed visual system and its acceptance gate.
+
 ## Browser evidence and checks
 
 Generated evidence is intentionally ignored from Git and remains in `artifacts/visual-regression/`:
 
-- `desktop-1440x900.png` — hero after the arrival settled.
+- `artifacts/review/rebuild-desktop.png` and `artifacts/review/rebuild-mobile.png` — reconstructed mission-cover opening at the target desktop/mobile sizes.
+- `artifacts/review/rebuild-production-final-1440.png` — rebuilt production preview after the hero-evidence startup fix.
+- `artifacts/review/rebuild-first-story-fixed.png` — reconstructed two-column editorial story spread.
+- `artifacts/review/rebuild-fieldguide-desktop.png` — reconstructed image-led contact-sheet archive.
+- `desktop-1440x900.png` — regression-captured hero after the arrival settled.
 - `desktop-1440x900-stories.png` and `mobile-390x844-stories.png` — source-bearing guided chapter composition at both target sizes.
 - `desktop-1440x900-observatory.png`, `desktop-1440x900-observatory-mars.png`, `mobile-390x844-observatory.png`, and `mobile-390x844-observatory-mars.png` — native Observatory checks.
 - `desktop-1440x900-dossier-eagle.png` and `mobile-390x844-dossier-eagle.png` — source dossier and focus-path exercise.

@@ -37,7 +37,10 @@ export function initInterface(): () => void {
         .from(title, { autoAlpha: 0, y: 32, duration: .8 }, 'signal+=.14')
         .from(lede, { autoAlpha: 0, y: 20, duration: .55 }, 'signal+=.3')
         .from(actions, { autoAlpha: 0, y: 16, duration: .45 }, 'signal+=.39')
-        .from(evidence, { autoAlpha: 0, y: 34, rotation: 1.2, duration: .85 }, 'signal+=.16')
+        // The evidence plate also uses the shared reveal observer. Define both
+        // states explicitly so its final opacity never depends on observer/timeline
+        // startup order in a production bundle.
+        .fromTo(evidence, { autoAlpha: 0, y: 34, rotation: 1.2 }, { autoAlpha: 1, y: 0, rotation: 0, duration: .85 }, 'signal+=.16')
         .from(proof.children, { autoAlpha: 0, y: 16, duration: .42, stagger: .07 }, 'signal+=.55');
       timelines.push(arrival);
     }
