@@ -14,9 +14,34 @@ export function initInterface(): () => void {
   const episodeCanvas = document.querySelector<HTMLCanvasElement>('#epiCanvas');
   const disposeEpisodeCanvas = episodeCanvas ? starCanvas(episodeCanvas, .00022, 2.2) : () => undefined;
   const animations: gsap.core.Tween[] = [];
+  const timelines: gsap.core.Timeline[] = [];
   const scrambleDisposers: Array<() => void> = [];
   const countObservers: IntersectionObserver[] = [];
   let heroScrollFrame: number | null = null;
+
+  if (!reducedMotion) {
+    const hero = document.querySelector<HTMLElement>('#hero');
+    const eyebrow = hero?.querySelector<HTMLElement>('.eyebrow');
+    const kicker = hero?.querySelector<HTMLElement>('.hero-kicker');
+    const title = hero?.querySelector<HTMLElement>('.hero-title');
+    const lede = hero?.querySelector<HTMLElement>('.hero-lede');
+    const actions = hero?.querySelector<HTMLElement>('.herocta');
+    const evidence = hero?.querySelector<HTMLElement>('.hero-evidence');
+    const proof = hero?.querySelector<HTMLElement>('.hero-proof');
+    if (eyebrow && kicker && title && lede && actions && evidence && proof) {
+      const arrival = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      arrival
+        .addLabel('signal', 0)
+        .from(eyebrow, { autoAlpha: 0, x: -18, duration: .42 }, 'signal')
+        .from(kicker, { autoAlpha: 0, y: 14, duration: .46 }, 'signal+=.08')
+        .from(title, { autoAlpha: 0, y: 32, duration: .8 }, 'signal+=.14')
+        .from(lede, { autoAlpha: 0, y: 20, duration: .55 }, 'signal+=.3')
+        .from(actions, { autoAlpha: 0, y: 16, duration: .45 }, 'signal+=.39')
+        .from(evidence, { autoAlpha: 0, y: 34, rotation: 1.2, duration: .85 }, 'signal+=.16')
+        .from(proof.children, { autoAlpha: 0, y: 16, duration: .42, stagger: .07 }, 'signal+=.55');
+      timelines.push(arrival);
+    }
+  }
 
   $$<HTMLElement>('.count').forEach((element) => {
     const total = Number(element.dataset.to || 0);
@@ -146,6 +171,7 @@ export function initInterface(): () => void {
     revealObserver.disconnect();
     scrambleObserver.disconnect();
     animations.forEach((animation) => animation.kill());
+    timelines.forEach((timeline) => timeline.kill());
     scrambleDisposers.splice(0).forEach((dispose) => dispose());
     if (heroScrollFrame !== null) cancelAnimationFrame(heroScrollFrame);
     disposeLiveNumbers();

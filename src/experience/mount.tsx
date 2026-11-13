@@ -1,6 +1,5 @@
 import { createRoot, type Root } from 'react-dom/client';
 import { StrictMode, useCallback, useState } from 'react';
-import { LenisScrollWrapper } from './LenisScrollWrapper';
 import { WebglExperience } from './SceneCanvas';
 
 let reactRoot: Root | null = null;
@@ -31,7 +30,7 @@ export function mountWebglExperience(): void {
   }
   document.documentElement.dataset.webgl = 'ready';
   reactRoot = createRoot(host);
-  reactRoot.render(<StrictMode><LenisScrollWrapper><ExperienceHost /></LenisScrollWrapper></StrictMode>);
+  reactRoot.render(<StrictMode><ExperienceHost /></StrictMode>);
 }
 
 export function disposeWebglExperience(): void {

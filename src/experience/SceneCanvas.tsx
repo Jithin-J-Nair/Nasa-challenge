@@ -20,6 +20,26 @@ function RendererDisposal(): null {
   return null;
 }
 
+/** Stop the continuous shader loop while backgrounded or visually suppressed. */
+function PageVisibilityGate(): null {
+  const setFrameloop = useThree((state) => state.setFrameloop);
+  useEffect(() => {
+    const compactViewport = window.matchMedia("(max-width: 760px), (pointer: coarse)");
+    const sync = (): void => setFrameloop(
+      document.hidden || compactViewport.matches ? "never" : "always",
+    );
+    sync();
+    document.addEventListener("visibilitychange", sync);
+    compactViewport.addEventListener("change", sync);
+    return () => {
+      document.removeEventListener("visibilitychange", sync);
+      compactViewport.removeEventListener("change", sync);
+      setFrameloop("always");
+    };
+  }, [setFrameloop]);
+  return null;
+}
+
 function ContextRecovery({
   onContextLost,
   onContextRestored,
@@ -56,6 +76,7 @@ export function WebglExperience({
       }}
       camera={{ position: [0, 0, 5], fov: 48, near: 0.1, far: 100 }}
     >
+      <PageVisibilityGate />
       <ContextRecovery
         onContextLost={onContextLost}
         onContextRestored={onContextRestored}

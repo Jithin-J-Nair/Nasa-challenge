@@ -1,7 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { type ReactNode, useEffect } from 'react';
 import { reducedMotion } from '../lib/utils';
 
 export interface ScrollSignal {
@@ -11,10 +10,6 @@ export interface ScrollSignal {
 }
 
 export const SCROLL_SIGNAL_EVENT = 'silent-fleet:scroll';
-
-interface LenisScrollWrapperProps {
-  children: ReactNode;
-}
 
 interface ActiveScrollController {
   release: () => void;
@@ -101,10 +96,4 @@ export function initLenisScroll(): () => void {
   };
   activeController = { release };
   return release;
-}
-
-/** React lifecycle wrapper for the globally synchronized Lenis controller. */
-export function LenisScrollWrapper({ children }: LenisScrollWrapperProps): JSX.Element {
-  useEffect(() => initLenisScroll(), []);
-  return <>{children}</>;
 }

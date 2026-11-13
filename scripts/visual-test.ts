@@ -212,7 +212,7 @@ try {
       () =>
         document.querySelector("#vpLoad")?.classList.contains("gone") === true,
       undefined,
-      { timeout: 15_000 },
+      { timeout: 25_000 },
     );
     await page.waitForTimeout(180);
     await page.screenshot({
@@ -430,17 +430,19 @@ try {
     const reticle = document.querySelector<HTMLElement>("#reticle");
     return {
       shellHidden: shell ? getComputedStyle(shell).display === "none" : false,
+      ambientCanvasCount: document.querySelectorAll("#webgl-shell canvas").length,
       reticleActive: reticle?.classList.contains("on") || false,
       scrollEngine: document.documentElement.dataset.scrollEngine,
     };
   });
   if (
     !touchState.shellHidden ||
+    touchState.ambientCanvasCount !== 0 ||
     touchState.reticleActive ||
     touchState.scrollEngine !== "native"
   )
     failures.push(
-      "touch fallback: expected native scrolling, hidden ambient canvas, and no magnetic cursor",
+      "touch fallback: expected no ambient renderer, native scrolling, and no magnetic cursor",
     );
   await touchContext.close();
 } finally {

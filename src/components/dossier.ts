@@ -31,10 +31,15 @@ function focusableDossierElements(): HTMLElement[] {
 }
 
 function moveFocusIntoDossier(): void {
-  window.requestAnimationFrame(() => {
+  const focusClose = (): void => {
     if (!$("#dossier").classList.contains("open")) return;
     $<HTMLButtonElement>("#dClose").focus({ preventScroll: true });
-  });
+  };
+  // The control exists before the panel's transform transition begins. Focus it
+  // immediately for keyboard users, then repeat on the next paint for browsers
+  // that defer focus while recalculating a fixed-position layer.
+  focusClose();
+  window.requestAnimationFrame(focusClose);
 }
 
 function clearDossierTimers(): void {

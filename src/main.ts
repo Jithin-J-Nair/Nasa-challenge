@@ -11,6 +11,7 @@ import { initInterface } from "./components/interface";
 import { initMoonCatalogue } from "./components/moon-catalogue";
 import { initStoryJourney } from "./components/story-journey";
 import { initTimeline } from "./components/timeline";
+import { initLenisScroll } from "./experience/LenisScrollWrapper";
 import { $, $$ } from "./lib/dom";
 import { reducedMotion } from "./lib/utils";
 
@@ -51,6 +52,7 @@ export function bootArchive(): void {
   let disposeArchive: Disposer = () => undefined;
   let disposeMoonCatalogue: Disposer = () => undefined;
   let disposeStoryJourney: Disposer = () => undefined;
+  let disposeScroll: Disposer = () => undefined;
 
   const dispose = (): void => {
     if (disposed) return;
@@ -64,6 +66,7 @@ export function bootArchive(): void {
     disposeDossier();
     disposeInterface();
     disposeStoryJourney();
+    disposeScroll();
     disposeMoonCatalogue();
     disposeArchive();
     disposeTimeline();
@@ -77,13 +80,18 @@ export function bootArchive(): void {
   const heroCount = $<HTMLElement>("#heroCount");
   heroCount.dataset.to = String(A.length);
 
+  disposeScroll = initLenisScroll();
   disposeAudio = initAudioControls();
   disposeDossier = initDossierController();
   disposeTimeline = initTimeline();
   disposeArchive = initArchive();
   disposeMoonCatalogue = initMoonCatalogue();
   disposeStoryJourney = initStoryJourney();
-  if (!reducedMotion) {
+  // The ambient layer is deliberately desktop/fine-pointer art direction. CSS
+  // already hides it on compact or coarse devices, so avoid allocating a WebGL
+  // renderer there in the first place.
+  const compactAmbientViewport = window.matchMedia("(max-width: 760px), (pointer: coarse)").matches;
+  if (!reducedMotion && !compactAmbientViewport) {
     const loadAmbientCanvas = (): void => {
       void import("./experience/mount")
         .then(({ disposeWebglExperience, mountWebglExperience }) => {
@@ -103,8 +111,10 @@ export function bootArchive(): void {
         timeout: 900,
       });
     else ambientTimeout = window.setTimeout(loadAmbientCanvas, 240);
-  } else {
+  } else if (reducedMotion) {
     document.documentElement.dataset.webgl = "reduced-motion";
+  } else {
+    document.documentElement.dataset.ambientWebgl = "compact-viewport";
   }
 
   const observatory = document.querySelector<HTMLElement>("#observatory");

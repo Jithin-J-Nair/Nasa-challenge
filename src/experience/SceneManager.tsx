@@ -163,8 +163,10 @@ function useSceneRuntime(): MutableRefObject<SceneRuntime> {
     } else {
       value.targetVelocity.set(0, 0);
     }
-    value.velocity.lerp(value.targetVelocity, .14);
-    value.mouse.lerp(value.targetMouse, .18);
+    // Preserve the original 60fps response without making the field race on a
+    // 120Hz display or become sluggish on a low-power device.
+    value.velocity.lerp(value.targetVelocity, 1 - Math.exp(-delta * 9.75));
+    value.mouse.lerp(value.targetMouse, 1 - Math.exp(-delta * 11.9));
     value.previousTargetMouse.copy(value.targetMouse);
   });
   return runtime;
@@ -300,17 +302,19 @@ function createParticleGeometry(): THREE.BufferGeometry {
 function CameraRig({ runtime }: RuntimeProps): null {
   const camera = useThree((state) => state.camera);
   const lookAt = useRef(new THREE.Vector3());
-  useFrame(() => {
+  useFrame((_, delta) => {
     const signal = runtime.current;
     const parallaxX = signal.mouse.x * .42 + (signal.scrollProgress - .5) * .24;
     const parallaxY = signal.mouse.y * .26 - signal.scrollVelocity * .0008;
     const parallaxZ = 5 + Math.min(Math.abs(signal.scrollVelocity) * .0018, .24);
-    camera.position.x = THREE.MathUtils.lerp(camera.position.x, parallaxX, .045);
-    camera.position.y = THREE.MathUtils.lerp(camera.position.y, parallaxY, .045);
-    camera.position.z = THREE.MathUtils.lerp(camera.position.z, parallaxZ, .045);
-    lookAt.current.x = THREE.MathUtils.lerp(lookAt.current.x, signal.mouse.x * .16, .06);
-    lookAt.current.y = THREE.MathUtils.lerp(lookAt.current.y, signal.mouse.y * .1, .06);
-    lookAt.current.z = THREE.MathUtils.lerp(lookAt.current.z, -1.15, .06);
+    const cameraFollow = 1 - Math.exp(-delta * 2.76);
+    const targetFollow = 1 - Math.exp(-delta * 3.71);
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, parallaxX, cameraFollow);
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, parallaxY, cameraFollow);
+    camera.position.z = THREE.MathUtils.lerp(camera.position.z, parallaxZ, cameraFollow);
+    lookAt.current.x = THREE.MathUtils.lerp(lookAt.current.x, signal.mouse.x * .16, targetFollow);
+    lookAt.current.y = THREE.MathUtils.lerp(lookAt.current.y, signal.mouse.y * .1, targetFollow);
+    lookAt.current.z = THREE.MathUtils.lerp(lookAt.current.z, -1.15, targetFollow);
     camera.lookAt(lookAt.current);
   });
   return null;
@@ -356,18 +360,22 @@ function GpuParticleField({ runtime }: RuntimeProps): JSX.Element {
 
 function DomEchoPlane({ selector, color, runtime }: DomEchoPlaneProps): JSX.Element {
   const mesh = useRef<THREE.Mesh<THREE.PlaneGeometry, DomEchoMaterial>>(null);
+  const element = useRef<HTMLElement | null>(null);
   const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1, 40, 26), []);
   const material = useMemo(() => createDomEchoMaterial(color), [color]);
   const size = useThree((state) => state.size);
+  useEffect(() => {
+    element.current = document.querySelector<HTMLElement>(selector);
+    return () => { element.current = null; };
+  }, [selector]);
   useEffect(() => () => {
     geometry.dispose();
     material.dispose();
   }, [geometry, material]);
   useFrame((state) => {
     const target = mesh.current;
-    const element = document.querySelector<HTMLElement>(selector);
-    if (!target || !element) return;
-    const rect = element.getBoundingClientRect();
+    if (!target || !element.current) return;
+    const rect = element.current.getBoundingClientRect();
     target.position.z = -1.8;
     const echoViewport = state.viewport.getCurrentViewport(state.camera, target.position);
     const width = Math.max(.01, rect.width / size.width * echoViewport.width);
@@ -406,7 +414,7 @@ function DomMediaPlaneLayer({ runtime }: RuntimeProps): JSX.Element | null {
     };
   }, [enabled]);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!enabled || !group.current) return;
     if (discoveryNeeded.current) {
       const elements = new Set(Array.from(document.querySelectorAll<HTMLElement>(DOM_MEDIA_SELECTORS)));
@@ -450,7 +458,7 @@ function DomMediaPlaneLayer({ runtime }: RuntimeProps): JSX.Element | null {
       const pointerX = THREE.MathUtils.clamp((signal.pointerClient.x - rect.left) / rect.width, 0, 1);
       const pointerY = THREE.MathUtils.clamp(1 - (signal.pointerClient.y - rect.top) / rect.height, 0, 1);
       const hovered = signal.pointerClient.x >= rect.left && signal.pointerClient.x <= rect.right && signal.pointerClient.y >= rect.top && signal.pointerClient.y <= rect.bottom;
-      entry.hover = THREE.MathUtils.lerp(entry.hover, hovered ? 1 : 0, .15);
+      entry.hover = THREE.MathUtils.lerp(entry.hover, hovered ? 1 : 0, 1 - Math.exp(-delta * 9.75));
       entry.material.uniforms.uTime.value = state.clock.elapsedTime;
       entry.material.uniforms.uScrollVelocity.value = signal.scrollVelocity;
       entry.material.uniforms.uHover.value = entry.hover;
