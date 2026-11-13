@@ -25,6 +25,29 @@ function mediaLabel(chapter: StoryChapter): string {
   return 'NASA image placeholder · record remains source-audited';
 }
 
+function renderRoute(chapters: readonly StoryChapter[]): string {
+  return chapters
+    .map(
+      (chapter) => `
+        <li>
+          <a href="#story-${chapter.id}" data-story-route="${chapter.id}">
+            <span>${String(chapter.order).padStart(2, '0')}</span>
+            <b>${escapeHtml(chapter.question)}</b>
+          </a>
+        </li>`,
+    )
+    .join('');
+}
+
+function setActiveRoute(root: HTMLElement, id: string): void {
+  root.querySelectorAll<HTMLAnchorElement>('[data-story-route]').forEach((link) => {
+    const active = link.dataset.storyRoute === id;
+    link.classList.toggle('is-active', active);
+    if (active) link.setAttribute('aria-current', 'step');
+    else link.removeAttribute('aria-current');
+  });
+}
+
 function renderChapter(chapter: StoryChapter): string {
   const artifact = byId(chapter.id);
   if (!artifact || !artifact.verifiedByNASA) return '';
@@ -33,7 +56,7 @@ function renderChapter(chapter: StoryChapter): string {
     : '';
 
   return `
-    <article class="story-chapter story-chapter--${chapter.body}" data-story-chapter data-id="${artifact.id}">
+    <article class="story-chapter story-chapter--${chapter.body}" id="story-${artifact.id}" data-story-chapter data-id="${artifact.id}" tabindex="-1">
       <div class="story-index" aria-hidden="true"><span>${String(chapter.order).padStart(2, '0')}</span><i></i></div>
       <div class="story-copy">
         <p class="story-eyebrow">${escapeHtml(chapter.eyebrow)}</p>
@@ -76,14 +99,17 @@ function renderChapter(chapter: StoryChapter): string {
  */
 export function initStoryJourney(): () => void {
   const root = document.querySelector<HTMLElement>('#storyRail');
+  const route = document.querySelector<HTMLOListElement>('#storyRoute');
   const current = document.querySelector<HTMLElement>('#storyCurrent');
   const total = document.querySelector<HTMLElement>('#storyTotal');
-  if (!root || !current || !total) return () => undefined;
+  if (!root || !route || !current || !total) return () => undefined;
 
   const chapters = STORY_PATH.filter((chapter) => byId(chapter.id)?.verifiedByNASA);
   root.innerHTML = chapters.map(renderChapter).join('');
+  route.innerHTML = renderRoute(chapters);
   total.textContent = String(chapters.length).padStart(2, '0');
   current.textContent = '01';
+  if (chapters[0]) setActiveRoute(route, chapters[0].id);
 
   const controller = new AbortController();
   const { signal } = controller;
@@ -153,6 +179,7 @@ export function initStoryJourney(): () => void {
           cards.forEach((candidate) => candidate.classList.remove('is-active'));
           card.classList.add('is-active');
           current.textContent = String(index + 1).padStart(2, '0');
+          setActiveRoute(route, chapters[index]?.id || '');
         },
       });
     });

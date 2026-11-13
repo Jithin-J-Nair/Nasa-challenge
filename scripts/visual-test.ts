@@ -160,11 +160,13 @@ try {
     });
     const storyState = await page.evaluate(() => ({
       chapters: document.querySelectorAll("#storyRail [data-story-chapter]").length,
+      routeLinks: document.querySelectorAll("#storyRoute [data-story-route]").length,
       storyLabels: document.querySelectorAll("#storyRail .story-story").length,
       evidenceLinks: document.querySelectorAll("#storyRail .story-evidence a").length,
     }));
     if (
       storyState.chapters !== 6 ||
+      storyState.routeLinks !== 6 ||
       storyState.storyLabels !== 6 ||
       storyState.evidenceLinks !== 6
     )

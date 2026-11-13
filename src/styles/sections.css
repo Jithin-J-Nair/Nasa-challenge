@@ -195,6 +195,13 @@
 .disc li{position:relative;padding:0 0 15px 30px;font-size:13.8px;line-height:1.6;color:var(--ink2);counter-increment:d}
 .disc li::before{content:counter(d,decimal-leading-zero);position:absolute;left:0;top:1px;font-family:var(--ff-m);font-size:9.5px;color:var(--amber);letter-spacing:.06em}
 .disc li b{color:var(--ink);font-weight:600}
+.state-key{display:grid;grid-template-columns:minmax(180px,.66fr) minmax(0,1.34fr);gap:clamp(24px,4vw,58px);margin:44px 0 38px;padding:27px 0;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
+.state-key-kicker{margin:0 0 10px;font-family:var(--ff-m);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+.state-key h3{max-width:23ch;margin:0;font-family:var(--ff-s);font-size:clamp(22px,2.1vw,30px);font-weight:400;line-height:1.14;color:var(--ink)}
+.state-key dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;margin:0}
+.state-key dl>div{padding:12px 0;border-top:1px solid rgba(236,231,222,.09)}
+.state-key dt{margin:0 0 5px;font-family:var(--ff-m);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--cyan)}
+.state-key dd{margin:0;color:var(--muted);font-size:12.5px;line-height:1.55}
 .lasttx{background:#040509;border:1px solid var(--line);border-radius:3px;padding:16px 18px;font-family:var(--ff-m);
   font-size:12px;line-height:1.75;color:var(--moss);white-space:pre-wrap;word-break:break-word;position:relative}
 .lasttx::before{content:'▮';animation:blink 1.05s steps(1) infinite}

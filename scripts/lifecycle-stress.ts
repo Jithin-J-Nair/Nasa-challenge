@@ -11,6 +11,7 @@ interface ArchiveTreeState {
   ambientCanvases: number;
   headingCharacters: number;
   storyChapters: number;
+  storyRouteLinks: number;
 }
 
 const browser = await chromium.launch({
@@ -32,6 +33,7 @@ const archiveTreeState = (): Promise<ArchiveTreeState> => page.evaluate(() => ({
   ambientCanvases: document.querySelectorAll('#webgl-shell canvas').length,
   headingCharacters: document.querySelectorAll('.spatial-char').length,
   storyChapters: document.querySelectorAll('#storyRail [data-story-chapter]').length,
+  storyRouteLinks: document.querySelectorAll('#storyRoute [data-story-route]').length,
 }));
 
 try {
@@ -58,6 +60,7 @@ try {
       || state.ambientCanvases > 1
       || state.headingCharacters !== baseline.headingCharacters
       || state.storyChapters !== baseline.storyChapters
+      || state.storyRouteLinks !== baseline.storyRouteLinks
     ) failures.push(`cycle ${cycle}: remount mismatch ${JSON.stringify({ baseline, state })}`);
   }
 } finally {

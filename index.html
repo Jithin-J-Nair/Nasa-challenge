@@ -254,6 +254,10 @@
       </div>
     </div>
   </div>
+  <div class="story-route-shell wrap">
+    <p class="story-route-label">Choose a question, then follow the trail</p>
+    <nav class="story-route" aria-label="Story chapter route"><ol id="storyRoute"></ol></nav>
+  </div>
   <div class="story-progress" aria-live="polite"><div><b id="storyCurrent">01</b><small>/</small><b id="storyTotal">06</b><small>chapter</small></div></div>
   <div id="storyRail" class="story-rail"></div>
 </section>
@@ -296,6 +300,18 @@
         <article><h3><i></i>NASA-checked record</h3><p>Visible facts stay tied to the record-level NASA source linked from each dossier.</p></article>
         <article><h3><i></i>Image treatment</h3><p>Every image is marked as artefact-specific, mission context, or a source-audited placeholder.</p></article>
       </div>
+
+      <section class="state-key" aria-labelledby="stateKeyTitle">
+        <div><p class="state-key-kicker">Archive reading key</p><h3 id="stateKeyTitle">A state describes what we can responsibly say about an object—not its worth.</h3></div>
+        <dl>
+          <div><dt>Left behind</dt><dd>Hardware that remains at a recorded destination.</dd></div>
+          <div><dt>Silent</dt><dd>A mission record with no current signal claim shown here.</dd></div>
+          <div><dt>Living legacy</dt><dd>An enduring experiment or record with a source-backed continuing role.</dd></div>
+          <div><dt>Far traveller</dt><dd>A source-linked mission on a deep-space path.</dd></div>
+          <div><dt>Destroyed</dt><dd>A record whose audited source describes an intentional or mission-ending loss.</dd></div>
+          <div><dt>Unknown</dt><dd>A record kept discoverable while its claim review is still incomplete.</dd></div>
+        </dl>
+      </section>
 
       <p class="mono" style="line-height:1.9">Independent educational project · public NASA mission resources · not NASA endorsed</p>
     </div>

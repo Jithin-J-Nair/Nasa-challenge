@@ -6,6 +6,7 @@
   .helio{position:static}
   .recordwrap{grid-template-columns:1fr}
   .catalogue-method{grid-template-columns:1fr}
+  .state-key{grid-template-columns:1fr;gap:24px}
 }
 @media (max-width:960px){
   .briefgrid{grid-template-columns:1fr;gap:40px}
@@ -30,6 +31,7 @@
   .catalogue-list li{grid-template-columns:1fr}
   .catalogue-list li small{grid-column:auto}
   .catalogue-stat{display:none}
+  .state-key dl{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}

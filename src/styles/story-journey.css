@@ -27,6 +27,16 @@
 .story-disclaimer i{display:block;flex:0 0 7px;width:7px;height:7px;margin-top:9px;border-radius:50%;background:var(--moss);box-shadow:0 0 0 4px rgba(142,230,164,.09)}
 .story-disclaimer b{display:block;margin-bottom:3px;font-family:var(--ff-m);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--moss)}
 .story-disclaimer span{font-size:13px;line-height:1.55;color:var(--muted)}
+.story-route-shell{display:grid;grid-template-columns:minmax(180px,.32fr) minmax(0,1fr);gap:30px;align-items:start;margin-bottom:clamp(64px,9vw,112px);padding-top:26px;border-top:1px solid var(--line)}
+.story-route-label{max-width:20ch;margin:0;font-family:var(--ff-m);font-size:10px;line-height:1.65;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.story-route ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--line2)}
+.story-route li{min-width:0;border-bottom:1px solid var(--line2)}
+.story-route a{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:baseline;min-height:70px;padding:14px 12px 14px 0;color:var(--muted);text-decoration:none;transition:color .25s,background .25s}
+.story-route a::after{content:'';position:absolute;right:0;bottom:-1px;left:0;height:1px;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .28s ease}
+.story-route a:hover,.story-route a:focus-visible,.story-route a.is-active{color:var(--ink)}
+.story-route a.is-active::after{transform:scaleX(1)}
+.story-route a span{font-family:var(--ff-m);font-size:9px;letter-spacing:.14em;color:var(--amber)}
+.story-route a b{font-size:13px;font-weight:500;line-height:1.3}
 .story-progress{position:sticky;z-index:3;top:calc(var(--nav-h) + 16px);display:flex;justify-content:flex-end;pointer-events:none;margin:0 var(--pad) 0 auto;width:min(var(--maxw),100%)}
 .story-progress > div{display:flex;align-items:baseline;gap:5px;min-width:112px;padding:10px 12px;border:1px solid var(--line2);background:rgba(7,9,16,.72);backdrop-filter:blur(12px);font-family:var(--ff-m);letter-spacing:.12em;color:var(--muted)}
 .story-progress b{font-size:15px;font-weight:500;color:var(--amberL)}
@@ -75,7 +85,7 @@
 .story-media figcaption b{font-weight:400}
 .story-source-link{color:var(--cyan);text-decoration:underline;text-underline-offset:3px;width:max-content}
 @media (max-width:960px){
-  .story-intro{grid-template-columns:1fr;gap:28px}.story-progress{top:calc(var(--nav-h) + 10px)}
+  .story-intro{grid-template-columns:1fr;gap:28px}.story-route-shell{grid-template-columns:1fr;gap:18px}.story-route-label{max-width:none}.story-route ol{grid-template-columns:repeat(2,minmax(0,1fr))}.story-progress{top:calc(var(--nav-h) + 10px)}
   .story-chapter,.story-chapter:nth-child(even){grid-template-columns:1fr;gap:42px;min-height:unset;padding:0 var(--pad)}
   .story-chapter:nth-child(even) .story-copy,.story-chapter:nth-child(even) .story-media{order:initial}
   .story-copy{max-width:630px;padding-top:62px}.story-media,.story-chapter:nth-child(even) .story-media{justify-self:stretch;width:min(100%,640px)}
@@ -84,7 +94,7 @@
 @media (max-width:620px){
   #stories{padding-top:74px}.story-intro h2{font-size:clamp(44px,13vw,65px)}
   .story-progress{position:relative;top:auto;justify-content:flex-start;margin:0 var(--pad) 42px;width:auto}.story-progress > div{width:max-content}
-  .story-rail{gap:110px}.story-chapter{gap:28px}.story-index{position:relative;left:auto;top:auto;flex-direction:row;align-items:center}.story-index i{width:62px;height:1px;background:linear-gradient(90deg,var(--amber),transparent)}
+  .story-route-shell{margin-bottom:62px}.story-route ol{grid-template-columns:1fr}.story-route a{min-height:58px;padding-block:11px}.story-route a b{font-size:12px}.story-rail{gap:110px}.story-chapter{gap:28px}.story-index{position:relative;left:auto;top:auto;flex-direction:row;align-items:center}.story-index i{width:62px;height:1px;background:linear-gradient(90deg,var(--amber),transparent)}
   .story-copy{padding-top:0}.story-copy h3{font-size:clamp(40px,12vw,58px)}.story-media-frame{aspect-ratio:4/4.6}
   .story-orbit--one{top:27%}.story-orbit--two{top:42%}.story-media figcaption{font-size:7.5px}
 }
