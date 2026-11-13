@@ -39,7 +39,7 @@ export const SILENT_FLEET_HORIZON_BLOOM: HorizonBloomProps = {
   sunPosition: .15,
   sunrise: 1,
   spread: .4,
-  atmosphere: 1,
+  atmosphere: .68,
   thickness: 1.05,
   rim: 1,
   flare: 3,
