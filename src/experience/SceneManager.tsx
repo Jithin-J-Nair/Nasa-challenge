@@ -4,6 +4,7 @@ import { Bloom, EffectComposer, Noise, Vignette } from '@react-three/postprocess
 import { useEffect, useMemo, useRef, type MutableRefObject } from 'react';
 import * as THREE from 'three';
 import { SCROLL_SIGNAL_EVENT, type ScrollSignal } from './LenisScrollWrapper';
+import { HorizonBloom, SILENT_FLEET_HORIZON_BLOOM } from './HorizonBloom';
 import { atmosphereFragmentShader, atmosphereVertexShader } from './shaders/atmosphere.glsl';
 import { domEchoFragmentShader, domEchoVertexShader } from './shaders/dom-echo.glsl';
 import { mediaPlaneFragmentShader, mediaPlaneVertexShader } from './shaders/media-plane.glsl';
@@ -474,10 +475,7 @@ export function SceneManager(): JSX.Element {
   const runtime = useSceneRuntime();
   return <>
     <CameraRig runtime={runtime} />
-    <AtmosphericField runtime={runtime} />
-    <GpuParticleField runtime={runtime} />
-    <DomEchoPlane selector="[data-webgl-plane='hero-title']" color="#ff9d3d" runtime={runtime} />
-    <DomEchoPlane selector="#observatory .h2" color="#5fe1ff" runtime={runtime} />
+    <HorizonBloom {...SILENT_FLEET_HORIZON_BLOOM} />
     <DomMediaPlaneLayer runtime={runtime} />
     <AdaptiveDpr pixelated />
     <EffectComposer multisampling={0} enableNormalPass={false}>

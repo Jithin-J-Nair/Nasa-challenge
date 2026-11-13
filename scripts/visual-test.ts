@@ -63,6 +63,9 @@ try {
     const menuState = await page.locator('#smToggle').getAttribute('aria-expanded');
     if (menuState !== 'false')
       failures.push(`${viewport.name}: staggered menu did not initialise closed`);
+    const heroBackground = await page.locator('#hero').evaluate((hero) => getComputedStyle(hero).backgroundImage);
+    if (heroBackground !== 'none')
+      failures.push(`${viewport.name}: hero retained a legacy CSS background instead of Horizon Bloom`);
 
     // The replacement header is a real disclosure, not a cosmetic drawer.
     // Exercise pointer opening, visible panel state, and Escape restoration at
