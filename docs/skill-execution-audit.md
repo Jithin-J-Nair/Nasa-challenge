@@ -126,7 +126,7 @@ The malformed `alton47/threejs-skills` source is excluded from all rows above be
 
 ### Exact current changes
 
-- `src/styles/editorial-upgrade.css` — active final-cascade adaptation; no dormant complete-rebuild import.
+- `src/styles/editorial-upgrade.css` — active final-cascade adaptation; no dormant complete-rebuild import. It now contains the supplied OKLCH light/dark token system, maps archive semantics to those tokens, and scopes the light token set to reading surfaces while `html.dark` powers immersive sections.
 - `src/data/dossier-stories.ts`, `src/data/story-path.ts` — six named guided narratives made distinct, school-age-legible, and explicitly separated from NASA-checked copy.
 - `src/components/archive.ts`, `src/components/dossier.ts` — differentiated collections, visible year/status/source confidence, and provenance-first dossier folders; removed archive schematic image overlays.
 - `scripts/parse-moon-catalogue.ts`, `src/types/moon-catalogue.ts`, `src/data/moon-catalogue.generated.ts`, `src/components/moon-catalogue.ts` — raw source text retained, bounded coordinate parsing added, Ranger 9 plotting withheld, and its status exposed in the register.

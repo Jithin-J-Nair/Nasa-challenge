@@ -4,9 +4,9 @@ Target: http://127.0.0.1:4173/
 
 | run | performance | accessibility | best practices | SEO | LCP | LCP element |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| 1 | 100 | 100 | 100 | 100 | 912 ms | `See supplemental observer below` |
-| 2 | 100 | 100 | 100 | 100 | 916 ms | `See supplemental observer below` |
-| 3 | 100 | 100 | 100 | 100 | 906 ms | `See supplemental observer below` |
+| 1 | 100 | 100 | 100 | 100 | 907 ms | `See supplemental observer below` |
+| 2 | 100 | 100 | 100 | 100 | 909 ms | `See supplemental observer below` |
+| 3 | 100 | 100 | 100 | 100 | 904 ms | `See supplemental observer below` |
 
 Average: **100 Performance**, **100 Accessibility**, **100 Best Practices**, **100 SEO**.
 
@@ -14,16 +14,16 @@ Average: **100 Performance**, **100 Accessibility**, **100 Best Practices**, **1
 
 | run | FCP | Speed Index | LCP | TBT | CLS | max potential FID |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | 912 ms | 1041 ms | 912 ms | 0 ms | 0.001 | 16 ms |
-| 2 | 916 ms | 1062 ms | 916 ms | 0 ms | 0.001 | 16 ms |
-| 3 | 906 ms | 1055 ms | 906 ms | 0 ms | 0.001 | 16 ms |
-| **average** | **911 ms** | **1053 ms** | **911 ms** | **0 ms** | **0.001** | **16 ms** |
+| 1 | 907 ms | 1033 ms | 907 ms | 0 ms | 0.001 | 16 ms |
+| 2 | 909 ms | 1001 ms | 909 ms | 0 ms | 0.001 | 16 ms |
+| 3 | 904 ms | 1018 ms | 904 ms | 0 ms | 0.001 | 16 ms |
+| **average** | **907 ms** | **1017 ms** | **907 ms** | **0 ms** | **0.001** | **16 ms** |
 
 This trace is emitted directly from the Lighthouse LHR. Compare it with the prior committed baseline before attributing a score change: synthetic Performance can vary between runs, while FCP/LCP/TBT/CLS identify the metric that actually moved.
 
 ## LCP element
 
-Lighthouse 13.6.0 did not provide its element node for this route. Supplemental Playwright `PerformanceObserver` reported `<p.hero-lede>` at approximately **184 ms** (text begins: “Enter a living map of hardware left on the Moon, Mars, and the long dark beyond—then follow every cl”).
+Lighthouse 13.6.0 did not provide its element node for this route. Supplemental Playwright `PerformanceObserver` reported `<h1#heroTitle.hero-title>` at approximately **396 ms** (text begins: “What remains still speaks.”).
 
 ## Failing audits
 
