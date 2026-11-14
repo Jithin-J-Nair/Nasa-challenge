@@ -30,13 +30,13 @@ export interface HorizonBloomProps {
   paused: boolean;
 }
 
-/** The requested Horizon Bloom preset, kept explicit for design review. */
+/** Horizon Bloom preset tuned against the supplied dark-planet sunrise reference. */
 export const SILENT_FLEET_HORIZON_BLOOM: HorizonBloomProps = {
   colors: ['#ff9600', '#5227FF'],
   horizon: .72,
   curvature: 1,
   tilt: 0,
-  sunPosition: .15,
+  sunPosition: .48,
   sunrise: 1,
   spread: .4,
   atmosphere: .68,
@@ -168,52 +168,61 @@ const fragmentShader = /* glsl */`
     // the UV coordinate used by the shader, then bow it into a planet edge.
     float x = uv.x - .5;
     float horizon = 1.0 - uHorizon;
-    float curve = horizon - x * x * (.2 * uCurvature);
-    curve += sin(x * 2.4 + uTilt) * .008 * uCurvature;
+    // A substantially bowed edge turns the lower frame into a planet rather
+    // than a flat line. At the supplied curvature of one, the limb falls away
+    // toward both edges, matching the reference composition.
+    float limb = pow(abs(x) * 2.0, 1.72);
+    float curve = horizon - limb * (.20 * uCurvature);
+    curve += sin(x * 2.4 + uTilt) * .003 * uCurvature;
 
-    float skyHeight = clamp((uv.y - curve + .03) * 1.32, 0.0, 1.0);
-    vec3 sky = mix(uBackground, mix(uSecondary * .08, uSecondary * .38, skyHeight), smoothstep(.0, .95, skyHeight));
-    sky += uSecondary * .035 * smoothstep(.0, .56, uv.y);
+    float aboveHorizon = max(0.0, uv.y - curve);
+    float horizonDistance = abs(uv.y - curve);
+    float atmosphereFalloff = exp(-aboveHorizon * 5.6);
+    vec3 sky = mix(uBackground, uSecondary * .105, atmosphereFalloff * uAtmosphere * .72);
+    sky += uSecondary * .012 * exp(-aboveHorizon * 1.9);
 
     float sunX = mix(.08, .92, uSunPosition);
     float sunDistance = abs(uv.x - sunX);
-    float horizonDistance = abs(uv.y - curve);
-    float sun = exp(-sunDistance * sunDistance / max(.001, uSpread * uSpread * .045));
-    float sunrise = exp(-horizonDistance * horizonDistance / max(.00015, .0027 * uThickness)) * sun * uSunrise;
-    float upperBloom = exp(-sunDistance * sunDistance / max(.001, uSpread * uSpread * .16)) * exp(-max(0.0, uv.y - curve) * 7.0) * .64;
-    sky += uPrimary * (sunrise * (1.1 + uBloom) + upperBloom * uAtmosphere);
+    float sun = exp(-sunDistance * sunDistance / max(.0008, uSpread * uSpread * .028));
+    float sunrise = exp(-horizonDistance * horizonDistance / max(.00008, .00075 * uThickness)) * sun * uSunrise;
+    float upperBloom = exp(-sunDistance * sunDistance / max(.001, uSpread * uSpread * .10)) * exp(-aboveHorizon * 12.0);
+    vec3 warmWhite = mix(uPrimary, vec3(1.0, .79, .67), .8);
+    sky += warmWhite * (sunrise * (1.15 + uBloom * .55) + upperBloom * uAtmosphere * .18);
 
     float cloudFlow = t * (.035 + uDrift * .08);
     float cloud = fbm(vec2(uv.x * 3.1 - cloudFlow, uv.y * 10.0 + cloudFlow * .4));
-    float cloudBand = smoothstep(.05, .72, uv.y - curve) * (1.0 - smoothstep(.2, .82, uv.y));
-    sky = mix(sky, sky * .6 + uPrimary * .12, cloud * cloudBand * uClouds * .34);
+    float cloudBand = exp(-pow((aboveHorizon - .12) * 5.4, 2.0));
+    sky = mix(sky, sky * .72 + warmWhite * .035, cloud * cloudBand * uClouds * .18);
 
     vec2 starGrid = vec2(260.0, 150.0);
     vec2 starCell = uv * starGrid;
     float starSeed = hash21(floor(starCell));
-    float starField = step(.9968 - uStars * .0024, starSeed);
+    float starField = step(.985 - uStars * .008, starSeed);
     float starShape = smoothstep(.14, 0.0, length(fract(starCell) - .5));
     float stars = starField * starShape * smoothstep(curve + .05, curve + .27, uv.y) * (1.0 - smoothstep(.6, 1.0, uv.y));
     sky += vec3(stars) * (.55 + hash21(floor(starCell)) * .65);
 
-    float auroraWave = sin(uv.x * 11.0 + t * .7) * .035 + sin(uv.x * 4.3 - t * .33) * .045;
-    float auroraBand = exp(-pow((uv.y - (.69 + auroraWave)) * 6.0, 2.0));
+    float auroraWave = sin(uv.x * 11.0 + t * .7) * .018 + sin(uv.x * 4.3 - t * .33) * .022;
+    float auroraBand = exp(-pow((aboveHorizon - (.19 + auroraWave)) * 8.0, 2.0));
     float auroraNoise = fbm(vec2(uv.x * 4.0 + t * .08, uv.y * 2.4));
-    sky += mix(uSecondary, vec3(.2, .75, .65), .28) * auroraBand * auroraNoise * uAurora * uAutoAurora * .38;
+    sky += uSecondary * auroraBand * auroraNoise * uAurora * uAutoAurora * .065;
 
-    float planet = 1.0 - smoothstep(-.004, .016, uv.y - curve);
-    vec3 planetColor = mix(vec3(.004, .005, .008), uBackground * .16, uv.y * .16);
-    float terrain = fbm(vec2(uv.x * 9.0, (uv.y - curve) * 36.0)) * .028;
-    planetColor += terrain * vec3(.13, .09, .12) * planet;
-    float rim = exp(-abs(uv.y - curve) / max(.002, .013 * uThickness)) * uRim;
-    planetColor += (uPrimary * sunrise * 1.85 + mix(uSecondary, uPrimary, .2) * uAirglow * .45) * rim;
+    float planet = 1.0 - smoothstep(-.003, .010, uv.y - curve);
+    vec3 planetColor = mix(vec3(.002, .0025, .004), vec3(.022, .014, .008), uv.y * .14);
+    float terrain = fbm(vec2(uv.x * 9.0, (uv.y - curve) * 36.0)) * .012;
+    planetColor += terrain * vec3(.11, .07, .035) * planet;
+    float rim = exp(-horizonDistance / max(.001, .0048 * uThickness)) * uRim;
+    vec3 rimColor = mix(uSecondary, warmWhite, .82);
+    planetColor += rimColor * (uAirglow * .19 + sun * .92) * rim;
 
-    vec2 flareUv = vec2((uv.x - sunX) * 1.1, (uv.y - curve) * 2.4);
-    float flare = .004 / max(.004, dot(flareUv, flareUv)) * uFlare * .017;
+    vec2 flareUv = vec2((uv.x - sunX) * 1.08, (uv.y - curve) * 3.0);
+    float flare = .0022 / max(.0015, dot(flareUv, flareUv)) * uFlare * .012;
+    float shafts = pow(max(0.0, sin((uv.x - sunX) * 84.0 + fbm(vec2(uv.x * 8.0, t * .05)) * 3.0)), 16.0);
+    shafts *= exp(-sunDistance * sunDistance / max(.001, uSpread * uSpread * .045)) * exp(-aboveHorizon * 8.5);
     vec3 color = mix(sky, planetColor, planet);
-    color += uPrimary * flare * smoothstep(curve - .04, curve + .06, uv.y);
+    color += warmWhite * (flare + shafts * .19) * smoothstep(curve - .035, curve + .085, uv.y);
 
-    float grain = (hash21(gl_FragCoord.xy + fract(t) * 37.0) - .5) * uGrain * .085;
+    float grain = (hash21(gl_FragCoord.xy + fract(t) * 37.0) - .5) * uGrain * .015;
     color += grain;
     color *= mix(.0, 1.0, uIntro);
     gl_FragColor = vec4(max(color, 0.0), 1.0);
