@@ -49,6 +49,12 @@ function clearDossierTimers(): void {
   pulseTimer = null;
 }
 
+function collectionLabel(artifact: Artifact): string {
+  if (artifact.b === 'moon') return 'Lunar register';
+  if (artifact.b === 'mars') return 'Mars field notes';
+  return 'Deep-space dispatch';
+}
+
 function typewrite(
   element: HTMLElement,
   text: string,
@@ -140,10 +146,15 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
   const sourceReview = artifact.verifiedByNASA
     ? `<section class="dsec dossier-review"><h3>Source-review note</h3><div class="lasttx" id="lastTx"></div></section>`
     : "";
+  const provenance = artifact.verifiedByNASA
+    ? 'NASA-checked record · source link below'
+    : 'Context record · details withheld pending NASA review';
+  dossier.dataset.body = artifact.b;
   $("#dBody").innerHTML = `
+    <section class="dossier-identity" aria-label="Record identity"><span>${collectionLabel(artifact)}</span><b>${provenance}</b><small>${artifact.verifiedByNASA ? artifact.y : 'Year withheld'} · ${artifact.verifiedByNASA ? statusLabel(artifact.st) : 'Audit pending'}</small></section>
     ${opening}
     ${science}
-    <div class="dsec dossier-source"><h3>Sources</h3><a href="${artifact.source}" target="_blank" rel="noreferrer">Open ${artifact.sourceLabel} <span aria-hidden="true">↗</span></a><p>${artifact.verifiedByNASA ? "The story, record, and technical details above were checked against this opened NASA source." : "NASA’s page is ready to explore; this dossier will grow after its full fact-check."}</p></div>
+    <div class="dsec dossier-source"><h3>Source trail</h3><a href="${artifact.source}" target="_blank" rel="noreferrer">Open ${artifact.sourceLabel} <span aria-hidden="true">↗</span></a><p>${artifact.verifiedByNASA ? "The story, record, and technical details above were checked against this opened NASA source." : "NASA’s page is ready to explore; this dossier will grow after its full fact-check."}</p></div>
     <figure class="dossier-media" data-webgl-plane="dossier-media">
       <img src="${artifact.image}" alt="${artifact.imageAlt}" width="${artifact.imageWidth}" height="${artifact.imageHeight}" loading="lazy" decoding="async" />
       <figcaption>${imageFlag}<span>${artifact.imageCredit}</span>${artifact.imageSource ? `<a href="${artifact.imageSource}" target="_blank" rel="noreferrer">Image source ↗</a>` : ""}</figcaption>
@@ -185,6 +196,9 @@ function openDossier(artifact: Artifact, shouldFly: boolean): void {
   dossier.removeAttribute("inert");
   dossier.classList.add("open");
   dossier.setAttribute("aria-hidden", "false");
+  // A modal dossier must own the interaction layer. This also prevents the
+  // fixed menu toggle from sitting above the close button at compact widths.
+  document.querySelector<HTMLElement>("#staggeredMenu")?.setAttribute("inert", "");
   $("#scrim").classList.add("on");
   if (!wasOpen) moveFocusIntoDossier();
   if (artifact.verifiedByNASA)
@@ -227,6 +241,7 @@ function closeDossier(): void {
   dossier.classList.remove("open");
   dossier.setAttribute("aria-hidden", "true");
   dossier.setAttribute("inert", "");
+  document.querySelector<HTMLElement>("#staggeredMenu")?.removeAttribute("inert");
   $("#scrim").classList.remove("on");
   archiveState.selectedArtifactId = null;
   $$<HTMLButtonElement>(".hot").forEach((hotspot) =>

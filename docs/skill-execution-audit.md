@@ -110,3 +110,26 @@ Installation/discovery is not implementation. The following installed skills are
 | Installed, not applied | `skill-creator`, `template-skill`, `vercel-optimize`, `vercel-react-native-skills`, `vercel-react-view-transitions` | No new skill authoring, React Native surface, Vercel-only optimization, or view-transition architecture was justified. |
 
 The malformed `alton47/threejs-skills` source is excluded from all rows above because it did not yield valid installed documents. No skill is claimed as applied merely because it appears in `skills-lock.json`.
+
+## Surgical reconstruction follow-up — current branch state
+
+> **Supersession note:** the historic section above describes an experiment that said `complete-rebuild.css` was active. That is **not** the active runtime state. `src/styles.css` imports `fonts.css`, `experience.css`, and the narrow `editorial-upgrade.css` layer; it does not import `complete-rebuild.css`. The new layer exists precisely to avoid two full competing systems.
+
+| skill | exact material read | applied decision and code | verification |
+| --- | --- | --- | --- |
+| `frontend-design` | `.agents/skills/frontend-design/SKILL.md` | Applied a single archival-editorial direction: the existing Horizon Bloom remains the dark-planet hero atmosphere; guided stories become warm paper spreads; the Moon register becomes a sober source ledger; Moon/Mars/deep-space archive folios and dossier folders receive distinct material families. No dashboard grid, reticle, or image geometry was added. | `src/styles/editorial-upgrade.css`, `src/components/archive.ts`, `src/components/dossier.ts`; review captures listed in `FINAL-DESIGN-AUDIT.md`. |
+| `emil-design-eng` | `.agents/skills/emil-design-eng/SKILL.md` | Kept interaction hierarchy readable: collection/year/source state precede an archive card’s title; dossier identity precedes interpretation, record, source trail, media, and designation. The modal now makes the fixed menu inert so it cannot cover the close control at compact widths. | `src/components/archive.ts`, `src/components/dossier.ts`, `scripts/visual-test.ts`, `npm run test:dossier`. |
+| `web-design-guidelines` | `.agents/skills/web-design-guidelines/SKILL.md` and `https://api.github.com/repos/vercel-labs/web-interface-guidelines/contents/command.md` | Used semantic buttons/links already in the DOM, retained visible focus and intrinsic image dimensions, changed the search placeholder to an ellipsis, preserved `aria-live` result updates, and fixed a real modal interaction-layer conflict. | Desktop/mobile Playwright checks passed; Lighthouse accessibility evidence is recorded in `docs/LIGHTHOUSE-MOBILE.md`. |
+| `choreograph`, `animation-performance`, `gsap-core`, `gsap-timeline`, `gsap-scrolltrigger` | `.agents/skills/choreograph/SKILL.md`, `.agents/skills/animation-performance/SKILL.md`, `.agents/skills/gsap-core/SKILL.md`, `.agents/skills/gsap-timeline/SKILL.md`, `.agents/skills/gsap-scrolltrigger/SKILL.md` | Did not add ornamental motion. The existing, cleanup-owned hero/story sequences remain the only orienting motion; the editorial layer uses no new animation beyond direct control feedback and honors the pre-existing reduced-motion branch. | `npm run test:lifecycle` passed three dispose/remount cycles; `npm run test:visual` passed with reduced/mobile fallback checks. |
+| `r3f-best-practices` | `.agents/skills/r3f-best-practices/SKILL.md` | Preserved the progressive R3F/Horizon Bloom and separate lazy Observatory boundaries rather than replacing them with a CSS backdrop. Retained compact/coarse no-canvas behavior, context recovery, disposal, and native mobile scrolling. | Visual suite exercised ambient context loss/recovery, Observatory recovery, blocked-WebGL semantic fallback, and touch/native-scroll behavior. |
+| `webapp-testing` | `.agents/skills/webapp-testing/SKILL.md` | Added a source-integrity regression for the Ranger 9 invalid coordinate and an interaction-ownership assertion for the dossier; created a meaningful `npm run test` aggregator instead of leaving the requested command undefined. | `scripts/moon-catalogue-test.ts`, `scripts/visual-test.ts`, `package.json`; all passed. |
+
+### Exact current changes
+
+- `src/styles/editorial-upgrade.css` — active final-cascade adaptation; no dormant complete-rebuild import.
+- `src/data/dossier-stories.ts`, `src/data/story-path.ts` — six named guided narratives made distinct, school-age-legible, and explicitly separated from NASA-checked copy.
+- `src/components/archive.ts`, `src/components/dossier.ts` — differentiated collections, visible year/status/source confidence, and provenance-first dossier folders; removed archive schematic image overlays.
+- `scripts/parse-moon-catalogue.ts`, `src/types/moon-catalogue.ts`, `src/data/moon-catalogue.generated.ts`, `src/components/moon-catalogue.ts` — raw source text retained, bounded coordinate parsing added, Ranger 9 plotting withheld, and its status exposed in the register.
+- `scripts/moon-catalogue-test.ts`, `scripts/visual-test.ts`, `scripts/capture-dossier-comparison.ts`, `package.json` — test coverage and test-command repair.
+
+The React Bits Pro installer remains blocked by the missing `REACTBITS_LICENSE_KEY`; no claim is made that the project-native `HorizonBloom.tsx` is licensed React Bits source.

@@ -21,7 +21,7 @@ export const STORY_PATH: readonly StoryChapter[] = [
     body: 'moon',
     eyebrow: 'Chapter one · the Moon',
     question: 'What does a landing leave behind?',
-    invitation: 'Begin with a machine that stayed when its crew went home.',
+    invitation: 'Begin with the lower part of a lander—and the idea that leaving can leave something real behind.',
     legacy: 'left behind',
   },
   {
@@ -29,8 +29,8 @@ export const STORY_PATH: readonly StoryChapter[] = [
     order: 2,
     body: 'moon',
     eyebrow: 'Chapter two · the Moon',
-    question: 'What can a quiet experiment keep doing?',
-    invitation: 'Meet a small instrument that makes distance feel like a conversation.',
+    question: 'How can light return an answer?',
+    invitation: 'Follow a reflective surface: a small object that turns a beam of light into a measurement.',
     legacy: 'living legacy',
   },
   {
@@ -38,8 +38,8 @@ export const STORY_PATH: readonly StoryChapter[] = [
     order: 3,
     body: 'mars',
     eyebrow: 'Chapter three · Mars',
-    question: 'What can a small rover notice?',
-    invitation: 'Follow a curious machine into a place people have never walked.',
+    question: 'How far can a small rover reach?',
+    invitation: 'Take a close look at a rover built to ask questions one careful drive at a time.',
     legacy: 'silent machine',
   },
   {
@@ -47,8 +47,8 @@ export const STORY_PATH: readonly StoryChapter[] = [
     order: 4,
     body: 'mars',
     eyebrow: 'Chapter four · Mars',
-    question: 'What happens when a machine listens?',
-    invitation: 'Slow down for a mission built around patient attention.',
+    question: 'How does a planet make a sound?',
+    invitation: 'Slow down for a mission that used patient listening to study a world’s deep interior.',
     legacy: 'silent machine',
   },
   {
@@ -56,8 +56,8 @@ export const STORY_PATH: readonly StoryChapter[] = [
     order: 5,
     body: 'mars',
     eyebrow: 'Chapter five · Mars',
-    question: 'Can an idea change the view?',
-    invitation: 'See how a light machine made a familiar horizon feel new.',
+    question: 'What changes when a machine lifts off?',
+    invitation: 'See how an aircraft made a Martian horizon feel new.',
     legacy: 'silent machine',
   },
   {
@@ -65,8 +65,8 @@ export const STORY_PATH: readonly StoryChapter[] = [
     order: 6,
     body: 'deep',
     eyebrow: 'Chapter six · beyond',
-    question: 'What does a message become far from home?',
-    invitation: 'End with a traveller that turns distance into a human question.',
+    question: 'What does home look like from far away?',
+    invitation: 'End with a spacecraft whose cited record stretches from familiar planets into interstellar space.',
     legacy: 'far traveller',
   },
 ] as const;

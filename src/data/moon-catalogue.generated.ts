@@ -9,7 +9,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -15.5,
+      "longitude": -130.7
+    }
   },
   {
     "object": "Ranger 6",
@@ -17,7 +22,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 9.388,
+      "longitude": 21.48
+    }
   },
   {
     "object": "Ranger 7",
@@ -25,7 +35,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -10.63,
+      "longitude": -20.6
+    }
   },
   {
     "object": "Ranger 8",
@@ -33,7 +48,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 2.638,
+      "longitude": 24.787
+    }
   },
   {
     "object": "Ranger 9",
@@ -41,7 +61,9 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "invalid",
+    "coordinateIssue": "Supplied latitude 112.828° is outside −90° to 90°; excluded from plotting without correction."
   },
   {
     "object": "Surveyor 1",
@@ -49,7 +71,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -2.474,
+      "longitude": -43.339
+    }
   },
   {
     "object": "Lunar Orbiter 1",
@@ -57,7 +84,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 6.7,
+      "longitude": 162
+    }
   },
   {
     "object": "Surveyor 2",
@@ -65,7 +97,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 5.5,
+      "longitude": -12
+    }
   },
   {
     "object": "Lunar Orbiter 2",
@@ -73,7 +110,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 3,
+      "longitude": 119
+    }
   },
   {
     "object": "Lunar Orbiter 3",
@@ -81,7 +123,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 14.3,
+      "longitude": -97.7
+    }
   },
   {
     "object": "Surveyor 3",
@@ -89,7 +136,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.015,
+      "longitude": -23.418
+    }
   },
   {
     "object": "Lunar Orbiter 4",
@@ -97,7 +149,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Surveyor 4",
@@ -105,7 +158,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Explorer 35 (IMP-E)",
@@ -113,7 +167,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Lunar Orbiter 5",
@@ -121,7 +176,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3,
+      "longitude": -83
+    }
   },
   {
     "object": "Surveyor 5",
@@ -129,7 +189,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 1.461,
+      "longitude": 23.195
+    }
   },
   {
     "object": "Surveyor 6",
@@ -137,7 +202,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 0.473,
+      "longitude": -1.427
+    }
   },
   {
     "object": "Surveyor 7",
@@ -145,7 +215,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -40.98,
+      "longitude": -11.509
+    }
   },
   {
     "object": "Explorer 49 (RAE-B)",
@@ -153,7 +228,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Lunar Prospector",
@@ -161,7 +237,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "LCROSS Shepherding Spacecraft",
@@ -169,7 +246,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -84.72,
+      "longitude": -49.62
+    }
   },
   {
     "object": "LCROSS Centaur",
@@ -177,7 +259,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Non-Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -84.9,
+      "longitude": -35.5
+    }
   },
   {
     "object": "Apollo 11 - Landing Location",
@@ -185,7 +272,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 0.41,
+      "longitude": 23.26
+    }
   },
   {
     "object": "Passive Seismic Experiment (see below)",
@@ -193,7 +285,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": true,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Gold Olive Branch [1]",
@@ -201,7 +294,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Flag Kit [1]",
@@ -209,7 +303,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Apollo 1 Patch (Honoring deceased astronauts Grissom, White, Chaffee) [1]",
@@ -217,7 +312,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Cosmonaut Medals (Honoring deceased cosmonauts Gagarin, Komarov) [2]",
@@ -225,7 +321,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 2,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Moon Memorial Disc [1]",
@@ -233,7 +330,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Ascent Stage [1]",
@@ -241,7 +339,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Lunar Retro-Ranging Reflector Experiment [1]",
@@ -249,7 +348,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 0.67337,
+      "longitude": 23.47293
+    }
   },
   {
     "object": "LM Descent Stage (plaque attached)",
@@ -257,7 +361,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 0.67408,
+      "longitude": 23.47297
+    }
   },
   {
     "object": "Filter, Polarizing [1]",
@@ -265,7 +374,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Portable Life Support System (PLSS) [2]",
@@ -273,7 +383,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 2,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Remote Control Unit (PISS) [2]",
@@ -281,7 +392,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 2,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Defecation Collection Device [4]",
@@ -289,7 +401,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 4,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Overshoes, Lunar [2]",
@@ -297,7 +410,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 2,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Food Assembly, LM (4 man days) [1]",
@@ -305,7 +419,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "TV subsystem, Lunar [1]",
@@ -313,7 +428,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Passive seismic experiment [1]",
@@ -321,7 +437,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Central Station",
@@ -329,7 +446,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": true
+    "subItem": true,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Pallet Assembly #2",
@@ -337,7 +455,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": true
+    "subItem": true,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Primary structure assembly",
@@ -345,7 +464,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": true
+    "subItem": true,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Hammer [1]",
@@ -353,7 +473,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": true
+    "subItem": true,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Scoop, Lunar sample-large [1]",
@@ -361,7 +482,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": true
+    "subItem": true,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Apollo 12 - Landing Location",
@@ -369,7 +491,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.11,
+      "longitude": -23.23
+    }
   },
   {
     "object": "Passive Seismic Experiment (see experiment below)",
@@ -377,7 +504,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": true,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Surveyor 3 [see above under U.S. Material (Non-Apollo)]",
@@ -385,7 +513,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": true,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "LM Ascent Stage [1]",
@@ -393,7 +522,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.94,
+      "longitude": -21.2
+    }
   },
   {
     "object": "Central Station",
@@ -401,7 +535,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.00942,
+      "longitude": -23.42458
+    }
   },
   {
     "object": "LM Descent Stage (plaque attached) [1]",
@@ -409,7 +548,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.01239,
+      "longitude": -23.42157
+    }
   },
   {
     "object": "Camera, Lunar Surface, Electric Hasselblad [2]",
@@ -417,7 +561,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 2,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Defecation Collection Device [4]",
@@ -425,7 +570,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 4,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Overshoes, Lunar pair [2]",
@@ -433,7 +579,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 2,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Towels, LM utility (Red) [2]",
@@ -441,7 +588,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 2,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "TV System, LM Color [1]",
@@ -449,7 +597,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Canister, ECS LIOH [1]",
@@ -457,7 +606,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "(d) LS Magnetometer experiment [1]",
@@ -465,7 +615,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": true
+    "subItem": true,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "(e) Radioisotope Thermoelectric Generator Experiment [1]",
@@ -473,7 +624,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": true
+    "subItem": true,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Apollo 13",
@@ -481,7 +633,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "S-IVB",
@@ -489,7 +642,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -2.553,
+      "longitude": 27.887
+    }
   },
   {
     "object": "Apollo 14 - Landing Location",
@@ -497,7 +655,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.4,
+      "longitude": -17.28
+    }
   },
   {
     "object": "S-IVB",
@@ -505,7 +668,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -8.179,
+      "longitude": 26.031
+    }
   },
   {
     "object": "Passive Seismic Experiment (see below)",
@@ -513,7 +681,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": true,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Active Seismic Experiment (see below)",
@@ -521,7 +690,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": true,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "LM Ascent Stage [1]",
@@ -529,7 +699,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.42,
+      "longitude": -19.67
+    }
   },
   {
     "object": "Central Station",
@@ -537,7 +712,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.64398,
+      "longitude": -17.47748
+    }
   },
   {
     "object": "Laser Range Reflector (see below)",
@@ -545,7 +725,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": true,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.64421,
+      "longitude": -17.4788
+    }
   },
   {
     "object": "LM Descent Stage (plaque attached) [1]",
@@ -553,7 +738,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -3.6453,
+      "longitude": -17.47136
+    }
   },
   {
     "object": "Apollo 15 - Landing Location",
@@ -561,7 +751,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 26.13,
+      "longitude": 3.63
+    }
   },
   {
     "object": "LM Descent Stage (plaque attached) [1]",
@@ -569,7 +764,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 26.13222,
+      "longitude": 3.63386
+    }
   },
   {
     "object": "Lunar Roving Vehicle [1]",
@@ -577,7 +777,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 26.132,
+      "longitude": 3.633
+    }
   },
   {
     "object": "Laser Ranging Retroreflector [1]",
@@ -585,7 +790,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 26.13386,
+      "longitude": 3.62981
+    }
   },
   {
     "object": "Apollo 16 - Landing Location",
@@ -593,7 +803,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -8.97,
+      "longitude": 15.5
+    }
   },
   {
     "object": "LM Descent Stage (plaque attached) [1]",
@@ -601,7 +816,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -8.97301,
+      "longitude": 15.50019
+    }
   },
   {
     "object": "Lunar Roving Vehicle [1]",
@@ -609,7 +829,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -8.973,
+      "longitude": 15.5
+    }
   },
   {
     "object": "Apollo 17 - Landing Location",
@@ -617,7 +842,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 20.19,
+      "longitude": 30.77
+    }
   },
   {
     "object": "LM Descent Stage (plaque attached) [1]",
@@ -625,7 +855,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 20.1908,
+      "longitude": 30.77168
+    }
   },
   {
     "object": "Lunar Roving Vehicle [1]",
@@ -633,7 +868,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 20.191,
+      "longitude": 30.772
+    }
   },
   {
     "object": "Lunar Surface Gravimeter [1]",
@@ -641,7 +881,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "U.S. Material (Apollo)",
     "quantity": 1,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 20.19991,
+      "longitude": 30.76509
+    }
   },
   {
     "object": "Luna 2",
@@ -649,7 +894,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 29.1,
+      "longitude": 0
+    }
   },
   {
     "object": "Luna 5",
@@ -657,7 +907,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 8,
+      "longitude": -23
+    }
   },
   {
     "object": "Luna 7",
@@ -665,7 +920,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 9.8,
+      "longitude": -47.8
+    }
   },
   {
     "object": "Luna 8",
@@ -673,7 +933,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 9.1,
+      "longitude": -63.3
+    }
   },
   {
     "object": "Luna 9",
@@ -681,7 +946,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 7.08,
+      "longitude": -64.37
+    }
   },
   {
     "object": "Luna 10",
@@ -689,7 +959,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Luna 11",
@@ -697,7 +968,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Luna 12",
@@ -705,7 +977,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Luna 13",
@@ -713,7 +986,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 18.87,
+      "longitude": -62.05
+    }
   },
   {
     "object": "Luna 14",
@@ -721,7 +999,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Luna 15",
@@ -729,7 +1008,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Luna 16 descent stage",
@@ -737,7 +1017,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -0.513,
+      "longitude": 56.364
+    }
   },
   {
     "object": "Luna 17 Lander",
@@ -745,7 +1030,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 38.238,
+      "longitude": -34.997
+    }
   },
   {
     "object": "Lunokhod 1",
@@ -753,7 +1043,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 38.316,
+      "longitude": -35.004
+    }
   },
   {
     "object": "Luna 18",
@@ -761,7 +1056,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 3.76,
+      "longitude": 56.655
+    }
   },
   {
     "object": "Luna 19",
@@ -769,7 +1069,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Luna 20 descent stage",
@@ -777,7 +1078,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 3.787,
+      "longitude": 56.625
+    }
   },
   {
     "object": "Luna 21 Lander",
@@ -785,7 +1091,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 26.003,
+      "longitude": 30.408
+    }
   },
   {
     "object": "Lunokhod 2",
@@ -793,7 +1104,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 25.827,
+      "longitude": 30.919
+    }
   },
   {
     "object": "Luna 22",
@@ -801,7 +1117,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Luna 23",
@@ -809,7 +1126,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 12.666,
+      "longitude": 62.151
+    }
   },
   {
     "object": "Luna 24 descent stage",
@@ -817,7 +1139,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Soviet Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 12.714,
+      "longitude": 62.213
+    }
   },
   {
     "object": "Chang'e 1 Orbiter",
@@ -825,7 +1152,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Chinese Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -1.5,
+      "longitude": 52.36
+    }
   },
   {
     "object": "Chandrayaan-1 Lunar Orbiter",
@@ -833,7 +1165,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Indian Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Moon Impact Probe",
@@ -841,7 +1174,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Indian Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Hiten spacecraft",
@@ -849,7 +1183,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Japanese Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": 55.3,
+      "longitude": -34
+    }
   },
   {
     "object": "Hagoromo orbiter satellite",
@@ -857,7 +1196,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Japanese Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Kaguya orbiter (SELENE)",
@@ -865,7 +1205,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Japanese Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -65.5,
+      "longitude": 80.4
+    }
   },
   {
     "object": "VRAD Subsatellite (\"Ouna\")",
@@ -873,7 +1218,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Japanese Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "Relay Subsatellite (\"Okina\")",
@@ -881,7 +1227,8 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "Japanese Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "unavailable"
   },
   {
     "object": "SMART-1 (controlled crash)",
@@ -889,7 +1236,12 @@ export const MOON_CATALOGUE_ROWS: MoonCatalogueRow[] = [
     "section": "ESA Material",
     "quantity": 0,
     "seeBelow": false,
-    "subItem": false
+    "subItem": false,
+    "coordinateStatus": "valid",
+    "coordinates": {
+      "latitude": -34.4,
+      "longitude": -46.2
+    }
   }
 ];
 export const MOON_CATALOGUE_STATS: MoonCatalogueStats = {
@@ -898,5 +1250,7 @@ export const MOON_CATALOGUE_STATS: MoonCatalogueStats = {
   "bracketQuantitySum": 50,
   "displayedCount": 98,
   "sourcePdf": "https://www.nasa.gov/wp-content/uploads/2024/02/final-catalogue-of-manmade-material-on-the-moon.pdf",
-  "generatedFrom": "checked-in NASA PDF text cache"
+  "generatedFrom": "checked-in NASA PDF text cache",
+  "validCoordinateCount": 59,
+  "invalidCoordinateCount": 1
 };

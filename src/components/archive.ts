@@ -1,5 +1,5 @@
 import { A, LEDGER, SCI, byId, isNASARecord, statusLabel } from '../data/artifacts';
-import { ICO, SCHEM } from '../data/artwork';
+import { ICO } from '../data/artwork';
 import { $, $$ } from '../lib/dom';
 import { selectArtifact } from '../lib/events';
 import type { Artifact, ArtifactStatus, CelestialBody } from '../types/archive';
@@ -76,22 +76,22 @@ export function initArchive(): () => void {
     grid.style.display = list.length ? 'grid' : 'none';
     grid.innerHTML = list.map((artifact) => {
       const summary = artifact.verifiedByNASA ? artifact.one : 'We’re still checking this spacecraft’s story with NASA.';
-      const verificationFlag = artifact.verifiedByNASA ? '' : '<span class="unverified-chip">Audit pending</span>';
+      const verificationFlag = artifact.verifiedByNASA ? '<span class="source-state">NASA source checked</span>' : '<span class="unverified-chip">Audit pending</span>';
       const metadata = artifact.verifiedByNASA ? `${artifact.m} · ${artifact.ag}` : 'NASA source review pending';
       const year = artifact.verifiedByNASA ? artifact.y : '—';
-      const state = artifact.verifiedByNASA ? `<span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>` : verificationFlag;
+      const state = artifact.verifiedByNASA ? `<span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>` : '<span class="status-pending">Details withheld</span>';
+      const collection = artifact.b === 'moon' ? 'Lunar register' : artifact.b === 'mars' ? 'Mars field notes' : 'Deep-space dispatch';
       return `
-        <button class="acard" data-id="${artifact.id}">
+        <button class="acard acard--${artifact.b}" data-id="${artifact.id}">
           <div class="top" data-webgl-plane="archive-card-media">
             <img src="${artifact.image}" alt="" width="${artifact.imageWidth}" height="${artifact.imageHeight}" loading="lazy" decoding="async" aria-hidden="true" />
             <div class="glow"></div><span class="yrbadge">${year}</span>
-            <span class="bodybadge ${artifact.b}">${artifact.b === 'moon' ? 'Moon' : artifact.b === 'mars' ? 'Mars' : 'Deep space'}</span>
-            ${SCHEM[artifact.sch] || SCHEM.probe}
+            <span class="bodybadge ${artifact.b}">${collection}</span>
           </div>
-          <div class="bd"><h3>${artifact.n}</h3><div class="ms">${metadata}</div>
+          <div class="bd"><div class="card-kicker"><span>${collection} · ${year}</span>${verificationFlag}</div><h3>${artifact.n}</h3><div class="ms">${metadata}</div>
             <p>${summary}</p>
-            <div class="foot">${state}${artifact.verifiedByNASA ? verificationFlag : ''}
-            <span class="op">Dossier <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+            <div class="foot">${state}
+            <span class="op">Read dossier <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
           </div>
         </button>`;
     }).join('');

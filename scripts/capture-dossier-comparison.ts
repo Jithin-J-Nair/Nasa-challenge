@@ -40,7 +40,7 @@ try {
     await page.waitForTimeout(500);
 
     for (const dossier of dossiers) {
-      const selectedBody = await page.locator(`.bodytoggle [data-b="${dossier.body}"]`).getAttribute('aria-selected');
+      const selectedBody = await page.locator(`.bodytoggle [data-b="${dossier.body}"]`).getAttribute('aria-pressed');
       if (selectedBody !== 'true') {
         await page.locator(`.bodytoggle [data-b="${dossier.body}"]`).click();
         await page.waitForTimeout(450);

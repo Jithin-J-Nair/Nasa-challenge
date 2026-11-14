@@ -15,8 +15,12 @@ export function initMoonCatalogue(): () => void {
     const normalized = query.toLocaleLowerCase();
     const matches = directRows.filter((row) => `${row.object} ${row.location} ${row.section}`.toLocaleLowerCase().includes(normalized));
     $('#moonCatalogueResult').textContent = `${matches.length} of ${directRows.length} direct rows parsed so far`;
-    $('#moonCatalogueRows').innerHTML = matches.map((row) => `<li><b>${escapeHtml(row.object)}</b><span>${escapeHtml(row.location || 'Location not supplied in catalogue')}</span><small>${escapeHtml(row.section)}</small></li>`).join('')
-      || '<li class="moon-catalogue-empty">No parsed catalogue rows match that search.</li>';
+    $('#moonCatalogueRows').innerHTML = matches.map((row) => {
+      const coordinateNote = row.coordinateStatus === 'invalid'
+        ? `<em class="coordinate-withheld">Plotting withheld · ${escapeHtml(row.coordinateIssue || 'supplied coordinate failed bounds check')}</em>`
+        : '';
+      return `<li data-coordinate-status="${row.coordinateStatus}"><b>${escapeHtml(row.object)}</b><span>${escapeHtml(row.location || 'Location not supplied in catalogue')}</span><small>${escapeHtml(row.section)}</small>${coordinateNote}</li>`;
+    }).join('') || '<li class="moon-catalogue-empty">No parsed catalogue rows match that search.</li>';
   };
 
   root.innerHTML = `
@@ -24,6 +28,7 @@ export function initMoonCatalogue(): () => void {
       <div><b>${MOON_CATALOGUE_STATS.lineCount}</b><span>material table lines parsed</span></div>
       <div><b>${MOON_CATALOGUE_STATS.directObjectCount}</b><span>direct rows parsed from the NASA catalogue so far</span></div>
       <div><b>${MOON_CATALOGUE_STATS.bracketQuantitySum}</b><span>explicit bracket quantities summed — not a total object count</span></div>
+      <div><b>${MOON_CATALOGUE_STATS.invalidCoordinateCount}</b><span>out-of-bounds source coordinate withheld from plotting</span></div>
     </div>
     <div class="moon-catalogue-search" data-reveal>
       <label for="moonCatalogueSearch">Search the parsed catalogue</label>
@@ -33,7 +38,7 @@ export function initMoonCatalogue(): () => void {
     <details class="catalogue-list" open data-reveal>
       <summary>Browse ${MOON_CATALOGUE_STATS.directObjectCount} direct rows parsed from the NASA catalogue so far</summary>
       <ol id="moonCatalogueRows"></ol>
-      <p class="mono">Partial-parse status · ${MOON_CATALOGUE_STATS.directObjectCount} direct object/location rows parsed from the NASA catalogue so far. References such as “see below” and indented sub-items are not counted; the list preserves supplied locations and never adds coordinates. <a href="${MOON_CATALOGUE_SOURCE}" target="_blank" rel="noreferrer">Open NASA PDF ↗</a></p>
+      <p class="mono">Partial-parse status · ${MOON_CATALOGUE_STATS.directObjectCount} direct object/location rows parsed from the NASA catalogue so far. References such as “see below” and indented sub-items are not counted. Supplied location text is preserved exactly; only bounded decimal pairs are available to a future plot, and ${MOON_CATALOGUE_STATS.invalidCoordinateCount} out-of-bounds pair is visibly withheld rather than repaired. <a href="${MOON_CATALOGUE_SOURCE}" target="_blank" rel="noreferrer">Open NASA PDF ↗</a></p>
     </details>`;
   const search = $<HTMLInputElement>('#moonCatalogueSearch');
   const onSearchInput = (): void => renderRows(search.value.trim());

@@ -228,9 +228,10 @@ try {
     const dialogState = await page.locator("#dossier").evaluate((dialog) => ({
       modal: dialog.getAttribute("aria-modal"),
       hidden: dialog.getAttribute("aria-hidden"),
+      menuInert: document.querySelector('#staggeredMenu')?.hasAttribute('inert') || false,
     }));
-    if (dialogState.modal !== "true" || dialogState.hidden !== "false")
-      failures.push(`${viewport.name}: dossier did not enter accessible modal state`);
+    if (dialogState.modal !== "true" || dialogState.hidden !== "false" || !dialogState.menuInert)
+      failures.push(`${viewport.name}: dossier did not enter an interaction-owning accessible modal state`);
     await page.locator("#dClose").press("Escape");
     await page.waitForFunction(
       () => !document.querySelector("#dossier")?.classList.contains("open"),
@@ -243,6 +244,24 @@ try {
       ))
     )
       failures.push(`${viewport.name}: dossier did not restore focus to its opener`);
+    if (await page.locator('#staggeredMenu').evaluate((menu) => menu.hasAttribute('inert')))
+      failures.push(`${viewport.name}: dossier did not restore the fixed menu after closing`);
+
+    // The catalogue must preserve raw source text while keeping an impossible
+    // latitude out of any future plotting path; no inferred correction is valid.
+    await page.locator('#moon-inventory').scrollIntoViewIfNeeded();
+    await page.waitForSelector('[data-coordinate-status="invalid"]', { timeout: 12_000 });
+    const rangerCoordinateGuard = await page.locator('[data-coordinate-status="invalid"]').evaluate((row) => ({
+      text: row.textContent || '',
+      coordinateStatus: row.getAttribute('data-coordinate-status'),
+    }));
+    if (
+      rangerCoordinateGuard.coordinateStatus !== 'invalid'
+      || !rangerCoordinateGuard.text.includes('Ranger 9')
+      || !rangerCoordinateGuard.text.includes('112.828° N, -2.387° E')
+      || !rangerCoordinateGuard.text.includes('Plotting withheld')
+    )
+      failures.push(`${viewport.name}: Ranger 9 coordinate guard did not preserve source text and withhold invalid plotting data`);
 
     // Enter the WebGL section so locally hosted map textures and the render loop
     // are exercised at every viewport as well.
