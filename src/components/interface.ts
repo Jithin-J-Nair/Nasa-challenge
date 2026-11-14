@@ -22,12 +22,18 @@ export function initInterface(): () => void {
   // leave the opening scene, where it becomes a directional reading aid rather
   // than dashboard noise competing with the evidence image.
   const arrivalSection = document.querySelector<HTMLElement>('#hero');
+  const missionProgress = document.querySelector<HTMLElement>('#missionProgress');
   const updateArrivalStage = (): void => {
-    if (!arrivalSection) return;
-    document.body.classList.toggle('past-arrival', window.scrollY > arrivalSection.offsetHeight * .72);
+    if (arrivalSection)
+      document.body.classList.toggle('past-arrival', window.scrollY > arrivalSection.offsetHeight * .72);
+    if (!missionProgress) return;
+    const scrollableHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const progress = Math.min(1, Math.max(0, window.scrollY / scrollableHeight));
+    missionProgress.style.setProperty('--mission-progress', progress.toFixed(4));
   };
   updateArrivalStage();
   window.addEventListener('scroll', updateArrivalStage, { passive: true, signal });
+  window.addEventListener('resize', updateArrivalStage, { passive: true, signal });
 
   if (!reducedMotion) {
     const hero = document.querySelector<HTMLElement>('#hero');

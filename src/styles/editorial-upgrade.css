@@ -596,3 +596,58 @@ body:has(#fieldguide.is-edition-active) .sm-logo svg { stroke: var(--archive-blu
   #fieldguide .acard--featured .top { height: auto; aspect-ratio: 4 / 3; }
   #fieldguide .acard--featured .bd { padding: 19px 20px; }
 }
+
+/* Phase one of the cinematic enhancement is intentionally material-led rather
+   than ornamental: a single live route indicator and elevation only on the
+   dark interactive tools. Paper reading surfaces remain calm and source-first. */
+.mission-progress {
+  --mission-progress: 0;
+  position: absolute;
+  z-index: 6;
+  top: 76px;
+  right: var(--pad);
+  left: var(--pad);
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+  background: color-mix(in oklch, var(--foreground) 16%, transparent);
+}
+.mission-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--mission-progress));
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--muted-foreground), var(--primary), var(--muted-foreground));
+  box-shadow: 0 0 14px color-mix(in oklch, var(--foreground) 42%, transparent);
+  transition: transform .12s linear;
+}
+.dark .staggered-menu-header {
+  background:
+    radial-gradient(ellipse at 12% 0%, oklch(1 0 0 / .08), transparent 38%),
+    linear-gradient(180deg, oklch(0.145 0 0 / .84), oklch(0.145 0 0 / .34));
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / .07), 0 18px 44px oklch(0 0 0 / .16);
+}
+.dark .staggered-menu-panel {
+  background:
+    radial-gradient(circle at 88% 8%, oklch(1 0 0 / .08), transparent 25%),
+    linear-gradient(135deg, color-mix(in oklch, var(--popover) 94%, var(--secondary)), var(--popover));
+  box-shadow: -22px 0 64px oklch(0 0 0 / .3), inset 1px 0 oklch(1 0 0 / .08);
+}
+.dark #observatory .obs,
+.dark #observatory .sidecol,
+.dark #timeline .rail,
+.dark #interstellar .countdown,
+.dark #interstellar .helio,
+.dark #interstellar .recordwrap {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / .07), 0 22px 48px oklch(0 0 0 / .18);
+}
+.dark #observatory .obs,
+.dark #observatory .sidecol { backdrop-filter: blur(20px) saturate(135%); }
+
+@media (max-width: 760px) {
+  .mission-progress { top: 70px; right: 18px; left: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mission-progress i { transition: none; }
+}

@@ -32,6 +32,7 @@ No alternate full stylesheet was switched on. `src/styles.css` imports the worki
 
 - **`src/styles/editorial-upgrade.css`** — active, scoped design layer. It removes active decorative hero geometry and source-image overlays, sets paper/ink reading surfaces for stories and the lunar catalogue, keeps Observatory as a purposeful dark tool, and creates collection-specific Moon/Mars/deep-space archive folios and dossier folders.
 - **Theme tokens** — the supplied OKLCH light and `.dark` semantic token sets now live at the top of `src/styles/editorial-upgrade.css`. `html.dark` is the active immersive shell; the guided stories, lunar register, Field Guide, and dossier each use `.theme-light` for the same supplied light token set. Existing archive variables now resolve from those semantic tokens rather than a parallel palette.
+- **Cinematic phase one** — `HorizonBloom.tsx` now adds subtle procedural nebula, cratered limb, regolith sparkle, and a rare spectral scan while retaining the evidence image’s visual priority. `SceneCanvas.tsx` adds an error boundary, 1.8 DPR cap, and hero-range frame-loop gate; a live route indicator and restrained elevation are scoped to dark interactive surfaces.
 - **`src/styles.css`** — imports the editorial layer after the working experience stylesheet.
 - **`src/components/archive.ts`** — adds body-specific card classes and visible collection/year/source confidence; cards no longer render schematic SVGs on top of source images.
 - **`src/components/dossier.ts`** — adds a source-first dossier identity strip, per-collection folder state, and makes `#staggeredMenu` inert while the modal is open. That corrects the compact-width condition where the fixed menu could cover the dossier close button.
@@ -66,6 +67,7 @@ All files below are generated review evidence and are intentionally ignored from
 | 1440×900 guided story paper spread | `artifacts/review/editorial-stories-desktop.png` |
 | 1440×900 differentiated Field Guide | `artifacts/review/editorial-fieldguide-refined.png` |
 | 1440×900 active OKLCH dark/light token treatment | `artifacts/review/oklch-theme-hero.png`, `artifacts/review/oklch-theme-fieldguide.png` |
+| 1440×900 cinematic Horizon Bloom phase one | `artifacts/review/phase-one-cinematic-hero.png` |
 | 1440×900 Eagle provenance dossier | `artifacts/review/editorial-dossier-desktop.png` |
 | desktop/mobile Eagle and Ingenuity dossier captures | `artifacts/dossier-comparison/{eagle,ingenuity}-{1440x900,390x844}-editorial-upgrade.png` |
 | regression views, including hero, story, Observatory/Mars, timeline, Voyager, and dossier | `artifacts/visual-regression/` |
@@ -83,7 +85,7 @@ All files below are generated review evidence and are intentionally ignored from
 | `npm run test:lifecycle` | Passed: three dispose/remount cycles retained one archive tree and at most one ambient canvas. |
 | `PREVIEW_URL=http://127.0.0.1:5174 SCREENSHOT_LABEL=editorial-upgrade npm run test:dossier` | Passed: captured Eagle and Ingenuity dossiers at desktop and mobile sizes. |
 | `npm run build` | Passed. The existing non-failing Vite chunk-size warning remains for the Three bundle. |
-| `npm run test:lighthouse` | Passed on production preview: average **100 Performance, 100 Accessibility, 100 Best Practices, 100 SEO**. Average FCP/LCP: 911 ms; TBT: 0 ms; CLS: 0.001. Detailed output: `docs/LIGHTHOUSE-MOBILE.md`. |
+| `npm run test:lighthouse` | Passed on production preview: average **100 Performance, 100 Accessibility, 100 Best Practices, 100 SEO**. Average FCP/LCP: 905 ms; TBT: 0 ms; CLS: 0.005. Detailed output: `docs/LIGHTHOUSE-MOBILE.md`. |
 | `git diff --check` | Passed. |
 
 ## Limits and follow-up boundaries

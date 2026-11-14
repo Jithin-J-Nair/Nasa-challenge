@@ -153,3 +153,13 @@ The pre-pass interface still had serial labels above nearly every heading, all-c
 - `src/data/story-path.ts` identifies each story by its actual location instead of formulaic “Chapter N” labels.
 - `src/components/archive.ts` uses sentence-level result and provenance copy and emits `acard--featured` only for the six existing `STORY_PATH` records.
 - `src/styles/editorial-upgrade.css` scopes the typographic, plain-language, source-first archive shelf, responsive layout, focus-safe action, and reduced-motion-compatible refinements to the active final cascade. No new decorative motion or image overlay is introduced.
+
+## In-place cinematic enhancement — phase one
+
+The Awwwards-style direction is being translated into the existing Vite/TypeScript architecture rather than replacing it with a fictitious single `App.jsx`. This preserves the semantic archive, audited NASA imagery, source boundary, accessibility coverage, and disposal/context-recovery lifecycle.
+
+- `src/experience/HorizonBloom.tsx` — keeps the required `atmosphere: .68` sunrise preset and adds restrained procedural domain-warped nebula, analytical crater field that perturbs the planetary limb, regolith sparkle, and a rare nine-second spectral scan. These remain behind the evidence image; no geometry is restored over NASA story media.
+- `src/experience/SceneCanvas.tsx` — wraps the optional R3F canvas in an error boundary that falls back to the existing CSS hero, caps DPR at 1.8, and pauses the ambient frameloop when the hero leaves its buffered viewport, as well as on compact, coarse-pointer, or hidden views.
+- `src/components/interface.ts`, `index.html`, `src/styles/editorial-upgrade.css` — add an accessible decorative mission-progress hairline and restrained layered elevation to the dark interactive tools. Paper reading surfaces deliberately retain their calm archival treatment.
+
+The next phases are archival filtering/dossier transmission choreography, Observatory interaction refinement, and the deep-space instrument treatment. They will remain progressive, reduced-motion safe, source-aware, and independently disposable.

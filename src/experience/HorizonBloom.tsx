@@ -25,6 +25,8 @@ export interface HorizonBloomProps {
   parallax: number;
   bloom: number;
   grain: number;
+  nebula: number;
+  spectralScan: number;
   interactive: boolean;
   intro: boolean;
   paused: boolean;
@@ -54,6 +56,10 @@ export const SILENT_FLEET_HORIZON_BLOOM: HorizonBloomProps = {
   parallax: .28,
   bloom: .98,
   grain: .25,
+  // Kept deliberately restrained: the archive image remains the hero's
+  // foreground evidence, while the shader only deepens the surrounding sky.
+  nebula: .055,
+  spectralScan: .09,
   interactive: true,
   intro: true,
   paused: false,
@@ -86,6 +92,8 @@ interface HorizonBloomUniforms extends Record<string, THREE.IUniform> {
   uParallax: THREE.IUniform<number>;
   uBloom: THREE.IUniform<number>;
   uGrain: THREE.IUniform<number>;
+  uNebula: THREE.IUniform<number>;
+  uSpectralScan: THREE.IUniform<number>;
 }
 
 class HorizonBloomMaterial extends THREE.ShaderMaterial {
@@ -133,6 +141,8 @@ const fragmentShader = /* glsl */`
   uniform float uParallax;
   uniform float uBloom;
   uniform float uGrain;
+  uniform float uNebula;
+  uniform float uSpectralScan;
 
   float hash21(vec2 p) {
     p = fract(p * vec2(123.34, 345.45));
@@ -158,6 +168,25 @@ const fragmentShader = /* glsl */`
     return value;
   }
 
+  float craterField(vec2 point, float horizon) {
+    float field = 0.0;
+    for (int index = 0; index < 12; index++) {
+      float seed = float(index) + 1.0;
+      vec2 center = vec2(
+        hash21(vec2(seed, 7.13)) * 1.34 - .17,
+        horizon - .035 - hash21(vec2(seed, 19.74)) * .42
+      );
+      float radius = .012 + hash21(vec2(seed, 43.21)) * .034;
+      vec2 ellipse = vec2((point.x - center.x) * .78, point.y - center.y);
+      float distanceToCrater = length(ellipse);
+      float bowl = 1.0 - smoothstep(radius * .22, radius, distanceToCrater);
+      float rim = smoothstep(radius * .66, radius, distanceToCrater)
+        * (1.0 - smoothstep(radius, radius * 1.36, distanceToCrater));
+      field += rim * .64 - bowl * .38;
+    }
+    return field;
+  }
+
   void main() {
     vec2 uv = vUv;
     vec2 pointer = (uPointer - .5) * uParallax * .075;
@@ -174,12 +203,25 @@ const fragmentShader = /* glsl */`
     float limb = pow(abs(x) * 2.0, 1.72);
     float curve = horizon - limb * (.20 * uCurvature);
     curve += sin(x * 2.4 + uTilt) * .003 * uCurvature;
+    // Small analytical craters disturb the limb itself, not just its colour,
+    // so the planet reads as a physical body rather than a flat gradient.
+    curve += craterField(vec2(uv.x, curve), curve) * .0019;
 
     float aboveHorizon = max(0.0, uv.y - curve);
     float horizonDistance = abs(uv.y - curve);
     float atmosphereFalloff = exp(-aboveHorizon * 5.6);
     vec3 sky = mix(uBackground, uSecondary * .105, atmosphereFalloff * uAtmosphere * .72);
     sky += uSecondary * .012 * exp(-aboveHorizon * 1.9);
+
+    // A nearly imperceptible domain-warped nebula keeps empty black from
+    // feeling synthetic while staying behind the NASA evidence plate.
+    vec2 nebulaPoint = uv * vec2(2.1, 1.24) + vec2(t * .008, -t * .004);
+    vec2 nebulaWarp = vec2(
+      fbm(nebulaPoint + vec2(8.3, 2.1)),
+      fbm(nebulaPoint + vec2(2.6, 9.7))
+    ) - .5;
+    float nebula = smoothstep(.58, .91, fbm(nebulaPoint * 1.62 + nebulaWarp * 1.95));
+    sky += mix(uSecondary, uPrimary, .38) * nebula * uNebula;
 
     float sunX = mix(.08, .92, uSunPosition);
     float sunDistance = abs(uv.x - sunX);
@@ -207,10 +249,20 @@ const fragmentShader = /* glsl */`
     float auroraNoise = fbm(vec2(uv.x * 4.0 + t * .08, uv.y * 2.4));
     sky += uSecondary * auroraBand * auroraNoise * uAurora * uAutoAurora * .065;
 
+    // A nine-second spectral scan gives the living archive a rare transmission
+    // event without turning the sky into a permanent interface effect.
+    float scanCenter = fract(t / 9.0);
+    float scanBand = exp(-pow((uv.y - scanCenter) * 84.0, 2.0));
+    sky += mix(uSecondary, warmWhite, .56) * scanBand * uSpectralScan * .18;
+
     float planet = 1.0 - smoothstep(-.003, .010, uv.y - curve);
     vec3 planetColor = mix(vec3(.002, .0025, .004), vec3(.022, .014, .008), uv.y * .14);
     float terrain = fbm(vec2(uv.x * 9.0, (uv.y - curve) * 36.0)) * .012;
+    float craterTexture = craterField(uv, curve);
+    float regolith = step(.992, hash21(floor(uv * vec2(640.0, 430.0))));
     planetColor += terrain * vec3(.11, .07, .035) * planet;
+    planetColor += craterTexture * vec3(.0055, .0038, .003) * planet;
+    planetColor += regolith * vec3(.18, .12, .075) * planet * .045;
     float rim = exp(-horizonDistance / max(.001, .0048 * uThickness)) * uRim;
     vec3 rimColor = mix(uSecondary, warmWhite, .82);
     planetColor += rimColor * (uAirglow * .19 + sun * .92) * rim;
@@ -257,6 +309,8 @@ function createMaterial(props: HorizonBloomProps): HorizonBloomMaterial {
     uParallax: { value: props.parallax },
     uBloom: { value: props.bloom },
     uGrain: { value: props.grain },
+    uNebula: { value: props.nebula },
+    uSpectralScan: { value: props.spectralScan },
   };
   return new HorizonBloomMaterial({
     uniforms,
