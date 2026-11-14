@@ -1,52 +1,14 @@
 {
-  "name": "silent-fleet",
+  "name": "blank",
   "version": "1.0.0",
   "private": true,
-  "description": "An interactive archive of NASA's off-world hardware.",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run typecheck && vite build",
-    "build:pages": "npm run typecheck && VITE_BASE_PATH=/Nasa-challenge/ vite build",
-    "preview": "vite preview --host 0.0.0.0",
-    "test": "npm run typecheck && npm run test:catalogue",
-    "test:catalogue": "tsx scripts/moon-catalogue-test.ts",
-    "test:visual": "tsx scripts/visual-test.ts",
-    "test:lifecycle": "tsx scripts/lifecycle-stress.ts",
-    "test:lighthouse": "tsx scripts/lighthouse-mobile.ts",
-    "audit:claims": "tsx scripts/generate-claims-audit.ts",
-    "catalogue:parse": "tsx scripts/parse-moon-catalogue.ts",
-    "typecheck": "tsc --noEmit",
-    "test:dossier": "tsx scripts/capture-dossier-comparison.ts"
-  },
-  "dependencies": {
-    "@fontsource-variable/space-grotesk": "^5.3.0",
-    "@fontsource/ibm-plex-mono": "^5.3.0",
-    "@fontsource/instrument-serif": "^5.3.0",
-    "@react-three/drei": "^9.122.0",
-    "@react-three/fiber": "^8.18.0",
-    "@react-three/postprocessing": "^2.16.2",
-    "gsap": "^3.15.1",
-    "lenis": "^1.3.19",
-    "postprocessing": "^6.37.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "three": "^0.168.0"
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0"
   },
   "devDependencies": {
-    "@sparticuz/chromium": "^153.0.0",
-    "@types/node": "^22.19.1",
-    "@types/react": "^18.3.27",
-    "@types/react-dom": "^18.3.7",
-    "@types/three": "^0.168.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.3",
-    "@typescript-eslint/parser": "^8.46.3",
-    "@vitejs/plugin-react": "^6.3.0",
-    "eslint": "^9.39.1",
-    "lighthouse": "^13.6.0",
-    "playwright-core": "^1.65.0",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
     "vite": "^8.3.8"
   }
 }
