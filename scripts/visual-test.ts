@@ -198,15 +198,19 @@ try {
       routeLinks: document.querySelectorAll("#storyRoute [data-story-route]").length,
       storyLabels: document.querySelectorAll("#storyRail .story-story").length,
       evidenceLinks: document.querySelectorAll("#storyRail .story-evidence a").length,
+      imageGeometryOverlays: document.querySelectorAll(
+        '.evidence-grid,.evidence-target,.story-media-frame .story-orbit,.story-media-frame .story-crosshair',
+      ).length,
     }));
     if (
       storyState.chapters !== 6 ||
       storyState.routeLinks !== 6 ||
       storyState.storyLabels !== 6 ||
-      storyState.evidenceLinks !== 6
+      storyState.evidenceLinks !== 6 ||
+      storyState.imageGeometryOverlays !== 0
     )
       failures.push(
-        `${viewport.name}: guided story route is incomplete or missing evidence labels`,
+        `${viewport.name}: guided route is incomplete or still overlays image geometry`,
       );
     await page.screenshot({
       path: `${outputDirectory}/${viewport.name}-stories.png`,

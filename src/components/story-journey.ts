@@ -81,9 +81,6 @@ function renderChapter(chapter: StoryChapter): string {
       <figure class="story-media">
         <div class="story-media-frame" data-webgl-plane="story-media">
           <img src="${artifact.image}" alt="${escapeHtml(artifact.imageAlt)}" width="${artifact.imageWidth}" height="${artifact.imageHeight}" loading="lazy" decoding="async" />
-          <span class="story-orbit story-orbit--one" aria-hidden="true"></span>
-          <span class="story-orbit story-orbit--two" aria-hidden="true"></span>
-          <span class="story-crosshair" aria-hidden="true"></span>
         </div>
         <figcaption>
           <span>${mediaLabel(chapter)}</span>
