@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://jithin-j-nair.github.io/Nasa-challenge/sitemap.xml

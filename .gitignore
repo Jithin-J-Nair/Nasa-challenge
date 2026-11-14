@@ -2,4 +2,8 @@ node_modules/
 dist/
 artifacts/
 image-search/
+.agents/
+.claude/
+agent/
+data/skills/
 .DS_Store
