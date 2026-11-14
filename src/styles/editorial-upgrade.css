@@ -1,0 +1,653 @@
+/*
+  Silent Fleet — archival editorial refinement, November 2026.
+  This is intentionally a narrow final-cascade layer. It adapts compatible
+  reading and material ideas from the dormant complete-rebuild experiment
+  without importing that competing system or reviving its image overlays.
+*/
+
+:root,
+.theme-light {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  --archive-paper: var(--background);
+  --archive-paper-deep: var(--secondary);
+  --archive-ink: var(--foreground);
+  --archive-ink-soft: var(--muted-foreground);
+  --archive-red: var(--destructive);
+  --archive-blue: var(--primary);
+  --archive-line: var(--border);
+}
+
+.dark,
+.theme-dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+  --void: var(--background);
+  --night: var(--card);
+  --blue: var(--secondary);
+  --paper: var(--foreground);
+  --signal: var(--primary);
+  --ion: var(--primary);
+  --ember: var(--muted-foreground);
+  --line: var(--border);
+  --line-strong: var(--input);
+  --panel: var(--card);
+}
+
+html.dark { color-scheme: dark; }
+.theme-light { color-scheme: light; }
+
+/* The sunrise renderer is the hero atmosphere. Keep all decorative geometry
+   away from NASA image plates: the photograph itself gets the visual focus. */
+.hero-rings,
+.hero-coordinate,
+.telemetry,
+#reticle { display: none !important; }
+
+#hero {
+  isolation: isolate;
+  min-height: max(100svh, 760px);
+  padding-bottom: clamp(54px, 7vw, 100px);
+}
+
+#hero::before,
+.hero-evidence::before,
+.hero-evidence-image::after,
+.evidence-code { display: none !important; }
+
+.hero-copy .eyebrow { color: var(--ion); }
+.hero-kicker { color: var(--muted-foreground); }
+.hero-title { max-width: 7.1ch; }
+.hero-title em { color: var(--muted-foreground); }
+.hero-lede { max-width: 29ch; color: var(--foreground); }
+.hero-evidence { width: min(35vw, 500px); }
+.hero-evidence-image {
+  aspect-ratio: 4 / 4.65;
+  clip-path: none;
+  transform: none !important;
+  border: 1px solid var(--input);
+  box-shadow: 0 26px 64px oklch(0 0 0 / .42);
+}
+.hero-evidence-image img { transform: none !important; filter: grayscale(.15) contrast(1.04) brightness(.9); }
+.hero-evidence figcaption {
+  width: 100%;
+  margin: 13px 0 0;
+  padding: 0;
+  border: 0;
+  color: var(--muted-foreground);
+}
+.hero-evidence figcaption span { color: var(--ion); }
+
+/* A long-form paper sequence replaces the former control-room treatment. */
+#stories {
+  background: var(--archive-paper);
+  color: var(--archive-ink);
+}
+#stories .eyebrow,
+#stories .story-eyebrow,
+#stories .story-evidence span { color: var(--archive-blue); }
+#stories .eyebrow::before { color: var(--archive-red); }
+.story-intro-copy,
+.story-intro-copy p,
+.story-story p,
+.story-evidence p { color: var(--archive-ink-soft); }
+.story-intro h2 em { color: var(--archive-red); }
+.story-disclaimer { border-color: var(--archive-line); color: var(--archive-ink-soft); }
+.story-disclaimer i { background: var(--archive-red); }
+.story-route ol,
+.story-route li { border-color: var(--archive-line); }
+.story-route a { color: var(--archive-ink-soft); }
+.story-route a span { color: var(--archive-red); }
+.story-route a:hover,
+.story-route a.is-active { color: var(--archive-ink); background: color-mix(in oklch, var(--primary) 7%, transparent); }
+.story-progress {
+  border-color: var(--archive-line);
+  background: color-mix(in oklch, var(--background) 92%, transparent);
+  color: var(--archive-ink-soft);
+  box-shadow: 0 8px 24px oklch(0 0 0 / .09);
+}
+.story-progress b { color: var(--archive-red); }
+.story-index { color: var(--archive-red); }
+.story-index i { background: linear-gradient(var(--archive-red), transparent); }
+.story-watermark { display: none; }
+.story-copy h3,
+.story-invitation { color: var(--archive-ink); }
+.story-legacy { border-color: var(--archive-red); color: var(--archive-ink-soft); }
+.story-story,
+.story-evidence { border-color: var(--archive-line); }
+.story-story span { color: var(--archive-red); }
+.story-evidence a,
+.story-source-link { color: var(--archive-blue); }
+.story-open { border-color: var(--archive-ink); color: var(--archive-ink); }
+.story-open:hover { color: var(--archive-red); }
+.story-media-frame {
+  border-color: var(--archive-line);
+  background: var(--secondary);
+  box-shadow: 14px 14px 0 var(--archive-ink);
+}
+.story-media-frame::after { display: none; }
+.story-media-frame img { filter: grayscale(.28) contrast(1.06) brightness(.96); }
+.story-chapter.is-active .story-media-frame img,
+.story-media:hover img { filter: grayscale(0) contrast(1.03) brightness(1); }
+.story-media figcaption { color: var(--archive-ink-soft); }
+.story-media figcaption > span { color: var(--archive-red); }
+
+/* The Moon catalogue remains a sober source register, with coordinate
+   uncertainty visible in the same entry as the preserved raw text. */
+.catalogue-section { background: var(--secondary); color: var(--archive-ink); }
+.catalogue-section .eyebrow,
+.catalogue-section .catalogue-list li small { color: var(--primary); }
+.catalogue-section .eyebrow::before { color: var(--primary); }
+.catalogue-section .section-head > p { color: var(--archive-ink); }
+#moon-inventory .section-head > p.eyebrow { color: var(--primary); }
+#moon-inventory .section-head > p:not(.eyebrow) { color: var(--archive-ink); }
+.catalogue-method { grid-template-columns: repeat(4, 1fr); background: var(--archive-line); border-color: var(--archive-line); }
+.catalogue-method div { background: var(--card); }
+.catalogue-method b { color: var(--archive-ink); font-family: var(--ff-s); font-weight: 400; }
+.catalogue-method span,
+.moon-catalogue-search label,
+.moon-catalogue-search span { color: var(--archive-ink-soft); }
+.moon-catalogue-search,
+.catalogue-list { border-color: var(--archive-line); background: var(--card); }
+.moon-catalogue-search input { border-color: var(--input); background: var(--card); color: var(--archive-ink); }
+.catalogue-list summary { color: var(--archive-ink); }
+.catalogue-list ol { background: var(--archive-line); }
+.catalogue-list li { background: var(--card); color: var(--archive-ink-soft); }
+.catalogue-list li b { color: var(--archive-ink); }
+.catalogue-list .mono { color: var(--archive-ink-soft); }
+.coordinate-withheld {
+  color: var(--archive-red);
+  font: 8px/1.45 var(--ff-m);
+  letter-spacing: .05em;
+  text-transform: none;
+}
+
+/* The observatory stays deliberately dark: it is a tool, not page furniture. */
+#observatory { background: var(--background); }
+#observatory .section-head > p { max-width: 48ch; }
+.obs { border-color: var(--input); }
+.sidecol { background: var(--card); }
+.sitem { min-height: 70px; }
+
+/* Source index: three material families rather than one repeated sci-fi tile. */
+#fieldguide { background: var(--archive-paper); color: var(--archive-ink); }
+#fieldguide .eyebrow,
+#fieldguide .results b { color: var(--archive-red); }
+#fieldguide .eyebrow::before { color: var(--archive-blue); }
+#fieldguide .section-head > p,
+#fieldguide .results { color: var(--archive-ink-soft); }
+#fieldguide .filters { border-color: var(--archive-line); background: transparent; }
+#fieldguide .searchbox,
+#fieldguide .filters select { border-color: var(--input); background: var(--card); color: var(--archive-ink); }
+#fieldguide .searchbox input { color: var(--archive-ink); }
+#fieldguide .searchbox input::placeholder { color: var(--muted-foreground); }
+#fieldguide .clear { color: var(--archive-ink); }
+#fieldguide .chip { border-color: var(--archive-line); color: var(--archive-ink-soft); }
+#fieldguide .chip:hover,
+#fieldguide .chip.sel { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+.grid { gap: 15px; }
+.acard {
+  min-height: 460px;
+  border-color: var(--archive-line);
+  border-radius: 0;
+  background: var(--card);
+  color: var(--archive-ink);
+  box-shadow: none;
+}
+.acard:hover { border-color: var(--archive-ink); transform: translateY(-5px); }
+.acard .top { height: 218px; background: var(--secondary); }
+.acard .top::after,
+.acard .glow,
+.acard .top > svg.schem { display: none; }
+.acard .top > img { opacity: 1; filter: grayscale(.48) contrast(1.06); }
+.acard:hover .top > img { filter: grayscale(.08) contrast(1.03); transform: scale(1.035); }
+.acard .yrbadge,
+.acard .bodybadge { display: none; }
+.acard .bd { padding: 19px 20px; }
+.card-kicker { display: flex; min-height: 17px; align-items:center; justify-content: space-between; gap: 8px; margin-bottom: 9px; color: var(--archive-ink-soft); font: 8px var(--ff-m); letter-spacing: .11em; text-transform: uppercase; }
+.source-state { color: var(--archive-blue); }
+.acard h3 { color: var(--archive-ink); font-size: 24px; }
+.acard .ms { color: var(--archive-red); }
+.acard p { color: var(--archive-ink-soft); }
+.acard .foot { border-color: var(--archive-line); }
+.acard .op { color: var(--archive-ink); }
+.status-pending,
+.unverified-chip { color: var(--archive-red); font: 8px var(--ff-m); letter-spacing: .1em; text-transform: uppercase; }
+.acard .st { border-color: var(--archive-line); color: var(--archive-ink-soft); }
+.acard .st.active { color: var(--primary); }
+.acard .st.silent { color: var(--archive-red); }
+.acard--moon { background: var(--card); }
+.acard--moon .top { background: var(--secondary); }
+.acard--moon .top > img { filter: grayscale(.78) contrast(1.17); }
+.acard--mars { background: var(--card); }
+.acard--mars .top { background: var(--accent); }
+.acard--mars .ms,
+.acard--mars .source-state { color: var(--destructive); }
+.acard--mars .top > img { filter: sepia(.2) saturate(.85) contrast(1.04); }
+.acard--deep { background: var(--card); }
+.acard--deep .top { background: var(--primary); }
+.acard--deep .top > img { filter: grayscale(.36) contrast(1.16) brightness(.88); }
+.acard--deep .ms,
+.acard--deep .source-state { color: var(--primary); }
+
+/* MetalButton ownership is retained for every button. Archive folios simply
+   swap the default blue alloy for collection-specific paper and a subtle alloy
+   edge, so active records still have the tactile shared control treatment. */
+#fieldguide .acard.metal-control {
+  --metal-surface: linear-gradient(140deg, var(--card), var(--secondary));
+  --metal-ring: linear-gradient(115deg, var(--primary) 0%, var(--border) 17%, var(--background) 37%, var(--ring) 55%, var(--background) 76%, var(--primary) 100%);
+  border-radius: 0 !important;
+  background: var(--metal-surface) padding-box, var(--metal-ring) border-box !important;
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / .68), inset 0 -12px 18px oklch(0 0 0 / .035), 0 1px 0 oklch(0 0 0 / .06);
+}
+#fieldguide .acard--moon.metal-control {
+  --metal-surface: linear-gradient(140deg, var(--card), var(--secondary));
+}
+#fieldguide .acard--mars.metal-control {
+  --metal-surface: linear-gradient(140deg, var(--card), var(--accent));
+  --metal-ring: linear-gradient(115deg, var(--destructive) 0%, var(--border) 18%, var(--background) 37%, var(--destructive) 56%, var(--background) 74%, var(--destructive) 100%);
+}
+#fieldguide .acard--deep.metal-control {
+  --metal-surface: linear-gradient(140deg, var(--card), var(--secondary));
+  --metal-ring: linear-gradient(115deg, var(--primary) 0%, var(--ring) 18%, var(--background) 37%, var(--primary) 56%, var(--background) 75%, var(--primary) 100%);
+}
+#fieldguide .acard.metal-control:hover {
+  transform: translateY(-5px);
+  background-position: 0 0, 100% 50% !important;
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / .8), inset 0 -12px 18px oklch(0 0 0 / .025), 0 14px 26px oklch(0 0 0 / .12);
+}
+
+/* The dossier is a reading folder. Its body label changes with the collection
+   while provenance, source link, and image status remain first-class content. */
+.dossier {
+  background: var(--background);
+  border-left-color: var(--archive-line);
+  color: var(--archive-ink);
+}
+.dhead { border-color: var(--archive-line); background: var(--secondary); }
+.dhead h2 { color: var(--archive-ink); }
+.idx { color: var(--archive-red); }
+.dclose { border-color: var(--archive-line); color: var(--archive-ink); }
+.dossier-identity {
+  display: grid;
+  gap: 5px;
+  padding: 21px 22px 18px;
+  border-bottom: 1px solid var(--archive-line);
+  background: var(--secondary);
+}
+.dossier-identity span,
+.dossier-identity small { color: var(--archive-ink-soft); font: 8px var(--ff-m); letter-spacing: .12em; text-transform: uppercase; }
+.dossier-identity b { color: var(--archive-ink); font: 600 13px/1.35 var(--ff-d); }
+#dossier[data-body='moon'] .dossier-identity { border-left: 5px solid var(--ring); }
+#dossier[data-body='mars'] .dossier-identity { border-left: 5px solid var(--destructive); }
+#dossier[data-body='deep'] .dossier-identity { border-left: 5px solid var(--primary); }
+.dsec { border-color: var(--archive-line); }
+.dsec h3 { color: var(--archive-blue); }
+.dsec p { color: var(--archive-ink-soft); }
+.dossier-story { border-left-color: var(--archive-red); background: var(--accent); }
+.dossier-record { border-left-color: var(--archive-blue); background: var(--secondary); }
+.dossier-source a { border-color: var(--archive-ink); color: var(--archive-ink); }
+.dossier-source a:hover { background: var(--primary); color: var(--primary-foreground); }
+.dossier-media { background: var(--secondary); }
+.dossier-media img { filter: grayscale(.18) contrast(1.04); }
+.dossier-media figcaption { color: var(--archive-ink-soft); }
+.dossier-media figcaption a,
+.image-flag { color: var(--archive-blue); }
+.dart { background: var(--secondary); }
+.dart svg { color: var(--archive-ink); }
+.dart .caption { color: var(--archive-ink-soft); }
+.dspecs div { border-color: var(--archive-line); }
+.dspecs dt { color: var(--archive-ink-soft); }
+.dspecs dd { color: var(--archive-ink); }
+.dnav { border-color: var(--archive-line); background: var(--secondary); }
+.dnav button { color: var(--archive-ink); }
+.dnav button:hover:not(:disabled) { background: var(--primary); color: var(--primary-foreground); }
+
+/* The fixed menu needs ink contrast whenever a pale editorial spread is the
+   active reading surface. It stays light against the dark observatory pages. */
+#stories .edition-marker,
+#moon-inventory .edition-marker,
+#fieldguide .edition-marker,
+#stories .story-route-shell > p { color: var(--primary); }
+#stories .edition-marker span,
+#moon-inventory .edition-marker span,
+#fieldguide .edition-marker span { color: var(--primary); }
+#stories .edition-marker i,
+#moon-inventory .edition-marker i,
+#fieldguide .edition-marker i { background: var(--primary); }
+
+body:has(#stories.is-edition-active) .staggered-menu-header,
+body:has(#moon-inventory.is-edition-active) .staggered-menu-header,
+body:has(#fieldguide.is-edition-active) .staggered-menu-header {
+  color: var(--archive-ink);
+  background: color-mix(in oklch, var(--background) 94%, transparent);
+  border-bottom: 1px solid var(--archive-line);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+body:has(#stories.is-edition-active) .sm-logo,
+body:has(#moon-inventory.is-edition-active) .sm-logo,
+body:has(#fieldguide.is-edition-active) .sm-logo { color: var(--archive-ink); }
+body:has(#stories.is-edition-active) .sm-logo em,
+body:has(#moon-inventory.is-edition-active) .sm-logo em,
+body:has(#fieldguide.is-edition-active) .sm-logo em,
+body:has(#stories.is-edition-active) .sm-utc,
+body:has(#moon-inventory.is-edition-active) .sm-utc,
+body:has(#fieldguide.is-edition-active) .sm-utc { color: var(--archive-ink-soft); }
+body:has(#stories.is-edition-active) .sm-logo svg,
+body:has(#moon-inventory.is-edition-active) .sm-logo svg,
+body:has(#fieldguide.is-edition-active) .sm-logo svg { stroke: var(--archive-blue); }
+
+/* Apply the supplied dark tokens to the immersive parts of the route rather
+   than leaving their prior blue/orange palette as an isolated second theme. */
+.dark #briefing,
+.dark #ledger,
+.dark #timeline,
+.dark #interstellar,
+.dark #science,
+.dark #epilogue,
+.dark footer { background: var(--background); }
+.dark .counters div,
+.dark .principle-list article,
+.dark .rail,
+.dark .tlcard,
+.dark .countdown,
+.dark .helio,
+.dark .recordwrap,
+.dark .bigdisc article { background: var(--card); }
+.dark .counters,
+.dark .principle-list,
+.dark .rail,
+.dark .bigdisc,
+.dark .recordwrap,
+.dark .tlcard,
+.dark .row { border-color: var(--border); }
+.dark .section-head > p,
+.dark .section-note,
+.dark .mono,
+.dark .cdu span,
+.dark .briefing-copy,
+.dark .principle-list p,
+.dark .tlcard .sub,
+.dark .tlcard p,
+.dark .tlcard .go,
+.dark .row .nm,
+.dark .recordwrap p:last-child,
+.dark footer p,
+.dark .fgrid a:not(.brand) { color: var(--muted-foreground); }
+.dark .eyebrow,
+.dark .sig,
+.dark .counters b,
+.dark .counters span,
+.dark .timeline-group-label,
+.dark .era-tag,
+.dark .tlcard .y,
+.dark .countdown > p,
+.dark .au,
+.dark .footer-title { color: var(--primary); }
+
+.dark .metal-control {
+  --metal-surface: linear-gradient(135deg, var(--card), var(--background));
+  --metal-ring: linear-gradient(115deg, var(--secondary) 0%, var(--ring) 18%, var(--primary) 36%, var(--muted-foreground) 55%, var(--primary) 76%, var(--secondary) 100%);
+}
+.dark .btn.solid.metal-control,
+.dark .playbtn.metal-control,
+.dark .chip.sel.metal-control,
+.dark .bodytoggle button.sel.metal-control,
+.dark .metal-control--nav[aria-current='page'],
+.dark .metal-control--route.is-active {
+  --metal-surface: linear-gradient(135deg, var(--primary), var(--secondary));
+  --metal-ring: linear-gradient(115deg, var(--primary) 0%, var(--ring) 26%, var(--secondary) 50%, var(--ring) 74%, var(--primary) 100%);
+  color: var(--primary-foreground) !important;
+}
+
+.dark .sm-prelayer--one,
+.dark .sm-prelayer--two,
+.dark .sm-prelayer--three { background: var(--secondary); }
+.dark .staggered-menu-panel { background: var(--popover); color: var(--popover-foreground); }
+.dark .sm-panel-kicker,
+.dark .sm-panel-item small,
+.dark .sm-panel-footer p,
+.dark .sm-panel-footer span { color: var(--muted-foreground); }
+.dark .sm-panel-item,
+.dark .sm-panel-footer a { color: var(--popover-foreground); }
+.dark .sm-panel-item::after { background: var(--border); }
+.dark .sm-panel-footer { border-color: var(--border); }
+.dark .sm-panel-item:hover,
+.dark .sm-panel-item:focus-visible,
+.dark .sm-panel-footer a:hover { color: var(--primary); }
+
+@media (max-width: 1040px) {
+  .hero-evidence { width: min(100%, 560px); }
+  .catalogue-method { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 720px) {
+  #hero { min-height: auto; }
+  .hero-evidence-image { aspect-ratio: 4 / 4.45; }
+  .story-media-frame { box-shadow: 9px 9px 0 var(--archive-ink); }
+  .catalogue-method { grid-template-columns: 1fr; }
+  .acard { min-height: 420px; }
+  .acard .top { height: 205px; }
+}
+
+/* Frontend-design pass: Silent Fleet reads as a considered evidence exhibition,
+   not a generic mission-control template. The Horizon Bloom and NASA image are
+   the one theatrical gesture; labels and archive controls stay plain-spoken. */
+.eyebrow,
+.hero-kicker,
+.story-route-shell > p,
+.card-kicker,
+.acard .ms,
+.results,
+.footer-title {
+  text-transform: none;
+  letter-spacing: .055em;
+}
+.eyebrow { font-size: 10px; }
+.eyebrow::before { content: none; }
+.hero-kicker { letter-spacing: .035em; }
+.story-eyebrow,
+.story-legacy,
+.story-open { text-transform: none; letter-spacing: .065em; }
+.btn,
+.sm-toggle,
+#fieldguide .filters select,
+#fieldguide .chip,
+#fieldguide .searchbox,
+#fieldguide .results {
+  text-transform: none;
+  letter-spacing: .055em;
+}
+
+/* The display face carries the headings as a whole; it does not single out a
+   stock italicised phrase. Instrument Serif remains reserved for readable
+   narrative passages and the final quotation. */
+.hero-title em,
+.h2 em,
+.story-intro h2 em {
+  color: inherit;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+.hero-title { max-width: 7.6ch; text-wrap: balance; }
+.h2,
+.story-intro h2 { text-wrap: balance; }
+
+/* Section markers describe the actual reading route. The principle and audit
+   statements are facets rather than a step-by-step process, so they need no
+   ornamental serial numbers. */
+.principle-list article > span,
+#science .bigdisc article > span { display: none; }
+
+.sm-logo b { letter-spacing: .12em; text-transform: none; }
+.sm-logo em,
+.sm-utc,
+.sm-panel-kicker,
+.sm-panel-footer p,
+.sm-panel-footer span { text-transform: none; letter-spacing: .065em; }
+.sm-panel-item { text-transform: none; }
+
+/* The Field Guide uses the existing editorial collections as a specimen shelf:
+   a featured record receives a larger evidence plate for a reason visible in
+   the data, instead of an arbitrary marketing-card hierarchy. */
+#fieldguide .grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: clamp(12px, 1.25vw, 20px);
+  align-items: start;
+}
+#fieldguide .acard {
+  grid-column: span 3;
+  min-height: 0;
+}
+#fieldguide .acard--featured { grid-column: span 6; }
+#fieldguide .acard .top {
+  height: auto;
+  aspect-ratio: 5 / 3.7;
+}
+#fieldguide .acard--featured .top { aspect-ratio: 16 / 8.9; }
+#fieldguide .acard--mars .top { aspect-ratio: 5 / 4; }
+#fieldguide .acard--deep .top { aspect-ratio: 16 / 10; }
+#fieldguide .acard--featured .bd { padding: 23px 25px; }
+#fieldguide .acard--featured h3 { font-size: clamp(26px, 2.15vw, 35px); }
+#fieldguide .acard .ms,
+#fieldguide .source-state,
+#fieldguide .status-pending,
+#fieldguide .unverified-chip,
+#fieldguide .acard .st,
+#fieldguide .acard .op {
+  text-transform: none;
+  letter-spacing: .055em;
+}
+
+@media (min-width: 721px) and (max-width: 1100px) {
+  #fieldguide .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  #fieldguide .acard { grid-column: span 2; }
+  #fieldguide .acard--featured { grid-column: span 3; }
+}
+
+@media (max-width: 720px) {
+  #fieldguide .grid { grid-template-columns: 1fr; }
+  #fieldguide .acard,
+  #fieldguide .acard--featured { grid-column: auto; }
+  #fieldguide .acard .top,
+  #fieldguide .acard--featured .top { height: auto; aspect-ratio: 4 / 3; }
+  #fieldguide .acard--featured .bd { padding: 19px 20px; }
+}
+
+/* Phase one of the cinematic enhancement is intentionally material-led rather
+   than ornamental: a single live route indicator and elevation only on the
+   dark interactive tools. Paper reading surfaces remain calm and source-first. */
+.mission-progress {
+  --mission-progress: 0;
+  position: absolute;
+  z-index: 6;
+  top: 76px;
+  right: var(--pad);
+  left: var(--pad);
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+  background: color-mix(in oklch, var(--foreground) 16%, transparent);
+}
+.mission-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(var(--mission-progress));
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--muted-foreground), var(--primary), var(--muted-foreground));
+  box-shadow: 0 0 14px color-mix(in oklch, var(--foreground) 42%, transparent);
+  transition: transform .12s linear;
+}
+.dark .staggered-menu-header {
+  background:
+    radial-gradient(ellipse at 12% 0%, oklch(1 0 0 / .08), transparent 38%),
+    linear-gradient(180deg, oklch(0.145 0 0 / .84), oklch(0.145 0 0 / .34));
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / .07), 0 18px 44px oklch(0 0 0 / .16);
+}
+.dark .staggered-menu-panel {
+  background:
+    radial-gradient(circle at 88% 8%, oklch(1 0 0 / .08), transparent 25%),
+    linear-gradient(135deg, color-mix(in oklch, var(--popover) 94%, var(--secondary)), var(--popover));
+  box-shadow: -22px 0 64px oklch(0 0 0 / .3), inset 1px 0 oklch(1 0 0 / .08);
+}
+.dark #observatory .obs,
+.dark #observatory .sidecol,
+.dark #timeline .rail,
+.dark #interstellar .countdown,
+.dark #interstellar .helio,
+.dark #interstellar .recordwrap {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / .07), 0 22px 48px oklch(0 0 0 / .18);
+}
+.dark #observatory .obs,
+.dark #observatory .sidecol { backdrop-filter: blur(20px) saturate(135%); }
+
+@media (max-width: 760px) {
+  .mission-progress { top: 70px; right: 18px; left: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mission-progress i { transition: none; }
+}

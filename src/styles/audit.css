@@ -1,0 +1,2 @@
+/* Claim-audit states deliberately de-emphasise unsupported historic copy. */
+.unverified-copy{color:var(--muted);font-size:13px;line-height:1.65}

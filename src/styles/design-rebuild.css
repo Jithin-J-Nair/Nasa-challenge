@@ -1,0 +1,128 @@
+/*
+  2026 design rebuild — an evidence atlas rather than a dashboard.
+  The visual system deliberately uses the existing NASA-safe editorial content:
+  warm mineral ink carries human story, cool signal blue carries evidence, and
+  olive carries source availability. Motion is reserved for orientation.
+*/
+:root{
+  --atlas-night:#050711;
+  --atlas-slate:#0b1020;
+  --atlas-sheet:rgba(14,19,34,.78);
+  --atlas-rule:rgba(220,229,240,.15);
+  --atlas-glow:rgba(99,202,255,.09);
+  --atlas-warm:rgba(255,166,78,.12);
+  --focus-ring:color-mix(in srgb,var(--amberL) 88%,white);
+}
+
+body{
+  background:
+    radial-gradient(circle at 88% 8%,rgba(75,141,214,.12),transparent 28rem),
+    radial-gradient(circle at 9% 46%,rgba(255,149,56,.065),transparent 25rem),
+    var(--atlas-night);
+}
+body::before{
+  content:'';
+  position:fixed;
+  z-index:-1;
+  inset:0;
+  pointer-events:none;
+  opacity:.34;
+  background-image:linear-gradient(90deg,transparent 0 49.92%,rgba(210,225,241,.055) 50%,transparent 50.08%);
+  background-size:min(100vw,1560px) 100%;
+}
+:focus-visible{outline-color:var(--focus-ring);outline-offset:4px}
+
+header.nav{
+  background:linear-gradient(180deg,rgba(5,7,17,.97),rgba(5,7,17,.72));
+  border-bottom-color:rgba(215,229,245,.12);
+}
+.brand b{letter-spacing:.2em}
+.brand em{letter-spacing:.14em}
+
+#hero::after{
+  content:'';
+  position:absolute;
+  z-index:-1;
+  right:-10vw;
+  bottom:-9vw;
+  width:min(56vw,760px);
+  aspect-ratio:1;
+  border:1px solid rgba(95,225,255,.12);
+  border-radius:50%;
+  box-shadow:0 0 0 52px rgba(95,225,255,.022),0 0 0 104px rgba(95,225,255,.016);
+}
+.hero-kicker{max-width:44ch;line-height:1.6}
+.hero-title{max-width:11.4ch;text-wrap:balance}
+.hero-lede{max-width:31ch;color:#d6d1c8}
+.hero-evidence{width:min(100%,500px)}
+.hero-evidence-image{aspect-ratio:4/4.8;clip-path:polygon(0 4%,4% 0,100% 0,100% 96%,96% 100%,0 100%)}
+.hero-evidence-image{transform:perspective(1100px) rotateX(var(--evidence-rotate-x,0deg)) rotateY(var(--evidence-rotate-y,0deg));transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.8,.2,1),box-shadow .7s ease;will-change:transform}
+.hero-evidence:hover .hero-evidence-image{box-shadow:0 42px 110px rgba(0,0,0,.52),0 0 0 1px rgba(114,230,255,.12)}
+.hero-evidence-image::before{background:linear-gradient(118deg,rgba(213,239,255,.17),transparent 28% 72%,rgba(255,157,61,.2));}
+.hero-specimen-bar{position:absolute;z-index:5;top:26px;right:28px;left:28px;display:flex;justify-content:space-between;gap:18px;padding-bottom:8px;border-bottom:1px solid rgba(240,236,227,.3);font:9px/1.3 var(--ff-m);letter-spacing:.15em;text-transform:uppercase;color:rgba(240,236,227,.9)}
+.hero-specimen-bar span:last-child{color:var(--cyan)}
+.hero-measure{position:absolute;z-index:5;display:block;opacity:.72;pointer-events:none}
+.hero-measure--vertical{right:30px;bottom:27px;width:1px;height:74px;background:repeating-linear-gradient(to bottom,rgba(240,236,227,.82) 0 1px,transparent 1px 9px)}
+.hero-measure--horizontal{right:30px;bottom:27px;width:74px;height:1px;background:repeating-linear-gradient(to right,rgba(240,236,227,.82) 0 1px,transparent 1px 9px)}
+.hero-proof{max-width:840px;border-top:1px solid var(--atlas-rule);padding-top:18px}
+.hero-proof div{border-left-color:var(--atlas-rule)}
+
+#stories{background:linear-gradient(180deg,#080c18 0%,#0d111d 42%,#060812 100%)}
+.story-intro{margin-bottom:clamp(54px,8vw,108px)}
+.story-route-shell{border-color:var(--atlas-rule)}
+.story-route ol{border-color:var(--atlas-rule)}
+.story-route li{border-color:var(--atlas-rule)}
+.story-route a{padding-right:18px}
+.story-route a:hover{background:linear-gradient(90deg,rgba(95,225,255,.07),transparent)}
+.story-route a.is-active{background:linear-gradient(90deg,rgba(255,157,61,.11),transparent 72%)}
+.story-route a.is-active b{color:var(--amberL)}
+.story-chapter::after{background:linear-gradient(90deg,transparent,rgba(220,229,240,.2),transparent)}
+.story-chapter{isolation:isolate}
+.story-chapter::before{content:'';position:absolute;z-index:-1;inset:7% 4% 7% auto;width:min(55%,700px);opacity:0;background:radial-gradient(circle at 50% 42%,rgba(95,225,255,.09),transparent 66%);transition:opacity .8s ease}
+.story-chapter:nth-child(even)::before{right:auto;left:4%;background:radial-gradient(circle at 50% 42%,rgba(255,157,61,.09),transparent 66%)}
+.story-chapter.is-active::before{opacity:1}
+.story-watermark{position:absolute;z-index:-1;right:calc(var(--pad) + 1vw);bottom:4%;font-size:clamp(170px,25vw,420px);font-weight:650;line-height:.7;letter-spacing:-.12em;color:transparent;-webkit-text-stroke:1px rgba(240,236,227,.035);user-select:none}
+.story-chapter:nth-child(even) .story-watermark{right:auto;left:calc(var(--pad) + 1vw)}
+.story-copy{padding:46px 0 34px;border-top:1px solid transparent;transition:border-color .5s ease,transform .5s ease}
+.story-chapter.is-active .story-copy{border-top-color:rgba(255,177,93,.36)}
+.story-legacy{border-radius:0;background:linear-gradient(90deg,rgba(255,177,93,.12),transparent);border-inline:0;border-top:1px solid rgba(255,177,93,.3);border-bottom:1px solid rgba(255,177,93,.3);padding:7px 9px}
+.story-copy h3{max-width:9ch}
+.story-evidence{padding-block:3px 2px}
+.story-open{padding:9px 0 8px}.story-open::after{content:'';width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:var(--moss);box-shadow:0 0 0 4px rgba(142,230,164,.09)}
+.story-media-frame{box-shadow:0 28px 90px rgba(0,0,0,.34),inset 0 0 0 1px rgba(255,255,255,.05)}
+.story-media-frame::after{inset:18px;border-color:rgba(240,236,227,.26)}
+.story-media figcaption{padding-top:15px;border-top:1px solid rgba(240,236,227,.12)}
+
+#briefing,.catalogue-section,#observatory,#ledger,#timeline,#fieldguide,#science,#interstellar,#epilogue{
+  border-top-color:var(--atlas-rule);
+}
+#briefing{background:linear-gradient(180deg,#060812,#0b1020 55%,#070a14)}
+.briefbody>p{color:#cbc8c1}
+.asides article,.state-key{border-color:var(--atlas-rule)}
+.state-key{background:linear-gradient(100deg,rgba(255,157,61,.055),rgba(95,225,255,.045));padding:28px 24px}
+.state-key dl>div{border-color:rgba(220,229,240,.11)}
+
+.catalogue-method,.catalogue-list,.obs,.ledgergrid{border-color:var(--atlas-rule);background:var(--atlas-rule)}
+.catalogue-method div,.catalogue-list,.lcard{background:var(--atlas-sheet)}
+.obs{box-shadow:0 28px 84px rgba(0,0,0,.22)}
+.acard,.tlcard{border-color:var(--atlas-rule);background:var(--atlas-sheet)}
+.acard:hover,.tlcard:hover{background:#121a2b;border-color:rgba(161,221,255,.38)}
+.acard .top{background:radial-gradient(ellipse at 50% 120%,#202a43,#0b1020 72%)}
+.tlcard.act{background:linear-gradient(145deg,rgba(255,157,61,.14),rgba(13,19,33,.94));}
+
+@media (max-width:960px){
+  body::before{background:none}
+  .story-watermark{right:var(--pad);font-size:clamp(150px,38vw,280px)}
+  .story-chapter:nth-child(even) .story-watermark{left:auto;right:var(--pad)}
+  .hero-evidence{width:min(100%,560px)}
+  .hero-evidence-image{aspect-ratio:16/10}
+}
+@media (max-width:620px){
+  .hero-specimen-bar{top:18px;right:20px;left:20px;font-size:8px}.hero-measure--vertical{right:22px;bottom:20px}.hero-measure--horizontal{right:22px;bottom:20px}
+  .hero-proof{padding-top:16px}
+  .state-key{padding:22px 18px}
+  .story-route a{padding-right:10px}
+}
+@media (prefers-reduced-motion:reduce){
+  body::before,#hero::after{display:none}
+}

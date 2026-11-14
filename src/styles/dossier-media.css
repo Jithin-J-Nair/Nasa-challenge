@@ -1,0 +1,11 @@
+/* Dossier evidence media and source treatment */
+.dossier-media{margin:0;border-bottom:1px solid rgba(236,231,222,.07);background:#05060c}
+.dossier-media img{width:100%;aspect-ratio:16/8.3;object-fit:cover;filter:saturate(.82) contrast(1.04);opacity:.9}
+.dossier-media figcaption{padding:10px 24px 12px;display:flex;flex-direction:column;gap:5px;font-family:var(--ff-m);font-size:8.5px;line-height:1.55;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dossier-media figcaption a{color:var(--cyan);text-decoration:underline;text-underline-offset:3px}
+.image-flag{color:var(--amber);letter-spacing:.14em}.image-flag.verified{color:var(--moss)}
+.dossier-source a{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(95,225,255,.34);padding:10px 12px;border-radius:2px;color:var(--cyan);font-family:var(--ff-m);font-size:10px;letter-spacing:.12em;text-transform:uppercase;transition:background .2s}
+.dossier-source a:hover{background:rgba(95,225,255,.08)}
+.dossier-source p,.unverified-record p{margin:12px 0 0;font-size:12.5px;line-height:1.65;color:var(--muted)}
+.unverified-record{background:rgba(226,85,59,.04)}
+.unverified-record b{color:var(--rust);font-weight:600}
