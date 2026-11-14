@@ -489,3 +489,110 @@ body:has(#fieldguide.is-edition-active) .sm-logo svg { stroke: var(--archive-blu
   .acard { min-height: 420px; }
   .acard .top { height: 205px; }
 }
+
+/* Frontend-design pass: Silent Fleet reads as a considered evidence exhibition,
+   not a generic mission-control template. The Horizon Bloom and NASA image are
+   the one theatrical gesture; labels and archive controls stay plain-spoken. */
+.eyebrow,
+.hero-kicker,
+.story-route-shell > p,
+.card-kicker,
+.acard .ms,
+.results,
+.footer-title {
+  text-transform: none;
+  letter-spacing: .055em;
+}
+.eyebrow { font-size: 10px; }
+.eyebrow::before { content: none; }
+.hero-kicker { letter-spacing: .035em; }
+.story-eyebrow,
+.story-legacy,
+.story-open { text-transform: none; letter-spacing: .065em; }
+.btn,
+.sm-toggle,
+#fieldguide .filters select,
+#fieldguide .chip,
+#fieldguide .searchbox,
+#fieldguide .results {
+  text-transform: none;
+  letter-spacing: .055em;
+}
+
+/* The display face carries the headings as a whole; it does not single out a
+   stock italicised phrase. Instrument Serif remains reserved for readable
+   narrative passages and the final quotation. */
+.hero-title em,
+.h2 em,
+.story-intro h2 em {
+  color: inherit;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+.hero-title { max-width: 7.6ch; text-wrap: balance; }
+.h2,
+.story-intro h2 { text-wrap: balance; }
+
+/* Section markers describe the actual reading route. The principle and audit
+   statements are facets rather than a step-by-step process, so they need no
+   ornamental serial numbers. */
+.principle-list article > span,
+#science .bigdisc article > span { display: none; }
+
+.sm-logo b { letter-spacing: .12em; text-transform: none; }
+.sm-logo em,
+.sm-utc,
+.sm-panel-kicker,
+.sm-panel-footer p,
+.sm-panel-footer span { text-transform: none; letter-spacing: .065em; }
+.sm-panel-item { text-transform: none; }
+
+/* The Field Guide uses the existing editorial collections as a specimen shelf:
+   a featured record receives a larger evidence plate for a reason visible in
+   the data, instead of an arbitrary marketing-card hierarchy. */
+#fieldguide .grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: clamp(12px, 1.25vw, 20px);
+  align-items: start;
+}
+#fieldguide .acard {
+  grid-column: span 3;
+  min-height: 0;
+}
+#fieldguide .acard--featured { grid-column: span 6; }
+#fieldguide .acard .top {
+  height: auto;
+  aspect-ratio: 5 / 3.7;
+}
+#fieldguide .acard--featured .top { aspect-ratio: 16 / 8.9; }
+#fieldguide .acard--mars .top { aspect-ratio: 5 / 4; }
+#fieldguide .acard--deep .top { aspect-ratio: 16 / 10; }
+#fieldguide .acard--featured .bd { padding: 23px 25px; }
+#fieldguide .acard--featured h3 { font-size: clamp(26px, 2.15vw, 35px); }
+#fieldguide .acard .ms,
+#fieldguide .source-state,
+#fieldguide .status-pending,
+#fieldguide .unverified-chip,
+#fieldguide .acard .st,
+#fieldguide .acard .op {
+  text-transform: none;
+  letter-spacing: .055em;
+}
+
+@media (min-width: 721px) and (max-width: 1100px) {
+  #fieldguide .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  #fieldguide .acard { grid-column: span 2; }
+  #fieldguide .acard--featured { grid-column: span 3; }
+}
+
+@media (max-width: 720px) {
+  #fieldguide .grid { grid-template-columns: 1fr; }
+  #fieldguide .acard,
+  #fieldguide .acard--featured { grid-column: auto; }
+  #fieldguide .acard .top,
+  #fieldguide .acard--featured .top { height: auto; aspect-ratio: 4 / 3; }
+  #fieldguide .acard--featured .bd { padding: 19px 20px; }
+}

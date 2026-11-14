@@ -1,4 +1,5 @@
 import { A, LEDGER, SCI, byId, isNASARecord, statusLabel } from '../data/artifacts';
+import { STORY_PATH } from '../data/story-path';
 import { ICO } from '../data/artwork';
 import { $, $$ } from '../lib/dom';
 import { selectArtifact } from '../lib/events';
@@ -15,6 +16,10 @@ interface ArchiveFilters {
   status: ArtifactStatus | 'all';
   sort: ArchiveSort;
 }
+
+// The larger folios lead back to the site's six guided questions, so visual
+// prominence is editorially meaningful rather than an arbitrary card pattern.
+const GUIDED_FOLIO_IDS = new Set(STORY_PATH.map(({ id }) => id));
 
 function readBodyFilter(value: string | undefined): ArchiveFilters['body'] {
   return value === 'moon' || value === 'mars' || value === 'deep' ? value : 'all';
@@ -69,29 +74,31 @@ export function initArchive(): () => void {
     else list.sort((left, right) => left.n.localeCompare(right.n));
 
     const agencyLabel = filterState.agency === 'nasa' ? 'NASA records' : 'other-agency context records';
-    $('#results').innerHTML = `Showing <b>${list.length}</b> of ${A.length} artefacts · ${agencyLabel}${
-      filterState.query ? ` · matching “${filterState.query.replace(/</g, '&lt;')}”` : ''
+    $('#results').innerHTML = `Showing <b>${list.length}</b> of ${A.length} artefacts. ${agencyLabel}${
+      filterState.query ? ` matching “${filterState.query.replace(/</g, '&lt;')}”.` : '.'
     }`;
     $('#empty').classList.toggle('on', list.length === 0);
     grid.style.display = list.length ? 'grid' : 'none';
     grid.innerHTML = list.map((artifact) => {
       const summary = artifact.verifiedByNASA ? artifact.one : 'We’re still checking this spacecraft’s story with NASA.';
       const verificationFlag = artifact.verifiedByNASA ? '<span class="source-state">NASA source checked</span>' : '<span class="unverified-chip">Audit pending</span>';
-      const metadata = artifact.verifiedByNASA ? `${artifact.m} · ${artifact.ag}` : 'NASA source review pending';
+      const metadata = artifact.verifiedByNASA ? `${artifact.m}, ${artifact.ag}` : 'NASA source review pending';
       const year = artifact.verifiedByNASA ? artifact.y : '—';
       const state = artifact.verifiedByNASA ? `<span class="st ${artifact.st}">${statusLabel(artifact.st)}</span>` : '<span class="status-pending">Details withheld</span>';
       const collection = artifact.b === 'moon' ? 'Lunar register' : artifact.b === 'mars' ? 'Mars field notes' : 'Deep-space dispatch';
+      const folioLine = artifact.verifiedByNASA ? `${collection}, ${year}` : `${collection}, detail review`;
+      const prominence = GUIDED_FOLIO_IDS.has(artifact.id) ? ' acard--featured' : '';
       return `
-        <button class="acard acard--${artifact.b}" data-id="${artifact.id}">
+        <button class="acard acard--${artifact.b}${prominence}" data-id="${artifact.id}">
           <div class="top" data-webgl-plane="archive-card-media">
             <img src="${artifact.image}" alt="" width="${artifact.imageWidth}" height="${artifact.imageHeight}" loading="lazy" decoding="async" aria-hidden="true" />
             <div class="glow"></div><span class="yrbadge">${year}</span>
             <span class="bodybadge ${artifact.b}">${collection}</span>
           </div>
-          <div class="bd"><div class="card-kicker"><span>${collection} · ${year}</span>${verificationFlag}</div><h3>${artifact.n}</h3><div class="ms">${metadata}</div>
+          <div class="bd"><div class="card-kicker"><span>${folioLine}</span>${verificationFlag}</div><h3>${artifact.n}</h3><div class="ms">${metadata}</div>
             <p>${summary}</p>
             <div class="foot">${state}
-            <span class="op">Read dossier <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+            <span class="op">View record <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
           </div>
         </button>`;
     }).join('');

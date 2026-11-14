@@ -133,3 +133,23 @@ The malformed `alton47/threejs-skills` source is excluded from all rows above be
 - `scripts/moon-catalogue-test.ts`, `scripts/visual-test.ts`, `scripts/capture-dossier-comparison.ts`, `package.json` — test coverage and test-command repair.
 
 The React Bits Pro installer remains blocked by the missing `REACTBITS_LICENSE_KEY`; no claim is made that the project-native `HorizonBloom.tsx` is licensed React Bits source.
+
+## Attached `frontend-design` revalidation — 2026-11-14
+
+### Plan
+
+- **Subject and job:** Silent Fleet is a source-aware educational exhibition for readers who want to distinguish NASA-supported records from interpretation. Its job is to make long-distance hardware feel discoverable without making a mission-control dashboard.
+- **Palette:** archive black `#252525`, negative black `#161616`, lunar paper `#FFFFFF`, field grey `#8E8E8E`, hairline silver `#EBEBEB`, and source red `#D83B30`. These are expressed through the active supplied OKLCH semantic tokens rather than a new parallel palette.
+- **Type:** Space Grotesk carries titles and controls; Instrument Serif is retained for reading passages and the closing quotation; IBM Plex Mono is limited to data, source state, and instrument-like record detail.
+- **Layout:** Horizon Bloom and the source image remain the single cinematic arrival. The rest resolves into quiet reading spreads, then a responsive specimen shelf whose large plates follow the six existing guided-record IDs—not arbitrary card decoration. Text stays left-aligned and narrative measures remain constrained.
+
+### Generic-default review and revision
+
+The pre-pass interface still had serial labels above nearly every heading, all-caps utility treatment on ordinary copy, a singled-out italic phrase in each display line, and a uniform archive-card grid. Those choices risked making a NASA archive feel like a template. The revision removes non-sequential serial copy from section headings and menu rows, makes ordinary labels sentence case, leaves serial information only where it represents the guided reading order, removes the visual emphasis from isolated headline phrases, and bases varied Field Guide plates on the six real records in the guided path.
+
+### Implemented outcome
+
+- `index.html` uses direct section labels and straightforward, active headings; the menu is an invitation to explore rather than a numbered template list.
+- `src/data/story-path.ts` identifies each story by its actual location instead of formulaic “Chapter N” labels.
+- `src/components/archive.ts` uses sentence-level result and provenance copy and emits `acard--featured` only for the six existing `STORY_PATH` records.
+- `src/styles/editorial-upgrade.css` scopes the typographic, plain-language, source-first archive shelf, responsive layout, focus-safe action, and reduced-motion-compatible refinements to the active final cascade. No new decorative motion or image overlay is introduced.
